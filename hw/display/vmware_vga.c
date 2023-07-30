@@ -56,7 +56,6 @@
 
 #define SVGA_IO_MUL 1
 
-#define DEBUG
 #define HW_RECT_ACCEL
 #define HW_FILL_ACCEL
 #define HW_MOUSE_ACCEL
@@ -802,9 +801,9 @@ goto cmdbad;
             }
             break;
 
-		cmdbad:
-			printf("%s: Unknown command %d in SVGA command FIFO\n", __func__, cmd);
-			break;
+        cmdbad:
+            printf("%s: Unknown command %d in SVGA command FIFO\n", __func__, cmd);
+            break;
 
         rewind:
             s->fifo_stop = cmd_start;
@@ -1020,7 +1019,7 @@ caps |= SVGA_CAP2_RESERVED;
 
     case SVGA_REG_NUM_DISPLAYS:
     case SVGA_PALETTE_BASE: // ... SVGA_PALETTE_END:
-        ret = 0;
+        ret = 1;
         break;
 
     case SVGA_REG_PITCHLOCK:
@@ -1032,7 +1031,7 @@ caps |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_NUM_GUEST_DISPLAYS:
-        ret = 1;
+        ret = 0;
         break;
     case SVGA_REG_DISPLAY_ID:
         ret = s->display_id;
@@ -1048,13 +1047,13 @@ caps |= SVGA_CAP2_RESERVED;
         if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
             ret = s->new_width ? s->new_width : surface_width(surface);
         else
-            ret = 0;
+            ret = 800;
         break;
     case SVGA_REG_DISPLAY_HEIGHT:
         if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
             ret = s->new_height ? s->new_height : surface_height(surface);
         else
-            ret = 0;
+            ret = 600;
         break;
 
     /* Guest memory regions */
