@@ -34,6 +34,7 @@
 #include "migration/vmstate.h"
 #include "qom/object.h"
 
+
 #include "include/includeCheck.h"
 #include "include/svga3d_caps.h"
 #include "include/svga3d_cmd.h"
@@ -53,8 +54,6 @@
 #include "include/vmware_pack_end.h"
 
 #define SVGA_PCI_DEVICE_ID     PCI_DEVICE_ID_VMWARE_SVGA2
-
-#define SVGA_IO_MUL 1
 
 #define HW_RECT_ACCEL
 #define HW_FILL_ACCEL
@@ -827,7 +826,7 @@ goto cmdbad;
     if (irq_pending && (s->irq_status & s->irq_mask)) {
         struct pci_vmsvga_state_s *pci_vmsvga
             = container_of(s, struct pci_vmsvga_state_s, chip);
-        pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
+        //pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
     }
 }
 
@@ -1018,7 +1017,7 @@ caps |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_NUM_DISPLAYS:
-    case SVGA_PALETTE_BASE: // ... SVGA_PALETTE_END:
+    case SVGA_PALETTE_BASE ... (SVGA_PALETTE_BASE + 767):
         ret = 1;
         break;
 
@@ -1057,12 +1056,17 @@ caps |= SVGA_CAP2_RESERVED;
         break;
 
     /* Guest memory regions */
+    case SVGA_REG_GMRS_MAX_PAGES:
+        ret = 524288;
+        break;
     case SVGA_REG_GMR_ID:
-    case SVGA_REG_GMR_DESCRIPTOR:
+        ret = 524288;
+        break;
     case SVGA_REG_GMR_MAX_IDS:
+        ret = 524288;
+        break;
     case SVGA_REG_GMR_MAX_DESCRIPTOR_LENGTH:
-        /* We don't support GMRs */
-        ret = 0;
+        ret = 524288;
         break;
 
     default:
@@ -1113,8 +1117,275 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         } else {
             vga_dirty_log_start(&s->vga);
         }
-        if (s->enable)
+        if (s->enable) {
             s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
+            s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
+	/*
+            s->fifo[SVGA3D_DEVCAP_3D] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_MAX_LIGHTS] = 0x00000008;
+            s->fifo[SVGA3D_DEVCAP_MAX_TEXTURES] = 0x00000008;
+            s->fifo[SVGA3D_DEVCAP_MAX_CLIP_PLANES] = 0x00000008;
+            s->fifo[SVGA3D_DEVCAP_VERTEX_SHADER_VERSION] = 0x00000007;
+            s->fifo[SVGA3D_DEVCAP_VERTEX_SHADER] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_FRAGMENT_SHADER_VERSION] = 0x0000000d;
+            s->fifo[SVGA3D_DEVCAP_FRAGMENT_SHADER] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_MAX_RENDER_TARGETS] = 0x00000008;
+            s->fifo[SVGA3D_DEVCAP_S23E8_TEXTURES] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_S10E5_TEXTURES] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_MAX_FIXED_VERTEXBLEND] = 0x00000004;
+            s->fifo[SVGA3D_DEVCAP_D16_BUFFER_FORMAT] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_D24S8_BUFFER_FORMAT] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_D24X8_BUFFER_FORMAT] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_QUERY_TYPES] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_TEXTURE_GRADIENT_SAMPLING] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_MAX_POINT_SIZE] = 8191.000000;
+            s->fifo[SVGA3D_DEVCAP_MAX_SHADER_TEXTURES] = 0x00000014;
+            s->fifo[SVGA3D_DEVCAP_MAX_TEXTURE_WIDTH] = 0x00004000;
+            s->fifo[SVGA3D_DEVCAP_MAX_TEXTURE_HEIGHT] = 0x00004000;
+            s->fifo[SVGA3D_DEVCAP_MAX_VOLUME_EXTENT] = 0x00000800;
+            s->fifo[SVGA3D_DEVCAP_MAX_TEXTURE_REPEAT] = 0x00004000;
+            s->fifo[SVGA3D_DEVCAP_MAX_TEXTURE_ASPECT_RATIO] = 0x00004000;
+            s->fifo[SVGA3D_DEVCAP_MAX_TEXTURE_ANISOTROPY] = 0x00000010;
+            s->fifo[SVGA3D_DEVCAP_MAX_PRIMITIVE_COUNT] = 0x001fffff;
+            s->fifo[SVGA3D_DEVCAP_MAX_VERTEX_INDEX] = 0x000fffff;
+            s->fifo[SVGA3D_DEVCAP_MAX_VERTEX_SHADER_INSTRUCTIONS] = 0x0000ffff;
+            s->fifo[SVGA3D_DEVCAP_MAX_FRAGMENT_SHADER_INSTRUCTIONS] = 0x0000ffff;
+            s->fifo[SVGA3D_DEVCAP_MAX_VERTEX_SHADER_TEMPS] = 0x00000020;
+            s->fifo[SVGA3D_DEVCAP_MAX_FRAGMENT_SHADER_TEMPS] = 0x00000020;
+            s->fifo[SVGA3D_DEVCAP_TEXTURE_OPS] = 0x03ffffff;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_X8R8G8B8] = 0x0018ec1f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_A8R8G8B8] = 0x0018e11f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_A2R10G10B10] = 0x0008601f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_X1R5G5B5] = 0x0008601f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_A1R5G5B5] = 0x0008611f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_A4R4G4B4] = 0x0000611f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_R5G6B5] = 0x0018ec1f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_LUMINANCE16] = 0x0000601f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_LUMINANCE8_ALPHA8] = 0x00006007;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_ALPHA8] = 0x0000601f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_LUMINANCE8] = 0x0000601f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_Z_D16] = 0x000040c5;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_Z_D24S8] = 0x000040c5;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_Z_D24X8] = 0x000040c5;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_DXT1] = 0x0000e005;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_DXT2] = 0x0000e005;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_DXT3] = 0x0000e005;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_DXT4] = 0x0000e005;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_DXT5] = 0x0000e005;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_BUMPX8L8V8U8] = 0x00014005;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_A2W10V10U10] = 0x00014007;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_BUMPU8V8] = 0x00014007;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_Q8W8V8U8] = 0x00014005;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_CxV8U8] = 0x00014001;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_R_S10E5] = 0x0080601f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_R_S23E8] = 0x0080601f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_RG_S10E5] = 0x0080601f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_RG_S23E8] = 0x0080601f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_ARGB_S10E5] = 0x0080601f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_ARGB_S23E8] = 0x0080601f;
+            s->fifo[SVGA3D_DEVCAP_MISSING62] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_MAX_VERTEX_SHADER_TEXTURES] = 0x00000004;
+            s->fifo[SVGA3D_DEVCAP_MAX_SIMULTANEOUS_RENDER_TARGETS] = 0x00000008;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_V16U16] = 0x00014007;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_G16R16] = 0x0000601f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_A16B16G16R16] = 0x0000601f;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_UYVY] = 0x01246000;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_YUY2] = 0x01246000;
+            s->fifo[SVGA3D_DEVCAP_DEAD4] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_DEAD5] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_DEAD7] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_DEAD6] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_AUTOGENMIPMAPS] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_NV12] = 0x01246000;
+            //s->fifo[SVGA3D_DEVCAP_DEAD10] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_MAX_CONTEXT_IDS] = 0x00000100;
+            s->fifo[SVGA3D_DEVCAP_MAX_SURFACE_IDS] = 0x00008000;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_Z_DF16] = 0x000040c5;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_Z_DF24] = 0x000040c5;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_Z_D24S8_INT] = 0x000040c5;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_ATI1] = 0x00006005;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_ATI2] = 0x00006005;
+            s->fifo[SVGA3D_DEVCAP_DEAD1] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_DEAD8] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_DEAD9] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_LINE_AA] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_LINE_STIPPLE] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_MAX_LINE_WIDTH] =  10.000000;
+            s->fifo[SVGA3D_DEVCAP_MAX_AA_LINE_WIDTH] =  10.000000;
+            s->fifo[SVGA3D_DEVCAP_SURFACEFMT_YV12] = 0x01246000;
+            s->fifo[SVGA3D_DEVCAP_DEAD3] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_TS_COLOR_KEY] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_DEAD2] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_DXCONTEXT] = 0x00000001;
+            //s->fifo[SVGA3D_DEVCAP_DEAD11] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_DX_MAX_VERTEXBUFFERS] = 0x00000010;
+            s->fifo[SVGA3D_DEVCAP_DX_MAX_CONSTANT_BUFFERS] = 0x0000000f;
+            s->fifo[SVGA3D_DEVCAP_DX_PROVOKING_VERTEX] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_X8R8G8B8] = 0x000002f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_A8R8G8B8] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R5G6B5] = 0x000002f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_X1R5G5B5] = 0x000000f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_A1R5G5B5] = 0x000000f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_A4R4G4B4] = 0x000000f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_Z_D32] = 0x00000009;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_Z_D16] = 0x0000026b;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_Z_D24S8] = 0x0000026b;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_Z_D15S1] = 0x0000000b;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_LUMINANCE8] = 0x000000f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_LUMINANCE4_ALPHA4] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_LUMINANCE16] = 0x000000f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_LUMINANCE8_ALPHA8] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_DXT1] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_DXT2] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_DXT3] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_DXT4] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_DXT5] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BUMPU8V8] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BUMPL6V5U5] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BUMPX8L8V8U8] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_FORMAT_DEAD1] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_ARGB_S10E5] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_ARGB_S23E8] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_A2R10G10B10] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_V8U8] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_Q8W8V8U8] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_CxV8U8] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_X8L8V8U8] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_A2W10V10U10] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_ALPHA8] = 0x000000f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R_S10E5] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R_S23E8] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_RG_S10E5] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_RG_S23E8] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BUFFER] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_Z_D24X8] = 0x0000026b;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_V16U16] = 0x000001e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_G16R16] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_A16B16G16R16] = 0x000001f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_UYVY] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_YUY2] = 0x00000041;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_NV12] = 0x00000041;
+            //s->fifo[SVGA3D_DEVCAP_DXFMT_FORMAT_DEAD2] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G32B32A32_TYPELESS] = 0x000002e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G32B32A32_UINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G32B32A32_SINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G32B32_TYPELESS] = 0x000000e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G32B32_FLOAT] = 0x000001e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G32B32_UINT] = 0x000001e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G32B32_SINT] = 0x000001e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16G16B16A16_TYPELESS] = 0x000002e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16G16B16A16_UINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16G16B16A16_SNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16G16B16A16_SINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G32_TYPELESS] = 0x000002e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G32_UINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G32_SINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G8X24_TYPELESS] = 0x00000261;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_D32_FLOAT_S8X24_UINT] = 0x00000269;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32_FLOAT_X8X24] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_X32_G8X24_UINT] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R10G10B10A2_TYPELESS] = 0x000002e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R10G10B10A2_UINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R11G11B10_FLOAT] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8G8B8A8_TYPELESS] = 0x000002e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8G8B8A8_UNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8G8B8A8_UNORM_SRGB] = 0x000002f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8G8B8A8_UINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8G8B8A8_SINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16G16_TYPELESS] = 0x000002e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16G16_UINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16G16_SINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32_TYPELESS] = 0x000002e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_D32_FLOAT] = 0x00000269;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32_UINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32_SINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R24G8_TYPELESS] = 0x00000261;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_D24_UNORM_S8_UINT] = 0x00000269;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R24_UNORM_X8] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_X24_G8_UINT] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8G8_TYPELESS] = 0x000002e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8G8_UNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8G8_UINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8G8_SINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16_TYPELESS] = 0x000002e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16_UNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16_UINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16_SNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16_SINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8_TYPELESS] = 0x000002e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8_UNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8_UINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8_SNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8_SINT] = 0x000003e7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_P8] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R9G9B9E5_SHAREDEXP] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8G8_B8G8_UNORM] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_G8R8_G8B8_UNORM] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC1_TYPELESS] = 0x000000e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC1_UNORM_SRGB] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC2_TYPELESS] = 0x000000e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC2_UNORM_SRGB] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC3_TYPELESS] = 0x000000e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC3_UNORM_SRGB] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC4_TYPELESS] = 0x000000e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_ATI1] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC4_SNORM] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC5_TYPELESS] = 0x000000e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_ATI2] = 0x00000063;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC5_SNORM] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R10G10B10_XR_BIAS_A2_UNORM] = 0x00000045;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_B8G8R8A8_TYPELESS] = 0x000002e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_B8G8R8A8_UNORM_SRGB] = 0x000002f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_B8G8R8X8_TYPELESS] = 0x000002e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_B8G8R8X8_UNORM_SRGB] = 0x000002f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_Z_DF16] = 0x0000006b;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_Z_DF24] = 0x0000006b;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_Z_D24S8_INT] = 0x0000006b;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_YV12] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G32B32A32_FLOAT] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16G16B16A16_FLOAT] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16G16B16A16_UNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32G32_FLOAT] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R10G10B10A2_UNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8G8B8A8_SNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16G16_FLOAT] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16G16_UNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16G16_SNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R32_FLOAT] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R8G8_SNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_R16_FLOAT] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_D16_UNORM] = 0x00000269;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_A8_UNORM] = 0x000002f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC1_UNORM] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC2_UNORM] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC3_UNORM] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_B5G6R5_UNORM] = 0x000002f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_B5G5R5A1_UNORM] = 0x000002f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_B8G8R8A8_UNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_B8G8R8X8_UNORM] = 0x000003f7;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC4_UNORM] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC5_UNORM] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_SM41] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_MULTISAMPLE_2X] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_MULTISAMPLE_4X] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_MS_FULL_QUALITY] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_LOGICOPS] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_LOGIC_BLENDOPS] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_DEAD12] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC6H_TYPELESS] = 0x000000e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC6H_UF16] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC6H_SF16] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC7_TYPELESS] = 0x000000e1;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC7_UNORM] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DXFMT_BC7_UNORM_SRGB] = 0x000000e3;
+            s->fifo[SVGA3D_DEVCAP_DEAD13] = 0x00000000;
+            s->fifo[SVGA3D_DEVCAP_SM5] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_MULTISAMPLE_8X] = 0x00000001;
+            s->fifo[SVGA3D_DEVCAP_MAX_FORCED_SAMPLE_COUNT] = 0x00000008;
+            s->fifo[SVGA3D_DEVCAP_GL43] = 0x00000001;
+            
+	*/
+	}
         break;
 
     case SVGA_REG_WIDTH:
@@ -1199,7 +1470,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
     case SVGA_REG_DEPTH:
     case SVGA_REG_MEM_REGS:
     case SVGA_REG_NUM_DISPLAYS:
-    case SVGA_PALETTE_BASE: // ... SVGA_PALETTE_END:
+    case SVGA_PALETTE_BASE ... (SVGA_PALETTE_BASE + 767):
         break;
 
     case SVGA_REG_PITCHLOCK:
@@ -1262,8 +1533,8 @@ static void vmsvga_irqstatus_write(void *opaque, uint32_t address, uint32_t data
      * interrupt request when none are left active
      */
     s->irq_status &= ~data;
-    if (!s->irq_status)
-        pci_set_irq(pci_dev, 0);
+    //if (!s->irq_status)
+        //pci_set_irq(pci_dev, 0);
 }
 
 static uint32_t vmsvga_bios_read(void *opaque, uint32_t address)
@@ -1448,7 +1719,7 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
                            &error_fatal);
     s->fifo = (uint32_t *)memory_region_get_ram_ptr(&s->fifo_ram);
     s->num_fifo_regs = SVGA_FIFO_NUM_REGS;
-    s->fifo[SVGA_FIFO_CAPABILITIES] =
+    s->	fifo[SVGA_FIFO_CAPABILITIES] =
       SVGA_FIFO_CAP_NONE | 
       SVGA_FIFO_CAP_FENCE | 
       SVGA_FIFO_CAP_ACCELFRONT | 
@@ -1460,7 +1731,7 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
 //      SVGA_FIFO_CAP_SCREEN_OBJECT | 
       SVGA_FIFO_CAP_GMR2 | 
       SVGA_FIFO_CAP_3D_HWVERSION_REVISED | 
-      SVGA_FIFO_CAP_SCREEN_OBJECT_2 | 
+//      SVGA_FIFO_CAP_SCREEN_OBJECT_2 | 
       SVGA_FIFO_CAP_DEAD;
     s->fifo[SVGA_FIFO_FLAGS] = 0;
 
@@ -1475,10 +1746,10 @@ static uint64_t vmsvga_io_read(void *opaque, hwaddr addr, unsigned size)
     struct vmsvga_state_s *s = opaque;
 
     switch (addr) {
-    case SVGA_IO_MUL * SVGA_INDEX_PORT: return vmsvga_index_read(s, addr);
-    case SVGA_IO_MUL * SVGA_VALUE_PORT: return vmsvga_value_read(s, addr);
-    case SVGA_IO_MUL * SVGA_BIOS_PORT: return vmsvga_bios_read(s, addr);
-    case SVGA_IO_MUL * SVGA_IRQSTATUS_PORT: return vmsvga_irqstatus_read(s, addr);
+    case 1 * SVGA_INDEX_PORT: return vmsvga_index_read(s, addr);
+    case 1 * SVGA_VALUE_PORT: return vmsvga_value_read(s, addr);
+    case 1 * SVGA_BIOS_PORT: return vmsvga_bios_read(s, addr);
+    case 1 * SVGA_IRQSTATUS_PORT: return vmsvga_irqstatus_read(s, addr);
     default: return -1u;
     }
 }
@@ -1489,16 +1760,16 @@ static void vmsvga_io_write(void *opaque, hwaddr addr,
     struct vmsvga_state_s *s = opaque;
 
     switch (addr) {
-    case SVGA_IO_MUL * SVGA_INDEX_PORT:
+    case 1 * SVGA_INDEX_PORT:
         vmsvga_index_write(s, addr, data);
         break;
-    case SVGA_IO_MUL * SVGA_VALUE_PORT:
+    case 1 * SVGA_VALUE_PORT:
         vmsvga_value_write(s, addr, data);
         break;
-    case SVGA_IO_MUL * SVGA_BIOS_PORT:
+    case 1 * SVGA_BIOS_PORT:
         vmsvga_bios_write(s, addr, data);
         break;
-    case SVGA_IO_MUL * SVGA_IRQSTATUS_PORT:
+    case 1 * SVGA_IRQSTATUS_PORT:
         vmsvga_irqstatus_write(s, addr, data);
         break;
     }
