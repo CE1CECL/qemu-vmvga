@@ -564,7 +564,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             }
 #endif
             args = 0;
-	printf("badcmd:1: ");
             goto badcmd;
 
         case SVGA_CMD_DEFINE_CURSOR:
@@ -591,7 +590,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                     > ARRAY_SIZE(cursor.and_mask)
                 || SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp)
                     > ARRAY_SIZE(cursor.xor_mask)) {
-	printf("badcmd:2: ");
                     goto badcmd;
             }
 
@@ -611,7 +609,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             break;
 #else
             args = 0;
-	printf("badcmd:3: ");
             goto badcmd;
 #endif
 
@@ -631,7 +628,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             args = x * y;
             if ((SVGA_PIXMAP_SIZE(x, y, 32) > ARRAY_SIZE(cursor.and_mask))
                || (SVGA_PIXMAP_SIZE(x, y, 32) > ARRAY_SIZE(cursor.xor_mask))) {
-	printf("badcmd:4: ");
                     goto badcmd;
             }
 
@@ -651,7 +647,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             break;
 #else
             args = 0;
-	printf("badcmd:5: ");
             goto badcmd;
 #endif
 
@@ -693,7 +688,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                 goto rewind;
             }
             args = 2;
-	printf("badcmd:6: ");
             goto badcmd;
 
         case SVGA_CMD_REMAP_GMR2:
@@ -716,7 +710,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                     args *= 2;
             }
 
-	printf("badcmd:7: ");
             goto badcmd;
 
         case SVGA_CMD_RECT_ROP_COPY: 
@@ -725,70 +718,14 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                 goto rewind;
             }
             args = 7;
-	printf("badcmd:8: ");
             goto badcmd;
-
-case SVGA_CMD_ESCAPE:
-printf("cmdbad:a: ");
-goto cmdbad;
-
-case SVGA_CMD_DEFINE_SCREEN:
-printf("cmdbad:b: ");
-goto cmdbad;
-
-case SVGA_CMD_DESTROY_SCREEN:
-printf("cmdbad:c: ");
-goto cmdbad;
-
-case SVGA_CMD_DEFINE_GMRFB:
-printf("cmdbad:d: ");
-goto cmdbad;
-
-case SVGA_CMD_BLIT_GMRFB_TO_SCREEN:
-printf("cmdbad:e: ");
-goto cmdbad;
-
-case SVGA_CMD_BLIT_SCREEN_TO_GMRFB:
-printf("cmdbad:f: ");
-goto cmdbad;
-
-case SVGA_CMD_ANNOTATION_FILL:
-printf("cmdbad:g: ");
-goto cmdbad;
-
-case SVGA_CMD_ANNOTATION_COPY:
-printf("cmdbad:h: ");
-goto cmdbad;
-
-case SVGA_CMD_DEAD_2:
-printf("cmdbad:i: ");
-goto cmdbad;
-
-case SVGA_CMD_NOP_ERROR:
-printf("cmdbad:j: ");
-goto cmdbad;
-
-case SVGA_CMD_NOP:
-printf("cmdbad:k: ");
-goto cmdbad;
-
-case SVGA_CMD_DEAD:
-printf("cmdbad:l: ");
-goto cmdbad;
-
-case SVGA_CMD_INVALID_CMD:
-printf("cmdbad:m: ");
-goto cmdbad;
-
 
         default:
             args = 0;
-	printf("cmdbad:9: ");
-            goto cmdbad;
         ignoredcmd:
             cmd_ignored = true;
         badcmd:
-            len -= args;
+            len -= 2;
             if (len < 0) {
                 goto rewind;
             }
@@ -798,10 +735,6 @@ goto cmdbad;
             if (!cmd_ignored) {
                 printf("%s: Unknown command %d in SVGA command FIFO\n", __func__, cmd);
             }
-            break;
-
-        cmdbad:
-            printf("%s: Unknown command %d in SVGA command FIFO\n", __func__, cmd);
             break;
 
         rewind:
@@ -1118,7 +1051,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
             vga_dirty_log_start(&s->vga);
         }
         if (s->enable) {
-            //s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
+            s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
             s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
 	}
         break;
