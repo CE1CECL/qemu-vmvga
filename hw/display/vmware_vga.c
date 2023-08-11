@@ -663,6 +663,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             if (len < 0) {
                 goto rewind;
             }
+            fence_arg = vmsvga_fifo_read(s);
+            s->fifo[SVGA_FIFO_FENCE] = cpu_to_le32(fence_arg);
             irq_pending = true;
             break;
 
