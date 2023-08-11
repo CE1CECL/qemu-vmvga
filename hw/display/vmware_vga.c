@@ -663,23 +663,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             if (len < 0) {
                 goto rewind;
             }
-
-            fence_arg = vmsvga_fifo_read(s);
-            s->fifo[SVGA_FIFO_FENCE] = cpu_to_le32(fence_arg);
-
-
-            if (s->irq_mask & SVGA_IRQFLAG_ANY_FENCE) {
-                s->irq_status |= SVGA_IRQFLAG_ANY_FENCE;
-                irq_pending = true;
-            }
-
-            if ((s->irq_mask & SVGA_IRQFLAG_FENCE_GOAL)
-               && (s->fifo_min > SVGA_FIFO_FENCE_GOAL)
-               && (s->fifo[SVGA_FIFO_FENCE_GOAL] == fence_arg)) {
-                s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
-                irq_pending = true;
-            }
-
+            irq_pending = true;
             break;
 
         case SVGA_CMD_DEFINE_GMR2:
