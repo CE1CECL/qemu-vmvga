@@ -665,7 +665,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             }
             fence_arg = vmsvga_fifo_read(s);
             s->fifo[SVGA_FIFO_FENCE] = cpu_to_le32(fence_arg);
-            irq_pending = true;
             break;
 
         case SVGA_CMD_DEFINE_GMR2:
