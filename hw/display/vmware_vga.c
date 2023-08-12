@@ -515,8 +515,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
     uint32_t fence_arg;
     uint32_t flags, num_pages;
     bool cmd_ignored;
-    bool irq_pending = false;
-    bool fifo_progress = false;
 
     len = vmsvga_fifo_length(s);
     while (len > 0 && --maxloop > 0) {
@@ -663,6 +661,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             if (len < 0) {
                 goto rewind;
             }
+
             fence_arg = vmsvga_fifo_read(s);
             s->fifo[SVGA_FIFO_FENCE] = cpu_to_le32(fence_arg);
             break;
@@ -727,25 +726,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
             break;
         }
-
-        if (s->fifo_stop != cmd_start)
-            fifo_progress = true;
     }
-
-    if ((s->irq_mask & SVGA_IRQFLAG_FIFO_PROGRESS) &&
-        fifo_progress) {
-        s->irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
-        irq_pending = true;
-    }
-
     s->syncing = 0;
-
-    /* Need to raise irq ? */
-    if (irq_pending && (s->irq_status & s->irq_mask)) {
-        struct pci_vmsvga_state_s *pci_vmsvga
-            = container_of(s, struct pci_vmsvga_state_s, chip);
-        pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
-    }
 }
 
 static uint32_t vmsvga_index_read(void *opaque, uint32_t address)
@@ -1176,18 +1158,7 @@ static uint32_t vmsvga_irqstatus_read(void *opaque, uint32_t address)
 
 static void vmsvga_irqstatus_write(void *opaque, uint32_t address, uint32_t data)
 {
-    struct vmsvga_state_s *s = opaque;
-    struct pci_vmsvga_state_s *pci_vmsvga =
-        container_of(s, struct pci_vmsvga_state_s, chip);
-    PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
 
-    /*
-     * Clear selected interrupt sources and lower
-     * interrupt request when none are left active
-     */
-    s->irq_status &= ~data;
-    if (!s->irq_status)
-        pci_set_irq(pci_dev, 0);
 }
 
 static uint32_t vmsvga_bios_read(void *opaque, uint32_t address)
@@ -1331,8 +1302,8 @@ static const VMStateDescription vmstate_vmware_vga_internal = {
         VMSTATE_UINT32(svgaid, struct vmsvga_state_s),
         VMSTATE_INT32(syncing, struct vmsvga_state_s),
         VMSTATE_UNUSED(4), /* was fb_size */
-        VMSTATE_UINT32_V(irq_mask, struct vmsvga_state_s, 1),
-        VMSTATE_UINT32_V(irq_status, struct vmsvga_state_s, 1),
+        VMSTATE_UINT32_V(irq_mask, struct vmsvga_state_s, 0),
+        VMSTATE_UINT32_V(irq_status, struct vmsvga_state_s, 0),
         VMSTATE_UINT32_V(last_fifo_cursor_count, struct vmsvga_state_s, 1),
         VMSTATE_UINT32_V(display_id, struct vmsvga_state_s, 1),
         VMSTATE_UINT32_V(pitchlock, struct vmsvga_state_s, 1),
