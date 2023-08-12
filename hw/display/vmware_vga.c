@@ -1049,10 +1049,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         } else {
             vga_dirty_log_start(&s->vga);
         }
-        if (s->enable) {
-            s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
-            s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
-	}
         break;
 
     case SVGA_REG_WIDTH:
