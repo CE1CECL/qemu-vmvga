@@ -788,7 +788,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
 
     switch (s->index) { 
     case SVGA_REG_MOB_MAX_SIZE:
-        ret = 0;
+        ret = 1073741824;
         break;
 
     case SVGA_REG_ID:
