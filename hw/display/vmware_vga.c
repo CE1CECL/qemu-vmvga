@@ -781,6 +781,7 @@ static void vmsvga_index_write(void *opaque, uint32_t address, uint32_t index)
 static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
 {
     uint32_t caps;
+    uint32_t cap2;
     struct vmsvga_state_s *s = opaque;
     DisplaySurface *surface = qemu_console_surface(s->vga.con);
     PixelFormat pf;
@@ -891,14 +892,15 @@ caps |= SVGA_CAP_GMR2;
 caps |= SVGA_CAP_COMMAND_BUFFERS;
 caps |= SVGA_CAP_CMD_BUFFERS_2;
 //caps |= SVGA_CAP_GBOBJECTS;
+caps |= SVGA_CAP_CAP2_REGISTER;
         ret = caps;
         break;
 
     case SVGA_REG_CAP2:
-caps = SVGA_CAP2_GROW_OTABLE;
-caps |= SVGA_CAP2_INTRA_SURFACE_COPY;
-caps |= SVGA_CAP2_RESERVED;
-        ret = caps;
+cap2 = SVGA_CAP2_GROW_OTABLE;
+cap2 |= SVGA_CAP2_INTRA_SURFACE_COPY;
+cap2 |= SVGA_CAP2_RESERVED;
+        ret = cap2;
         break;
 
     case SVGA_REG_MEM_START: {
