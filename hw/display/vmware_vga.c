@@ -787,11 +787,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
     PixelFormat pf;
     uint32_t ret;
 
-    switch (s->index) { 
-    case SVGA_REG_MOB_MAX_SIZE:
-        ret = 1073741824;
-        break;
-
+    switch (s->index) {
     case SVGA_REG_ID:
         ret = s->svgaid;
         break;
@@ -873,7 +869,8 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_CAPABILITIES:
-caps = SVGA_CAP_RECT_COPY;
+caps = SVGA_CAP_NONE;
+caps |= SVGA_CAP_RECT_COPY;
 caps |= SVGA_CAP_CURSOR;
 caps |= SVGA_CAP_CURSOR_BYPASS;
 caps |= SVGA_CAP_CURSOR_BYPASS_2;
@@ -890,14 +887,17 @@ caps |= SVGA_CAP_TRACES;
 caps |= SVGA_CAP_GMR2;
 //caps |= SVGA_CAP_SCREEN_OBJECT_2;
 caps |= SVGA_CAP_COMMAND_BUFFERS;
+caps |= SVGA_CAP_DEAD1;
 caps |= SVGA_CAP_CMD_BUFFERS_2;
 //caps |= SVGA_CAP_GBOBJECTS;
+caps |= SVGA_CAP_CMD_BUFFERS_3;
 caps |= SVGA_CAP_CAP2_REGISTER;
         ret = caps;
         break;
 
     case SVGA_REG_CAP2:
-cap2 = SVGA_CAP2_GROW_OTABLE;
+cap2 = SVGA_CAP2_NONE;
+cap2 |= SVGA_CAP2_GROW_OTABLE;
 cap2 |= SVGA_CAP2_INTRA_SURFACE_COPY;
 cap2 |= SVGA_CAP2_RESERVED;
         ret = cap2;
@@ -1056,6 +1056,10 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         } else {
             vga_dirty_log_start(&s->vga);
         }
+        if (s->enable) {
+            s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
+            s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
+	}
         break;
 
     case SVGA_REG_WIDTH:
@@ -1919,16 +1923,8 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
                            &error_fatal);
     s->fifo = (uint32_t *)memory_region_get_ram_ptr(&s->fifo_ram);
     s->num_fifo_regs = SVGA_FIFO_NUM_REGS;
-//    s-> fifo[SVGA_FIFO_FENCE] = 0x0;
-//    s-> fifo[SVGA_FIFO_FENCE_GOAL] = 0x0;
-    s-> fifo[SVGA_FIFO_CURSOR_SCREEN_ID] = 0xffffffff;
-    s-> fifo[SVGA_FIFO_BUSY] = 0x0;
-    s-> fifo[SVGA_FIFO_RESERVED] = 0xffffffff;
-    s-> fifo[SVGA_FIFO_3D_HWVERSION] = 0x20001;
-    s->	fifo[SVGA_FIFO_DEAD] = 0x2;
-    s-> fifo[SVGA_FIFO_CURSOR_COUNT] = 0x0;
-    s-> fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = 0x20001;
     s->	fifo[SVGA_FIFO_CAPABILITIES] =
+      SVGA_FIFO_CAP_NONE | 
       SVGA_FIFO_CAP_FENCE | 
       SVGA_FIFO_CAP_ACCELFRONT | 
       SVGA_FIFO_CAP_PITCHLOCK | 
@@ -1936,13 +1932,12 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
       SVGA_FIFO_CAP_CURSOR_BYPASS_3 | 
       SVGA_FIFO_CAP_ESCAPE | 
       SVGA_FIFO_CAP_RESERVE | 
-      SVGA_FIFO_CAP_SCREEN_OBJECT | 
+//      SVGA_FIFO_CAP_SCREEN_OBJECT | 
       SVGA_FIFO_CAP_GMR2 | 
       SVGA_FIFO_CAP_3D_HWVERSION_REVISED | 
 //      SVGA_FIFO_CAP_SCREEN_OBJECT_2 | 
       SVGA_FIFO_CAP_DEAD;
     s->fifo[SVGA_FIFO_FLAGS] = 0;
-
 
     vga_common_init(&s->vga, OBJECT(dev), &error_fatal);
     vga_init(&s->vga, OBJECT(dev), address_space, io, true);
