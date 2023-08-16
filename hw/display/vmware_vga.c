@@ -516,8 +516,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
     uint32_t fence_arg;
     uint32_t flags, num_pages;
     bool cmd_ignored;
-    bool irq_pending = false;
-    bool fifo_progress = false;
+//    bool irq_pending = false;
+//    bool fifo_progress = false;
 
     len = vmsvga_fifo_length(s);
     while (len > 0 && --maxloop > 0) {
@@ -667,8 +667,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
 
             fence_arg = vmsvga_fifo_read(s);
             s->fifo[SVGA_FIFO_FENCE] = cpu_to_le32(fence_arg);
-
-
+/*
             if (s->irq_mask & SVGA_IRQFLAG_ANY_FENCE) {
                 s->irq_status |= SVGA_IRQFLAG_ANY_FENCE;
                 irq_pending = true;
@@ -680,7 +679,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                 s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
                 irq_pending = true;
             }
-
+*/
             break;
 
         case SVGA_CMD_DEFINE_GMR2:
@@ -743,25 +742,28 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
             break;
         }
-
+/*
         if (s->fifo_stop != cmd_start)
             fifo_progress = true;
+*/
     }
-
+/*
     if ((s->irq_mask & SVGA_IRQFLAG_FIFO_PROGRESS) &&
         fifo_progress) {
         s->irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
         irq_pending = true;
     }
-
+*/
     s->syncing = 0;
 
     /* Need to raise irq ? */
+/*
     if (irq_pending && (s->irq_status & s->irq_mask)) {
         struct pci_vmsvga_state_s *pci_vmsvga
             = container_of(s, struct pci_vmsvga_state_s, chip);
         pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
     }
+*/
 }
 
 static uint32_t vmsvga_index_read(void *opaque, uint32_t address)
@@ -1056,10 +1058,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         } else {
             vga_dirty_log_start(&s->vga);
         }
-        if (s->enable) {
-            s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
-            s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
-	}
         break;
 
     case SVGA_REG_WIDTH:
@@ -1462,18 +1460,20 @@ static uint32_t vmsvga_irqstatus_read(void *opaque, uint32_t address)
 
 static void vmsvga_irqstatus_write(void *opaque, uint32_t address, uint32_t data)
 {
-    struct vmsvga_state_s *s = opaque;
-    struct pci_vmsvga_state_s *pci_vmsvga =
-        container_of(s, struct pci_vmsvga_state_s, chip);
-    PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
+//    struct vmsvga_state_s *s = opaque;
+//    struct pci_vmsvga_state_s *pci_vmsvga =
+//        container_of(s, struct pci_vmsvga_state_s, chip);
+//    PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
 
     /*
      * Clear selected interrupt sources and lower
      * interrupt request when none are left active
      */
+/*
     s->irq_status &= ~data;
     if (!s->irq_status)
         pci_set_irq(pci_dev, 0);
+*/
 }
 
 static uint32_t vmsvga_bios_read(void *opaque, uint32_t address)
@@ -1658,6 +1658,8 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
                            &error_fatal);
     s->fifo = (uint32_t *)memory_region_get_ram_ptr(&s->fifo_ram);
     s->num_fifo_regs = SVGA_FIFO_NUM_REGS;
+    s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
+    s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
     s->	fifo[SVGA_FIFO_CAPABILITIES] =
       SVGA_FIFO_CAP_NONE | 
       SVGA_FIFO_CAP_FENCE | 
@@ -1771,6 +1773,7 @@ static void vmsvga_class_init(ObjectClass *klass, void *data)
     k->class_id = PCI_CLASS_DISPLAY_VGA;
     k->subsystem_vendor_id = PCI_VENDOR_ID_VMWARE;
     k->subsystem_id = SVGA_PCI_DEVICE_ID;
+    k->revision = 0x00;
     dc->reset = vmsvga_reset;
     dc->vmsd = &vmstate_vmware_vga;
     device_class_set_props(dc, vga_vmware_properties);
