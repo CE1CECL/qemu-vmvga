@@ -1755,7 +1755,7 @@ static void pci_vmsvga_realize(PCIDevice *dev, Error **errp)
 
 static Property vga_vmware_properties[] = {
     DEFINE_PROP_UINT32("vgamem_mb", struct pci_vmsvga_state_s,
-                       chip.vga.vram_size_mb, 512),
+                       chip.vga.vram_size_mb, 128),
     DEFINE_PROP_BOOL("global-vmstate", struct pci_vmsvga_state_s,
                      chip.vga.global_vmstate, true),
     DEFINE_PROP_END_OF_LIST(),
