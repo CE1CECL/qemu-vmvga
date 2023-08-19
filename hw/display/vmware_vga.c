@@ -887,11 +887,11 @@ caps |= SVGA_CAP_DISPLAY_TOPOLOGY;
 caps |= SVGA_CAP_GMR;
 caps |= SVGA_CAP_TRACES;
 caps |= SVGA_CAP_GMR2;
-//caps |= SVGA_CAP_SCREEN_OBJECT_2;
+caps |= SVGA_CAP_SCREEN_OBJECT_2;
 caps |= SVGA_CAP_COMMAND_BUFFERS;
 caps |= SVGA_CAP_DEAD1;
 caps |= SVGA_CAP_CMD_BUFFERS_2;
-//caps |= SVGA_CAP_GBOBJECTS;
+caps |= SVGA_CAP_GBOBJECTS;
 caps |= SVGA_CAP_CMD_BUFFERS_3;
 caps |= SVGA_CAP_CAP2_REGISTER;
         ret = caps;
@@ -1669,10 +1669,10 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
       SVGA_FIFO_CAP_CURSOR_BYPASS_3 | 
       SVGA_FIFO_CAP_ESCAPE | 
       SVGA_FIFO_CAP_RESERVE | 
-//      SVGA_FIFO_CAP_SCREEN_OBJECT | 
+      SVGA_FIFO_CAP_SCREEN_OBJECT | 
       SVGA_FIFO_CAP_GMR2 | 
       SVGA_FIFO_CAP_3D_HWVERSION_REVISED | 
-//      SVGA_FIFO_CAP_SCREEN_OBJECT_2 | 
+      SVGA_FIFO_CAP_SCREEN_OBJECT_2 | 
       SVGA_FIFO_CAP_DEAD;
     s->fifo[SVGA_FIFO_FLAGS] = 0;
 
@@ -1755,7 +1755,7 @@ static void pci_vmsvga_realize(PCIDevice *dev, Error **errp)
 
 static Property vga_vmware_properties[] = {
     DEFINE_PROP_UINT32("vgamem_mb", struct pci_vmsvga_state_s,
-                       chip.vga.vram_size_mb, 128),
+                       chip.vga.vram_size_mb, 512),
     DEFINE_PROP_BOOL("global-vmstate", struct pci_vmsvga_state_s,
                      chip.vga.global_vmstate, true),
     DEFINE_PROP_END_OF_LIST(),
