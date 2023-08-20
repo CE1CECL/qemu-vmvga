@@ -516,8 +516,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
     uint32_t fence_arg;
     uint32_t flags, num_pages;
     bool cmd_ignored;
-    bool irq_pending = false;
-    bool fifo_progress = false;
+//    bool irq_pending = false;
+//    bool fifo_progress = false;
 
     len = vmsvga_fifo_length(s);
     while (len > 0 && --maxloop > 0) {
@@ -667,7 +667,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
 
             fence_arg = vmsvga_fifo_read(s);
             s->fifo[SVGA_FIFO_FENCE] = cpu_to_le32(fence_arg);
-
+/*
             if (s->irq_mask & SVGA_IRQFLAG_ANY_FENCE) {
                 s->irq_status |= SVGA_IRQFLAG_ANY_FENCE;
                 irq_pending = true;
@@ -679,7 +679,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                 s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
                 irq_pending = true;
             }
-
+*/
             break;
 
         case SVGA_CMD_DEFINE_GMR2:
@@ -742,28 +742,28 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
             break;
         }
-
+/*
         if (s->fifo_stop != cmd_start)
             fifo_progress = true;
-
+*/
     }
-
+/*
     if ((s->irq_mask & SVGA_IRQFLAG_FIFO_PROGRESS) &&
         fifo_progress) {
         s->irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
         irq_pending = true;
     }
-
+*/
     s->syncing = 0;
 
     /* Need to raise irq ? */
-
+/*
     if (irq_pending && (s->irq_status & s->irq_mask)) {
         struct pci_vmsvga_state_s *pci_vmsvga
             = container_of(s, struct pci_vmsvga_state_s, chip);
         pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
     }
-
+*/
 }
 
 static uint32_t vmsvga_index_read(void *opaque, uint32_t address)
@@ -799,33 +799,27 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_WIDTH:
-        if (s->new_width == 0) { s->new_width = 800; };
         ret = s->new_width ? s->new_width : surface_width(surface);
         break;
 
     case SVGA_REG_HEIGHT:
-        if (s->new_height == 0) { s->new_height = 600; };
         ret = s->new_height ? s->new_height : surface_height(surface);
         break;
 
-    case SVGA_REG_SCREENTARGET_MAX_WIDTH:
     case SVGA_REG_MAX_WIDTH:
         ret = SVGA_MAX_WIDTH;
         break;
 
-    case SVGA_REG_SCREENTARGET_MAX_HEIGHT:
     case SVGA_REG_MAX_HEIGHT:
         ret = SVGA_MAX_HEIGHT;
         break;
 
     case SVGA_REG_DEPTH:
-        if (s->new_depth == 0) { s->new_depth = 32; };
         ret = (s->new_depth == 32) ? 24 : s->new_depth;
         break;
 
     case SVGA_REG_BITS_PER_PIXEL:
     case SVGA_REG_HOST_BITS_PER_PIXEL:
-        if (s->new_depth == 0) { s->new_depth = 32; };
         ret = s->new_depth;
         break;
 
@@ -864,21 +858,18 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
     }
 
-    case SVGA_REG_BLANK_SCREEN_TARGETS:
-        ret = 0;
-        break;
-
     case SVGA_REG_FB_OFFSET:
         ret = 0x0;
         break;
 
-    case SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB:
-        ret = s->vga.vram_size;
+    case SVGA_REG_BLANK_SCREEN_TARGETS:
+        ret = 0;
         break;
 
     case SVGA_REG_MOB_MAX_SIZE:
     case SVGA_REG_VRAM_SIZE:
     case SVGA_REG_MAX_PRIMARY_BOUNDING_BOX_MEM:
+    case SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB:
     case SVGA_REG_FB_SIZE:
         ret = s->vga.vram_size;
         break;
@@ -993,14 +984,12 @@ cap2 |= SVGA_CAP2_RESERVED;
         ret = 0;
         break;
     case SVGA_REG_DISPLAY_WIDTH:
-        if (s->new_width == 0) { s->new_width = 800; };
         if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
             ret = s->new_width ? s->new_width : surface_width(surface);
         else
             ret = 800;
         break;
     case SVGA_REG_DISPLAY_HEIGHT:
-        if (s->new_height == 0) { s->new_height = 600; };
         if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
             ret = s->new_height ? s->new_height : surface_height(surface);
         else
@@ -1089,7 +1078,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         } else {
             qemu_log_mask(LOG_GUEST_ERROR, "%s: Bad width: %i\n", __func__, value);
         }
-        if (s->new_width == 0) { s->new_width = 800; };
         break;
 
     case SVGA_REG_HEIGHT:
@@ -1099,7 +1087,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         } else {
             qemu_log_mask(LOG_GUEST_ERROR, "%s: Bad height: %i\n", __func__, value);
         }
-        if (s->new_height == 0) { s->new_height = 600; };
         break;
 
     case SVGA_REG_BITS_PER_PIXEL:
@@ -1186,14 +1173,12 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
             s->new_width = value;
             s->invalidated = 1;
         }
-        if (s->new_width == 0) { s->new_width = 800; };
         break;
     case SVGA_REG_DISPLAY_HEIGHT:
         if ((s->display_id == 0) && (value <= SVGA_MAX_HEIGHT)) {
             s->new_height = value;
             s->invalidated = 1;
         }
-        if (s->new_height == 0) { s->new_height = 600; };
         break;
 
     case SVGA_REG_DEV_CAP:
@@ -1479,20 +1464,20 @@ static uint32_t vmsvga_irqstatus_read(void *opaque, uint32_t address)
 
 static void vmsvga_irqstatus_write(void *opaque, uint32_t address, uint32_t data)
 {
-    struct vmsvga_state_s *s = opaque;
-    struct pci_vmsvga_state_s *pci_vmsvga =
-        container_of(s, struct pci_vmsvga_state_s, chip);
-    PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
+//    struct vmsvga_state_s *s = opaque;
+//    struct pci_vmsvga_state_s *pci_vmsvga =
+//        container_of(s, struct pci_vmsvga_state_s, chip);
+//    PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
 
     /*
      * Clear selected interrupt sources and lower
      * interrupt request when none are left active
      */
-
+/*
     s->irq_status &= ~data;
     if (!s->irq_status)
         pci_set_irq(pci_dev, 0);
-
+*/
 }
 
 static uint32_t vmsvga_bios_read(void *opaque, uint32_t address)
@@ -1510,7 +1495,10 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
 {
     DisplaySurface *surface = qemu_console_surface(s->vga.con);
     uint32_t new_stride;
-	
+
+    /* Don't allow setting uninitialized 0-size screen */
+    if ((s->new_width == 0) || (s->new_height == 0)) return;
+
     new_stride = (s->use_pitchlock >= 0) ?
         s->pitchlock :
         ((s->new_depth * s->new_width) / 8);
@@ -1771,7 +1759,7 @@ static void pci_vmsvga_realize(PCIDevice *dev, Error **errp)
 
 static Property vga_vmware_properties[] = {
     DEFINE_PROP_UINT32("vgamem_mb", struct pci_vmsvga_state_s,
-                       chip.vga.vram_size_mb, 128),
+                       chip.vga.vram_size_mb, 512),
     DEFINE_PROP_BOOL("global-vmstate", struct pci_vmsvga_state_s,
                      chip.vga.global_vmstate, true),
     DEFINE_PROP_END_OF_LIST(),
@@ -1793,7 +1781,7 @@ static void vmsvga_class_init(ObjectClass *klass, void *data)
     dc->reset = vmsvga_reset;
     dc->vmsd = &vmstate_vmware_vga;
     device_class_set_props(dc, vga_vmware_properties);
-    dc->hotpluggable = true;
+    dc->hotpluggable = false;
     set_bit(DEVICE_CATEGORY_DISPLAY, dc->categories);
 }
 
