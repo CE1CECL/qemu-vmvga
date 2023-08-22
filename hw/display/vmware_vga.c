@@ -227,8 +227,8 @@ static inline void vmsvga_update_rect(struct vmsvga_state_s *s,
 
     if (!vmsvga_verify_rect(surface, __func__, x, y, w, h)) {
         /* go for a fullscreen update as fallback */
-        x = surface_width(surface);
-        y = surface_height(surface);
+        x = 0;
+        y = 0;
         w = surface_width(surface);
         h = surface_height(surface);
     }
@@ -809,18 +809,18 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         ret = s->new_height ? s->new_height : surface_height(surface);
         break;
 
-    case SVGA_REG_SCREENTARGET_MAX_WIDTH:
     case SVGA_REG_MAX_WIDTH:
+    case SVGA_REG_SCREENTARGET_MAX_WIDTH:
         ret = SVGA_MAX_WIDTH;
         break;
 
-    case SVGA_REG_SCREENTARGET_MAX_HEIGHT:
     case SVGA_REG_MAX_HEIGHT:
+    case SVGA_REG_SCREENTARGET_MAX_HEIGHT:
         ret = SVGA_MAX_HEIGHT;
         break;
 
     case SVGA_REG_DEPTH:
-        ret = s->new_depth;
+        ret = (s->new_depth == 32) ? 24 : s->new_depth;
         break;
 
     case SVGA_REG_BITS_PER_PIXEL:
@@ -871,29 +871,17 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         ret = 0;
         break;
 
+    case SVGA_REG_VRAM_SIZE:
+    case SVGA_REG_MAX_PRIMARY_BOUNDING_BOX_MEM:
+    case SVGA_REG_FB_SIZE:
+        ret = s->vga.vram_size;
+        break;
+
+    case SVGA_REG_MOB_MAX_SIZE:
     case SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB:
         ret = 0;
         break;
 
-    case SVGA_REG_MEMORY_SIZE:
-        ret = s->vga.vram_size * 2;
-        break;
-
-    case SVGA_REG_MOB_MAX_SIZE:
-        ret = 0;
-        break;
-
-    case SVGA_REG_VRAM_SIZE:
-        ret = s->vga.vram_size;
-        break;
-
-    case SVGA_REG_MAX_PRIMARY_BOUNDING_BOX_MEM:
-        ret = s->vga.vram_size;
-        break;
-
-    case SVGA_REG_FB_SIZE:
-        ret = s->vga.vram_size;
-        break;
 
     case SVGA_REG_CAPABILITIES:
 caps = SVGA_CAP_NONE;
@@ -998,20 +986,23 @@ cap2 |= SVGA_CAP2_RESERVED;
         ret = s->display_id;
         break;
     case SVGA_REG_DISPLAY_IS_PRIMARY:
-        ret = 1;
+        ret = s->display_id == 0 ? 1 : 0;
         break;
     case SVGA_REG_DISPLAY_POSITION_X:
-        ret = s->new_width ? s->new_width : surface_width(surface);
-        break;
-
     case SVGA_REG_DISPLAY_POSITION_Y:
-        ret = s->new_height ? s->new_height : surface_height(surface);
+        ret = 0;
         break;
     case SVGA_REG_DISPLAY_WIDTH:
-        ret = s->new_width ? s->new_width : surface_width(surface);
+        if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
+            ret = s->new_width ? s->new_width : surface_width(surface);
+        else
+            ret = 800;
         break;
     case SVGA_REG_DISPLAY_HEIGHT:
-        ret = s->new_height ? s->new_height : surface_height(surface);
+        if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
+            ret = s->new_height ? s->new_height : surface_height(surface);
+        else
+            ret = 600;
         break;
 
     /* Guest memory regions */
@@ -1044,13 +1035,17 @@ cap2 |= SVGA_CAP2_RESERVED;
         ret = s->devcap_val;
         break;
 
+    case SVGA_REG_MEMORY_SIZE:
+        ret = s->vga.vram_size * 2;
+        break;
+
     default:
         if (s->index >= SVGA_SCRATCH_BASE &&
             s->index < SVGA_SCRATCH_BASE + s->scratch_size) {
             ret = s->scratch[s->index - SVGA_SCRATCH_BASE];
             break;
         }
-        printf("%s: Bad read register %d\n", __func__, s->index);
+        printf("%s: Bad register %d\n", __func__, s->index);
         ret = 0;
         break;
     }
@@ -1095,17 +1090,36 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_WIDTH:
+        if (value <= SVGA_MAX_WIDTH) {
             s->new_width = value;
             s->invalidated = 1;
+            /* This is a hack used to drop effective pitchlock setting
+             * when guest writes screen width without prior write to
+             * the pitchlock register.
+             */
+            if (s->use_pitchlock >= 0) {
+                s->use_pitchlock--;
+            }
+        } else {
+            printf("%s: Bad width: %i\n", __func__, value);
+        }
         break;
 
     case SVGA_REG_HEIGHT:
+        if (value <= SVGA_MAX_HEIGHT) {
             s->new_height = value;
             s->invalidated = 1;
+        } else {
+            printf("%s: Bad height: %i\n", __func__, value);
+        }
         break;
 
     case SVGA_REG_BITS_PER_PIXEL:
-        s->new_depth = value;
+        if (value != 32) {
+            printf("%s: Bad bits per pixel: %i bits\n", __func__, value);
+            s->config = 0;
+            s->invalidated = 1;
+        }
         break;
 
     case SVGA_REG_CONFIG_DONE:
@@ -1180,13 +1194,17 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
     case SVGA_REG_DISPLAY_POSITION_Y:
         break;
     case SVGA_REG_DISPLAY_WIDTH:
-        s->invalidated = 1;
+        if ((s->display_id == 0) && (value <= SVGA_MAX_WIDTH)) {
+            s->new_width = value;
+            s->invalidated = 1;
+        }
         break;
     case SVGA_REG_DISPLAY_HEIGHT:
-        s->new_height = value;
-        s->invalidated = 1;
+        if ((s->display_id == 0) && (value <= SVGA_MAX_HEIGHT)) {
+            s->new_height = value;
+            s->invalidated = 1;
+        }
         break;
-
 
     case SVGA_REG_TRACES:
         s->tracez = value;
@@ -1201,7 +1219,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_DEV_CAP:
-if(value<=0){s->devcap_val=0x00000000;};
 if(value==0){s->devcap_val=0x00000001;};
 if(value==1){s->devcap_val=0x00000008;};
 if(value==2){s->devcap_val=0x00000008;};
@@ -1464,7 +1481,7 @@ if(value==258){s->devcap_val=0x00000001;};
 if(value==259){s->devcap_val=0x00000001;};
 if(value==260){s->devcap_val=0x00000008;};
 if(value==261){s->devcap_val=0x00000001;};
-if(value>=261){s->devcap_val=0x00000000;};
+if(value>=262){s->devcap_val=0x00000000;};
         break;
 
     default:
@@ -1473,7 +1490,7 @@ if(value>=261){s->devcap_val=0x00000000;};
             s->scratch[s->index - SVGA_SCRATCH_BASE] = value;
             break;
         }
-        printf("%s: Bad write register %d\n", __func__, s->index);
+        printf("%s: Bad register %d\n", __func__, s->index);
     }
 }
 
@@ -1516,6 +1533,9 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
 {
     DisplaySurface *surface = qemu_console_surface(s->vga.con);
     uint32_t new_stride;
+
+    /* Don't allow setting uninitialized 0-size screen */
+    if ((s->new_width == 0) || (s->new_height == 0)) return;
 
     new_stride = (s->use_pitchlock >= 0) ?
         s->pitchlock :
