@@ -84,6 +84,8 @@ struct vmsvga_state_s {
     int new_height;
     int new_depth;
     uint32_t devcap_val;
+    uint32_t gmrdesc;
+    uint32_t gmrid;
     uint32_t tracez;
     uint32_t cmd_low;
     uint32_t cmd_high;
@@ -793,58 +795,91 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
     uint32_t ret;
 
     switch (s->index) {
+#define SVGA_CAP_DX 0x10000000
+#define SVGA_CAP_HP_CMD_QUEUE 0x20000000
+#define SVGA_CAP_NO_BB_RESTRICTION 0x40000000
+#define SVGA_CAP2_DX2 0x00000004
+#define SVGA_CAP2_GB_MEMSIZE_2 0x00000008
+#define SVGA_CAP2_SCREENDMA_REG 0x00000010
+#define SVGA_CAP2_OTABLE_PTDEPTH_2 0x00000020
+#define SVGA_CAP2_NON_MS_TO_MS_STRETCHBLT 0x00000040
+#define SVGA_CAP2_CURSOR_MOB 0x00000080
+#define SVGA_CAP2_MSHINT 0x00000100
+#define SVGA_CAP2_CB_MAX_SIZE_4MB 0x00000200
+#define SVGA_CAP2_DX3 0x00000400
+#define SVGA_CAP2_FRAME_TYPE 0x00000800
+#define SVGA_CAP2_COTABLE_COPY 0x00001000
+#define SVGA_CAP2_TRACE_FULL_FB 0x00002000
+#define SVGA_CAP2_EXTRA_REGS 0x00004000
+#define SVGA_CAP2_LO_STAGING 0x00008000
+#define SVGA_CAP2_VIDEO_BLT 0x00010000
+#define SVGA_REG_GBOBJECT_MEM_SIZE_KB 76
+#define SVGA_REG_FENCE_GOAL = 84
+
     case SVGA_REG_ID:
         ret = s->svgaid;
+printf("SVGA_REG_ID:%d\n", ret);
         break;
 
     case SVGA_REG_ENABLE:
         ret = s->enable;
+printf("SVGA_REG_ENABLE:%d\n", ret);
         break;
 
     case SVGA_REG_WIDTH:
         ret = s->new_width ? s->new_width : surface_width(surface);
+printf("SVGA_REG_WIDTH:%d\n", ret);
         break;
 
     case SVGA_REG_HEIGHT:
         ret = s->new_height ? s->new_height : surface_height(surface);
+printf("SVGA_REG_HEIGHT:%d\n", ret);
         break;
 
     case SVGA_REG_MAX_WIDTH:
     case SVGA_REG_SCREENTARGET_MAX_WIDTH:
         ret = SVGA_MAX_WIDTH;
+printf("SVGA_REG_SCREENTARGET_MAX_WIDTH:%d\n", ret);
         break;
 
     case SVGA_REG_MAX_HEIGHT:
     case SVGA_REG_SCREENTARGET_MAX_HEIGHT:
         ret = SVGA_MAX_HEIGHT;
+printf("SVGA_REG_SCREENTARGET_MAX_HEIGHT:%d\n", ret);
         break;
 
     case SVGA_REG_DEPTH:
         ret = (s->new_depth == 32) ? 24 : s->new_depth;
+printf("SVGA_REG_DEPTH:%d\n", ret);
         break;
 
     case SVGA_REG_BITS_PER_PIXEL:
     case SVGA_REG_HOST_BITS_PER_PIXEL:
         ret = s->new_depth;
+printf("SVGA_REG_HOST_BITS_PER_PIXEL:%d\n", ret);
         break;
 
     case SVGA_REG_PSEUDOCOLOR:
         ret = 0x0;
+printf("SVGA_REG_PSEUDOCOLOR:%d\n", ret);
         break;
 
     case SVGA_REG_RED_MASK:
         pf = qemu_default_pixelformat(s->new_depth);
         ret = pf.rmask;
+printf("SVGA_REG_RED_MASK:%d\n", ret);
         break;
 
     case SVGA_REG_GREEN_MASK:
         pf = qemu_default_pixelformat(s->new_depth);
         ret = pf.gmask;
+printf("SVGA_REG_GREEN_MASK:%d\n", ret);
         break;
 
     case SVGA_REG_BLUE_MASK:
         pf = qemu_default_pixelformat(s->new_depth);
         ret = pf.bmask;
+printf("SVGA_REG_BLUE_MASK:%d\n", ret);
         break;
 
     case SVGA_REG_BYTES_PER_LINE:
@@ -854,34 +889,40 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         if (!ret) {
             ret = surface_stride(surface);
         }
+printf("SVGA_REG_BYTES_PER_LINE:%d\n", ret);
         break;
 
     case SVGA_REG_FB_START: {
         struct pci_vmsvga_state_s *pci_vmsvga
             = container_of(s, struct pci_vmsvga_state_s, chip);
         ret = pci_get_bar_addr(PCI_DEVICE(pci_vmsvga), 1);
+printf("SVGA_REG_FB_START:%d\n", ret);
         break;
     }
 
     case SVGA_REG_FB_OFFSET:
         ret = 0x0;
+printf("SVGA_REG_FB_OFFSET:%d\n", ret);
         break;
 
     case SVGA_REG_BLANK_SCREEN_TARGETS:
         ret = 0;
+printf("SVGA_REG_BLANK_SCREEN_TARGETS:%d\n", ret);
         break;
 
     case SVGA_REG_VRAM_SIZE:
     case SVGA_REG_MAX_PRIMARY_BOUNDING_BOX_MEM:
     case SVGA_REG_FB_SIZE:
         ret = s->vga.vram_size;
+printf("SVGA_REG_FB_SIZE:%d\n", ret);
         break;
 
     case SVGA_REG_MOB_MAX_SIZE:
+    case SVGA_REG_GBOBJECT_MEM_SIZE_KB:
     case SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB:
         ret = 0;
+printf("SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB:%d\n", ret);
         break;
-
 
     case SVGA_REG_CAPABILITIES:
 caps = SVGA_CAP_NONE;
@@ -906,137 +947,190 @@ caps |= SVGA_CAP_DEAD1;
 caps |= SVGA_CAP_CMD_BUFFERS_2;
 caps |= SVGA_CAP_GBOBJECTS;
 caps |= SVGA_CAP_CMD_BUFFERS_3;
+caps |= SVGA_CAP_DX;
+caps |= SVGA_CAP_HP_CMD_QUEUE;
+caps |= SVGA_CAP_NO_BB_RESTRICTION;
 caps |= SVGA_CAP_CAP2_REGISTER;
         ret = caps;
+printf("SVGA_REG_CAPABILITIES:%d\n", ret);
         break;
 
     case SVGA_REG_CAP2:
 cap2 = SVGA_CAP2_NONE;
 cap2 |= SVGA_CAP2_GROW_OTABLE;
 cap2 |= SVGA_CAP2_INTRA_SURFACE_COPY;
+cap2 |= SVGA_CAP2_DX2;
+cap2 |= SVGA_CAP2_GB_MEMSIZE_2;
+cap2 |= SVGA_CAP2_SCREENDMA_REG;
+cap2 |= SVGA_CAP2_OTABLE_PTDEPTH_2;
+cap2 |= SVGA_CAP2_NON_MS_TO_MS_STRETCHBLT;
+cap2 |= SVGA_CAP2_CURSOR_MOB;
+cap2 |= SVGA_CAP2_MSHINT;
+cap2 |= SVGA_CAP2_CB_MAX_SIZE_4MB;
+cap2 |= SVGA_CAP2_DX3;
+cap2 |= SVGA_CAP2_FRAME_TYPE;
+cap2 |= SVGA_CAP2_COTABLE_COPY;
+cap2 |= SVGA_CAP2_TRACE_FULL_FB;
+cap2 |= SVGA_CAP2_EXTRA_REGS;
+cap2 |= SVGA_CAP2_LO_STAGING;
+cap2 |= SVGA_CAP2_VIDEO_BLT;
 cap2 |= SVGA_CAP2_RESERVED;
         ret = cap2;
+printf("SVGA_REG_CAP2:%d\n", ret);
         break;
 
     case SVGA_REG_MEM_START: {
         struct pci_vmsvga_state_s *pci_vmsvga
             = container_of(s, struct pci_vmsvga_state_s, chip);
         ret = pci_get_bar_addr(PCI_DEVICE(pci_vmsvga), 2);
+printf("SVGA_REG_MEM_START:%d\n", ret);
         break;
     }
 
     case SVGA_REG_MEM_SIZE:
         ret = s->fifo_size;
+printf("SVGA_REG_MEM_SIZE:%d\n", ret);
         break;
 
     case SVGA_REG_CONFIG_DONE:
         ret = s->config;
+printf("SVGA_REG_CONFIG_DONE:%d\n", ret);
         break;
 
     case SVGA_REG_SYNC:
     case SVGA_REG_BUSY:
         ret = s->syncing;
+printf("SVGA_REG_BUSY:%d\n", ret);
         break;
 
     case SVGA_REG_GUEST_ID:
         ret = s->guest;
+printf("SVGA_REG_GUEST_ID:%d\n", ret);
         break;
 
     case SVGA_REG_CURSOR_ID:
         ret = s->cursor.id;
+printf("SVGA_REG_CURSOR_ID:%d\n", ret);
         break;
 
     case SVGA_REG_CURSOR_X:
         ret = s->cursor.x;
+printf("SVGA_REG_CURSOR_X:%d\n", ret);
         break;
 
     case SVGA_REG_CURSOR_Y:
         ret = s->cursor.y;
+printf("SVGA_REG_CURSOR_Y:%d\n", ret);
         break;
 
     case SVGA_REG_CURSOR_ON:
         ret = s->cursor.on;
+printf("SVGA_REG_CURSOR_ON:%d\n", ret);
         break;
 
     case SVGA_REG_SCRATCH_SIZE:
         ret = s->scratch_size;
+printf("SVGA_REG_SCRATCH_SIZE:%d\n", ret);
         break;
 
     case SVGA_REG_MEM_REGS:
         ret = s->num_fifo_regs;
+printf("SVGA_REG_MEM_REGS:%d\n", ret);
         break;
 
     case SVGA_REG_NUM_DISPLAYS:
     case SVGA_PALETTE_BASE ... (SVGA_PALETTE_BASE + 767):
         ret = 1;
+printf("SVGA_REG_NUM_DISPLAYS:%d\n", ret);
         break;
 
     case SVGA_REG_PITCHLOCK:
        ret = s->pitchlock;
+printf("SVGA_REG_PITCHLOCK:%d\n", ret);
        break;
 
     case SVGA_REG_IRQMASK:
         ret = s->irq_mask;
+printf("SVGA_REG_IRQMASK:%d\n", ret);
         break;
 
     case SVGA_REG_NUM_GUEST_DISPLAYS:
         ret = 0;
+printf("SVGA_REG_NUM_GUEST_DISPLAYS:%d\n", ret);
         break;
     case SVGA_REG_DISPLAY_ID:
         ret = s->display_id;
+printf("SVGA_REG_DISPLAY_ID:%d\n", ret);
         break;
     case SVGA_REG_DISPLAY_IS_PRIMARY:
         ret = s->display_id == 0 ? 1 : 0;
+printf("SVGA_REG_DISPLAY_IS_PRIMARY:%d\n", ret);
         break;
     case SVGA_REG_DISPLAY_POSITION_X:
     case SVGA_REG_DISPLAY_POSITION_Y:
         ret = 0;
+printf("SVGA_REG_DISPLAY_POSITION_Y:%d\n", ret);
         break;
     case SVGA_REG_DISPLAY_WIDTH:
         if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
             ret = s->new_width ? s->new_width : surface_width(surface);
         else
             ret = 800;
+printf("SVGA_REG_DISPLAY_POSITION_Y:%d\n", ret);
         break;
     case SVGA_REG_DISPLAY_HEIGHT:
         if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
             ret = s->new_height ? s->new_height : surface_height(surface);
         else
             ret = 600;
+printf("SVGA_REG_DISPLAY_HEIGHT:%d\n", ret);
         break;
 
     /* Guest memory regions */
     case SVGA_REG_GMRS_MAX_PAGES:
         ret = 1048576;
+printf("SVGA_REG_GMRS_MAX_PAGES:%d\n", ret);
         break;
     case SVGA_REG_GMR_ID:
-        ret = 8192;
+        ret = s->gmrid;
+printf("SVGA_REG_GMR_ID:%d\n", ret);
+        break;
+    case SVGA_REG_GMR_DESCRIPTOR:
+        ret = s->gmrdesc;
+printf("SVGA_REG_GMR_DESCRIPTOR:%d\n", ret);
         break;
     case SVGA_REG_GMR_MAX_IDS:
         ret = 8192;
+printf("SVGA_REG_GMR_MAX_IDS:%d\n", ret);
         break;
     case SVGA_REG_GMR_MAX_DESCRIPTOR_LENGTH:
         ret = 0;
+printf("SVGA_REG_GMR_MAX_DESCRIPTOR_LENGTH:%d\n", ret);
         break;
 
     case SVGA_REG_TRACES:
         ret = s->tracez;
+printf("SVGA_REG_TRACES:%d\n", ret);
         break;
 
     case SVGA_REG_COMMAND_LOW:
-        ret = s->cmd_low;
+        ret = (((unsigned long long)s->cmd_high << 32) | (s->cmd_low & ~SVGA_CB_CONTEXT_MASK));
+printf("SVGA_REG_COMMAND_LOW:%d\n", ret);
         break;
 
     case SVGA_REG_COMMAND_HIGH:
         ret = s->cmd_high;
+printf("SVGA_REG_COMMAND_HIGH:%d\n", ret);
         break;
 
     case SVGA_REG_DEV_CAP:
         ret = s->devcap_val;
+printf("SVGA_REG_DEV_CAP:%d\n", ret);
         break;
 
     case SVGA_REG_MEMORY_SIZE:
         ret = s->vga.vram_size * 2;
+printf("SVGA_REG_MEMORY_SIZE:%d\n", ret);
         break;
 
     default:
@@ -1047,9 +1141,9 @@ cap2 |= SVGA_CAP2_RESERVED;
         }
         printf("%s: Bad register %d\n", __func__, s->index);
         ret = 0;
+printf("default:%d\n", ret);
         break;
     }
-
     if (s->index >= SVGA_SCRATCH_BASE) {
         trace_vmware_scratch_read(s->index, ret);
     } else if (s->index >= SVGA_PALETTE_BASE) {
@@ -1168,12 +1262,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 #endif
         break;
 
-    case SVGA_REG_DEPTH:
-    case SVGA_REG_MEM_REGS:
-    case SVGA_REG_NUM_DISPLAYS:
-    case SVGA_PALETTE_BASE ... (SVGA_PALETTE_BASE + 767):
-        break;
-
     case SVGA_REG_PITCHLOCK:
        s->pitchlock = value;
        s->use_pitchlock = (value > 0) ? 1 : -1;
@@ -1188,11 +1276,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
     case SVGA_REG_DISPLAY_ID:
         s->display_id = value;
         break;
-    case SVGA_REG_NUM_GUEST_DISPLAYS:
-    case SVGA_REG_DISPLAY_IS_PRIMARY:
-    case SVGA_REG_DISPLAY_POSITION_X:
-    case SVGA_REG_DISPLAY_POSITION_Y:
-        break;
+
     case SVGA_REG_DISPLAY_WIDTH:
         if ((s->display_id == 0) && (value <= SVGA_MAX_WIDTH)) {
             s->new_width = value;
@@ -1216,6 +1300,13 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 
     case SVGA_REG_COMMAND_HIGH:
         s->cmd_high = value;
+        break;
+
+    case SVGA_REG_GMR_ID:
+        s->gmrid = value;
+        break;
+    case SVGA_REG_GMR_DESCRIPTOR:
+        s->gmrdesc = value;
         break;
 
     case SVGA_REG_DEV_CAP:
