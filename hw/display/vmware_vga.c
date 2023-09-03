@@ -83,6 +83,10 @@ struct vmsvga_state_s {
     int new_width;
     int new_height;
     int new_depth;
+    uint32_t num_gd;
+    uint32_t disp_prim;
+    uint32_t disp_x;
+    uint32_t disp_y;
     uint32_t devcap_val;
     uint32_t gmrdesc;
     uint32_t gmrid;
@@ -167,8 +171,8 @@ static inline bool vmsvga_verify_rect(DisplaySurface *surface,
         trace_vmware_verify_rect_less_than_zero(name, "x", x);
         return false;
     }
-    if (x > 9999) {
-        trace_vmware_verify_rect_greater_than_bound(name, "x", 9999,
+    if (x > SVGA_MAX_WIDTH) {
+        trace_vmware_verify_rect_greater_than_bound(name, "x", SVGA_MAX_WIDTH,
                                                     x);
         return false;
     }
@@ -176,8 +180,8 @@ static inline bool vmsvga_verify_rect(DisplaySurface *surface,
         trace_vmware_verify_rect_less_than_zero(name, "w", w);
         return false;
     }
-    if (w > 9999) {
-        trace_vmware_verify_rect_greater_than_bound(name, "w", 9999,
+    if (w > SVGA_MAX_WIDTH) {
+        trace_vmware_verify_rect_greater_than_bound(name, "w", SVGA_MAX_WIDTH,
                                                     w);
         return false;
     }
@@ -192,8 +196,8 @@ static inline bool vmsvga_verify_rect(DisplaySurface *surface,
         trace_vmware_verify_rect_less_than_zero(name, "y", y);
         return false;
     }
-    if (y > 9999) {
-        trace_vmware_verify_rect_greater_than_bound(name, "y", 9999,
+    if (y > SVGA_MAX_WIDTH) {
+        trace_vmware_verify_rect_greater_than_bound(name, "y", SVGA_MAX_HEIGHT,
                                                     y);
         return false;
     }
@@ -201,8 +205,8 @@ static inline bool vmsvga_verify_rect(DisplaySurface *surface,
         trace_vmware_verify_rect_less_than_zero(name, "h", h);
         return false;
     }
-    if (h > 9999) {
-        trace_vmware_verify_rect_greater_than_bound(name, "y", 9999,
+    if (h > SVGA_MAX_HEIGHT) {
+        trace_vmware_verify_rect_greater_than_bound(name, "y", SVGA_MAX_HEIGHT,
                                                     y);
         return false;
     }
@@ -672,6 +676,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
 
             fence_arg = vmsvga_fifo_read(s);
             s->fifo[SVGA_FIFO_FENCE] = cpu_to_le32(fence_arg);
+
             if (s->irq_mask & SVGA_IRQFLAG_ANY_FENCE) {
                 s->irq_status |= SVGA_IRQFLAG_ANY_FENCE;
                 irq_pending = true;
@@ -824,30 +829,33 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_WIDTH:
-        ret = s->new_width ? s->new_width : surface_width(surface);
+        if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
+            ret = s->new_width ? s->new_width : surface_width(surface);
+        else
+            ret = SVGA_MAX_WIDTH;
         break;
 
     case SVGA_REG_HEIGHT:
-        ret = s->new_height ? s->new_height : surface_height(surface);
+        if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
+            ret = s->new_height ? s->new_height : surface_height(surface);
+        else
+            ret = SVGA_MAX_HEIGHT;
         break;
 
     case SVGA_REG_MAX_WIDTH:
     case SVGA_REG_SCREENTARGET_MAX_WIDTH:
-        ret = 9999;
+        ret = SVGA_MAX_WIDTH;
         break;
 
     case SVGA_REG_MAX_HEIGHT:
     case SVGA_REG_SCREENTARGET_MAX_HEIGHT:
-        ret = 9999;
-        break;
-
-    case SVGA_REG_DEPTH:
-        ret = (s->new_depth == 32) ? 24 : s->new_depth;
+        ret = SVGA_MAX_HEIGHT;
         break;
 
     case SVGA_REG_BITS_PER_PIXEL:
     case SVGA_REG_HOST_BITS_PER_PIXEL:
-        ret = s->new_depth;
+    case SVGA_REG_DEPTH:
+        ret = (s->new_depth == 32) ? 24 : s->new_depth;
         break;
 
     case SVGA_REG_PSEUDOCOLOR:
@@ -886,7 +894,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
     }
 
     case SVGA_REG_FB_OFFSET:
-        ret = 0x0;
+        ret = 0;
         break;
 
     case SVGA_REG_BLANK_SCREEN_TARGETS:
@@ -894,13 +902,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_VRAM_SIZE:
-        ret = s->vga.vram_size;
-        break;
-
     case SVGA_REG_MAX_PRIMARY_BOUNDING_BOX_MEM:
-        ret = s->vga.vram_size;
-        break;
-
     case SVGA_REG_FB_SIZE:
         ret = s->vga.vram_size;
         break;
@@ -1026,29 +1028,34 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_NUM_GUEST_DISPLAYS:
-        ret = 0;
+        ret = s->num_gd;
         break;
     case SVGA_REG_DISPLAY_ID:
         ret = s->display_id;
         break;
     case SVGA_REG_DISPLAY_IS_PRIMARY:
-        ret = s->display_id == 0 ? 1 : 0;
+        ret = s->disp_prim;
         break;
+
     case SVGA_REG_DISPLAY_POSITION_X:
-    case SVGA_REG_DISPLAY_POSITION_Y:
-        ret = 0;
+        ret = s->disp_x;
         break;
+
+    case SVGA_REG_DISPLAY_POSITION_Y:
+        ret = s->disp_y;
+        break;
+
     case SVGA_REG_DISPLAY_WIDTH:
         if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
             ret = s->new_width ? s->new_width : surface_width(surface);
         else
-            ret = 9999;
+            ret = SVGA_MAX_WIDTH;
         break;
     case SVGA_REG_DISPLAY_HEIGHT:
         if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
             ret = s->new_height ? s->new_height : surface_height(surface);
         else
-            ret = 9999;
+            ret = SVGA_MAX_HEIGHT;
         break;
 
     /* Guest memory regions */
@@ -1135,10 +1142,14 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         } else {
             vga_dirty_log_start(&s->vga);
         }
+        if (s->enable) {
+                s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
+                s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
+        }
         break;
 
     case SVGA_REG_WIDTH:
-        if (value <= 9999) {
+        if (value <= SVGA_MAX_WIDTH) {
             s->new_width = value;
             s->invalidated = 1;
             /* This is a hack used to drop effective pitchlock setting
@@ -1154,7 +1165,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_HEIGHT:
-        if (value <= 9999) {
+        if (value <= SVGA_MAX_HEIGHT) {
             s->new_height = value;
             s->invalidated = 1;
         } else {
@@ -1163,11 +1174,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_BITS_PER_PIXEL:
-        if (value != 32) {
-            printf("%s: Bad bits per pixel: %i bits\n", __func__, value);
-            s->config = 0;
-            s->invalidated = 1;
-        }
+        s->new_depth = value;
         break;
 
     case SVGA_REG_CONFIG_DONE:
@@ -1226,19 +1233,36 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         s->irq_mask = value;
         break;
 
+    case SVGA_REG_NUM_GUEST_DISPLAYS:
+        s->num_gd = value;
+        break;
+
+
+    case SVGA_REG_DISPLAY_IS_PRIMARY:
+        s->disp_prim = value;
+        break;
+
+    case SVGA_REG_DISPLAY_POSITION_X:
+        s->disp_x = value;
+        break;
+
+    case SVGA_REG_DISPLAY_POSITION_Y:
+        s->disp_y = value;
+        break;
+
     /* We support single legacy screen at fixed offset of (0,0) */
     case SVGA_REG_DISPLAY_ID:
         s->display_id = value;
         break;
 
     case SVGA_REG_DISPLAY_WIDTH:
-        if ((s->display_id == 0) && (value <= 9999)) {
+        if ((s->display_id == 0) && (value <= SVGA_MAX_WIDTH)) {
             s->new_width = value;
             s->invalidated = 1;
         }
         break;
     case SVGA_REG_DISPLAY_HEIGHT:
-        if ((s->display_id == 0) && (value <= 9999)) {
+        if ((s->display_id == 0) && (value <= SVGA_MAX_HEIGHT)) {
             s->new_height = value;
             s->invalidated = 1;
         }
@@ -1548,13 +1572,15 @@ static uint32_t vmsvga_irqstatus_read(void *opaque, uint32_t address)
 static void vmsvga_irqstatus_write(void *opaque, uint32_t address, uint32_t data)
 {
     struct vmsvga_state_s *s = opaque;
-    struct pci_vmsvga_state_s *pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
+    struct pci_vmsvga_state_s *pci_vmsvga =
+        container_of(s, struct pci_vmsvga_state_s, chip);
     PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
 
     /*
      * Clear selected interrupt sources and lower
      * interrupt request when none are left active
      */
+
     s->irq_status &= ~data;
     if (!s->irq_status)
         pci_set_irq(pci_dev, 0);
@@ -1564,7 +1590,7 @@ static void vmsvga_irqstatus_write(void *opaque, uint32_t address, uint32_t data
 static uint32_t vmsvga_bios_read(void *opaque, uint32_t address)
 {
     printf("%s: what are we supposed to return?\n", __func__);
-    return 0xcafe;
+    return 0;
 }
 
 static void vmsvga_bios_write(void *opaque, uint32_t address, uint32_t data)
@@ -1743,8 +1769,6 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
                            &error_fatal);
     s->fifo = (uint32_t *)memory_region_get_ram_ptr(&s->fifo_ram);
     s->num_fifo_regs = SVGA_FIFO_NUM_REGS;
-    s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
-    s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
     s->	fifo[SVGA_FIFO_CAPABILITIES] =
       SVGA_FIFO_CAP_NONE | 
       SVGA_FIFO_CAP_FENCE | 
