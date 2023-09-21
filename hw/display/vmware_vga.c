@@ -83,6 +83,9 @@ struct vmsvga_state_s {
     int new_width;
     int new_height;
     int new_depth;
+    uint32_t wred;
+    uint32_t wgreen;
+    uint32_t wblue;
     uint32_t num_gd;
     uint32_t disp_prim;
     uint32_t disp_x;
@@ -795,7 +798,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
     uint32_t cap2;
     struct vmsvga_state_s *s = opaque;
     DisplaySurface *surface = qemu_console_surface(s->vga.con);
-    PixelFormat pf;
+//    PixelFormat pf;
     uint32_t ret;
 
     switch (s->index) {
@@ -863,18 +866,13 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_RED_MASK:
-        pf = qemu_default_pixelformat(s->new_depth);
-        ret = pf.rmask;
+        ret = s->wred;
         break;
-
     case SVGA_REG_GREEN_MASK:
-        pf = qemu_default_pixelformat(s->new_depth);
-        ret = pf.gmask;
+        ret = s->wgreen;
         break;
-
     case SVGA_REG_BLUE_MASK:
-        pf = qemu_default_pixelformat(s->new_depth);
-        ret = pf.bmask;
+        ret = s->wblue;
         break;
 
     case SVGA_REG_BYTES_PER_LINE:
@@ -1789,6 +1787,33 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
     vga_init(&s->vga, OBJECT(dev), address_space, io, true);
     vmstate_register(NULL, 0, &vmstate_vga_common, &s->vga);
     s->new_depth = 32;
+    switch (s->new_depth) {
+    case 8:
+        s->wred   = 0x00000007;
+        s->wgreen = 0x00000038;
+        s->wblue  = 0x000000c0;
+        break;
+    case 15:
+        s->wred   = 0x0000001f;
+        s->wgreen = 0x000003e0;
+        s->wblue  = 0x00007c00;
+        break;
+    case 16:
+        s->wred   = 0x0000001f;
+        s->wgreen = 0x000007e0;
+        s->wblue  = 0x0000f800;
+        break;
+    case 24:
+        s->wred   = 0x00ff0000;
+        s->wgreen = 0x0000ff00;
+        s->wblue  = 0x000000ff;
+        break;
+    case 32:
+        s->wred   = 0x00ff0000;
+        s->wgreen = 0x0000ff00;
+        s->wblue  = 0x000000ff;
+        break;
+    }
 }
 
 static uint64_t vmsvga_io_read(void *opaque, hwaddr addr, unsigned size)
