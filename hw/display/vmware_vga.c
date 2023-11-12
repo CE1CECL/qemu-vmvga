@@ -857,6 +857,9 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
 
     case SVGA_REG_BITS_PER_PIXEL:
     case SVGA_REG_HOST_BITS_PER_PIXEL:
+        ret = s->new_depth;
+        break;
+
     case SVGA_REG_DEPTH:
         ret = (s->new_depth == 32) ? 24 : s->new_depth;
         break;
