@@ -120,7 +120,8 @@ struct vmsvga_state_s {
     uint32_t irq_status;
     uint32_t display_id;
     uint32_t pitchlock;
-    int use_pitchlock;
+    uint32_t svgabasea;
+    uint32_t svgabaseb;
 };
 
 #define TYPE_VMWARE_SVGA "vmware-svga"
@@ -143,7 +144,7 @@ static void cursor_update_from_fifo(struct vmsvga_state_s *s)
     uint32_t fifo_cursor_count;
     uint32_t on_off;
 
-    if (!s->config || !s->enable) {
+    if (s->config != 1 || s->enable != 1) {
         return;
     }
 
@@ -468,7 +469,7 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s *s)
 {
     int num;
 
-    if (!s->config || !s->enable) {
+    if (s->config != 1 || s->enable != 1) {
         return 0;
     }
 
@@ -536,6 +537,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
         /* May need to go back to the start of the command if incomplete */
         cmd_start = s->fifo_stop;
         cmd_ignored = false;
+
+//                printf("%s: command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
 
         switch (cmd = vmsvga_fifo_read(s)) {
 
@@ -797,9 +800,11 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
     uint32_t caps;
     uint32_t cap2;
     struct vmsvga_state_s *s = opaque;
-    DisplaySurface *surface = qemu_console_surface(s->vga.con);
+//    DisplaySurface *surface = qemu_console_surface(s->vga.con);
 //    PixelFormat pf;
     uint32_t ret;
+
+//        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
 
     switch (s->index) {
 #define SVGA_CAP_DX 0x10000000
@@ -832,17 +837,11 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_WIDTH:
-        if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
-            ret = s->new_width ? s->new_width : surface_width(surface);
-        else
-            ret = SVGA_MAX_WIDTH;
+	ret = s->new_width ? s->new_width : 1024;
         break;
 
     case SVGA_REG_HEIGHT:
-        if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
-            ret = s->new_height ? s->new_height : surface_height(surface);
-        else
-            ret = SVGA_MAX_HEIGHT;
+	ret = s->new_height ? s->new_height : 768;
         break;
 
     case SVGA_REG_MAX_WIDTH:
@@ -879,12 +878,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_BYTES_PER_LINE:
-        ret = (s->use_pitchlock >= 0) ?
-                s->pitchlock :
-                ((s->new_depth * s->new_width) / 8);
-        if (!ret) {
-            ret = surface_stride(surface);
-        }
+        ret = (s->new_depth * s->new_width) / 8;
         break;
 
     case SVGA_REG_FB_START: {
@@ -983,8 +977,11 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_SYNC:
-    case SVGA_REG_BUSY:
         ret = s->syncing;
+        break;
+
+    case SVGA_REG_BUSY:
+        ret = 0;
         break;
 
     case SVGA_REG_GUEST_ID:
@@ -1016,8 +1013,7 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_NUM_DISPLAYS:
-    case SVGA_PALETTE_BASE ... (SVGA_PALETTE_BASE + 767):
-        ret = 1;
+        ret = 0;
         break;
 
     case SVGA_REG_PITCHLOCK:
@@ -1047,16 +1043,10 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_DISPLAY_WIDTH:
-        if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
-            ret = s->new_width ? s->new_width : surface_width(surface);
-        else
-            ret = SVGA_MAX_WIDTH;
+	ret = s->new_width ? s->new_width : 1024;
         break;
     case SVGA_REG_DISPLAY_HEIGHT:
-        if ((s->display_id == 0) || (s->display_id == SVGA_ID_INVALID))
-            ret = s->new_height ? s->new_height : surface_height(surface);
-        else
-            ret = SVGA_MAX_HEIGHT;
+	ret = s->new_height ? s->new_height : 768;
         break;
 
     /* Guest memory regions */
@@ -1096,6 +1086,14 @@ cap2 |= SVGA_CAP2_RESERVED;
         ret = s->vga.vram_size * 2;
         break;
 
+    case SVGA_PALETTE_BASE ... (SVGA_PALETTE_BASE + 767):
+        ret = s->svgabasea;
+        break;
+
+    case SVGA_SCRATCH_BASE:
+        ret = s->svgabaseb;
+        break;
+
     default:
         if (s->index >= SVGA_SCRATCH_BASE &&
             s->index < SVGA_SCRATCH_BASE + s->scratch_size) {
@@ -1106,6 +1104,7 @@ cap2 |= SVGA_CAP2_RESERVED;
         ret = 0;
         break;
     }
+/*
     if (s->index >= SVGA_SCRATCH_BASE) {
         trace_vmware_scratch_read(s->index, ret);
     } else if (s->index >= SVGA_PALETTE_BASE) {
@@ -1113,6 +1112,8 @@ cap2 |= SVGA_CAP2_RESERVED;
     } else {
         trace_vmware_value_read(s->index, ret);
     }
+*/
+        trace_vmware_value_read(s->index, ret);
     return ret;
 }
 
@@ -1120,6 +1121,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 {
     struct vmsvga_state_s *s = opaque;
 
+/*
     if (s->index >= SVGA_SCRATCH_BASE) {
         trace_vmware_scratch_write(s->index, value);
     } else if (s->index >= SVGA_PALETTE_BASE) {
@@ -1127,22 +1129,32 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
     } else {
         trace_vmware_value_write(s->index, value);
     }
+*/
+        trace_vmware_value_write(s->index, value);
+//        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
     switch (s->index) {
     case SVGA_REG_ID:
-        if (value == SVGA_ID_2 || value == SVGA_ID_1 || value == SVGA_ID_0) {
-            s->svgaid = value;
-        }
+	s->svgaid = value;
+        break;
+
+    case SVGA_PALETTE_BASE ... (SVGA_PALETTE_BASE + 767):
+        s->svgabasea = value;
+        break;
+
+    case SVGA_SCRATCH_BASE:
+        s->svgabaseb = value;
         break;
 
     case SVGA_REG_ENABLE:
-        s->enable = !!value;
-        s->invalidated = 1;
+        s->enable = value;
+/*
         s->vga.hw_ops->invalidate(&s->vga);
         if (s->enable && s->config) {
             vga_dirty_log_stop(&s->vga);
         } else {
             vga_dirty_log_start(&s->vga);
         }
+*/
         if (s->enable) {
                 s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
                 s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
@@ -1150,28 +1162,11 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_WIDTH:
-        if (value <= SVGA_MAX_WIDTH) {
-            s->new_width = value;
-            s->invalidated = 1;
-            /* This is a hack used to drop effective pitchlock setting
-             * when guest writes screen width without prior write to
-             * the pitchlock register.
-             */
-            if (s->use_pitchlock >= 0) {
-                s->use_pitchlock--;
-            }
-        } else {
-            printf("%s: Bad width: %i\n", __func__, value);
-        }
+	s->new_width = value;
         break;
 
     case SVGA_REG_HEIGHT:
-        if (value <= SVGA_MAX_HEIGHT) {
-            s->new_height = value;
-            s->invalidated = 1;
-        } else {
-            printf("%s: Bad height: %i\n", __func__, value);
-        }
+	s->new_height = value;
         break;
 
     case SVGA_REG_BITS_PER_PIXEL:
@@ -1179,14 +1174,14 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_CONFIG_DONE:
-        if (value) {
-            vga_dirty_log_stop(&s->vga);
-        }
-        s->config = !!value;
+//        if (value) {
+//            vga_dirty_log_stop(&s->vga);
+//        }
+        s->config = value;
         break;
 
     case SVGA_REG_SYNC:
-        s->syncing = 1;
+        s->syncing = value;
         vmsvga_fifo_run(s); /* Or should we just wait for update_display? */
         break;
 
@@ -1226,8 +1221,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 
     case SVGA_REG_PITCHLOCK:
        s->pitchlock = value;
-       s->use_pitchlock = (value > 0) ? 1 : -1;
-       s->invalidated = 1;
        break;
 
     case SVGA_REG_IRQMASK:
@@ -1257,16 +1250,10 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_DISPLAY_WIDTH:
-        if ((s->display_id == 0) && (value <= SVGA_MAX_WIDTH)) {
-            s->new_width = value;
-            s->invalidated = 1;
-        }
+	s->new_width = value;
         break;
     case SVGA_REG_DISPLAY_HEIGHT:
-        if ((s->display_id == 0) && (value <= SVGA_MAX_HEIGHT)) {
-            s->new_height = value;
-            s->invalidated = 1;
-        }
+	s->new_height = value;
         break;
 
     case SVGA_REG_TRACES:
@@ -1560,7 +1547,7 @@ if(value>=262){s->devcap_val=0x00000000;};
             s->scratch[s->index - SVGA_SCRATCH_BASE] = value;
             break;
         }
-        printf("%s: Bad register %d\n", __func__, s->index);
+        printf("%s: Bad register %d with the value of %u\n", __func__, s->index, value);
     }
 }
 
@@ -1604,12 +1591,13 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
     DisplaySurface *surface = qemu_console_surface(s->vga.con);
     uint32_t new_stride;
 
-    /* Don't allow setting uninitialized 0-size screen */
-    if ((s->new_width == 0) || (s->new_height == 0)) return;
+    if ((s->new_width == 0) || (s->new_height == 0)) {
+	printf("0-size res err!\n");
+	s->new_width = 1024;
+	s->new_height = 768;
+	};
 
-    new_stride = (s->use_pitchlock >= 0) ?
-        s->pitchlock :
-        ((s->new_depth * s->new_width) / 8);
+    new_stride = (s->new_depth * s->new_width) / 8;
     if (s->new_width != surface_width(surface) ||
         s->new_height != surface_height(surface) ||
         (new_stride != surface_stride(surface)) ||
@@ -1629,7 +1617,7 @@ static void vmsvga_update_display(void *opaque)
 {
     struct vmsvga_state_s *s = opaque;
 
-    if (!s->enable || !s->config) {
+    if (s->enable != 1 || s->config != 1) {
         /* in standard vga mode */
         s->vga.hw_ops->gfx_update(&s->vga);
         return;
@@ -1662,9 +1650,8 @@ static void vmsvga_reset(DeviceState *dev)
     s->irq_mask = 0;
     s->irq_status = 0;
     s->last_fifo_cursor_count = 0;
-    s->display_id = SVGA_ID_INVALID;
+    s->display_id = SVGA_ID_2;
     s->pitchlock = 0;
-    s->use_pitchlock = -1;
 
     vga_dirty_log_start(&s->vga);
 }
@@ -1672,10 +1659,10 @@ static void vmsvga_reset(DeviceState *dev)
 static void vmsvga_invalidate_display(void *opaque)
 {
     struct vmsvga_state_s *s = opaque;
-    if (!s->enable) {
-        s->vga.hw_ops->invalidate(&s->vga);
-        return;
-    }
+//    if (!s->enable) {
+//        s->vga.hw_ops->invalidate(&s->vga);
+//        return;
+//    }
 
     s->invalidated = 1;
 }
@@ -1699,9 +1686,8 @@ static int vmsvga_post_load(void *opaque, int version_id)
         s->irq_mask = 0;
         s->irq_status = 0;
         s->last_fifo_cursor_count = 0;
-        s->display_id = SVGA_ID_INVALID;
+        s->display_id = SVGA_ID_2;
         s->pitchlock = 0;
-        s->use_pitchlock = -1;
     }
 
     return 0;
@@ -1734,7 +1720,6 @@ static const VMStateDescription vmstate_vmware_vga_internal = {
         VMSTATE_UINT32_V(last_fifo_cursor_count, struct vmsvga_state_s, 1),
         VMSTATE_UINT32_V(display_id, struct vmsvga_state_s, 1),
         VMSTATE_UINT32_V(pitchlock, struct vmsvga_state_s, 1),
-        VMSTATE_INT32_V(use_pitchlock, struct vmsvga_state_s, 1),
         VMSTATE_END_OF_LIST()
     }
 };
@@ -1760,8 +1745,8 @@ static const GraphicHwOps vmsvga_ops = {
 static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
                         MemoryRegion *address_space, MemoryRegion *io)
 {
-//    s->scratch_size = SVGA_SCRATCH_SIZE;
-//    s->scratch = g_malloc(s->scratch_size * 4);
+    s->scratch_size = 0x8000;
+    s->scratch = g_malloc(s->scratch_size * 4);
 
     s->vga.con = graphic_console_init(dev, 0, &vmsvga_ops, s);
 
@@ -1789,6 +1774,8 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
     vga_common_init(&s->vga, OBJECT(dev), &error_fatal);
     vga_init(&s->vga, OBJECT(dev), address_space, io, true);
     vmstate_register(NULL, 0, &vmstate_vga_common, &s->vga);
+    s->new_width = 1024;
+    s->new_height = 768;
     s->new_depth = 32;
     switch (s->new_depth) {
     case 8:
