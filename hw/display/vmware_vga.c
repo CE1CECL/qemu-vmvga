@@ -1013,7 +1013,7 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_NUM_DISPLAYS:
-        ret = 0;
+        ret = 1;
         break;
 
     case SVGA_REG_PITCHLOCK:
