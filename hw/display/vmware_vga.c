@@ -103,6 +103,7 @@ struct vmsvga_state_s {
     uint32_t svgaid;
     uint32_t fg;
     int syncing;
+    int syncbusy;
 
     MemoryRegion fifo_ram;
     unsigned int fifo_size;
@@ -1105,7 +1106,7 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_BUSY:
-        ret = 0;
+        ret = s->syncbusy;
 #ifdef VERBOSE
         printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -1435,6 +1436,13 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
     case SVGA_REG_SYNC:
         s->syncing = value;
         vmsvga_fifo_run(s); /* Or should we just wait for update_display? */
+#ifdef VERBOSE
+        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+#endif
+        break;
+
+    case SVGA_REG_BUSY:
+        s->syncbusy = value;
 #ifdef VERBOSE
         printf("%s: register %d with the value of %u\n", __func__, s->index, value);
 #endif
