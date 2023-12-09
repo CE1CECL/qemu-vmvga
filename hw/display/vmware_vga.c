@@ -176,56 +176,6 @@ static inline bool vmsvga_verify_rect(DisplaySurface *surface,
                                       const char *name,
                                       int x, int y, int w, int h)
 {
-    if (x < 0) {
-        trace_vmware_verify_rect_less_than_zero(name, "x", x);
-        return false;
-    }
-    if (x > SVGA_MAX_WIDTH) {
-        trace_vmware_verify_rect_greater_than_bound(name, "x", SVGA_MAX_WIDTH,
-                                                    x);
-        return false;
-    }
-    if (w < 0) {
-        trace_vmware_verify_rect_less_than_zero(name, "w", w);
-        return false;
-    }
-    if (w > SVGA_MAX_WIDTH) {
-        trace_vmware_verify_rect_greater_than_bound(name, "w", SVGA_MAX_WIDTH,
-                                                    w);
-        return false;
-    }
-    if (x + w > surface_width(surface)) {
-        trace_vmware_verify_rect_surface_bound_exceeded(name, "width",
-                                                        surface_width(surface),
-                                                        "x", x, "w", w);
-        return false;
-    }
-
-    if (y < 0) {
-        trace_vmware_verify_rect_less_than_zero(name, "y", y);
-        return false;
-    }
-    if (y > SVGA_MAX_WIDTH) {
-        trace_vmware_verify_rect_greater_than_bound(name, "y", SVGA_MAX_HEIGHT,
-                                                    y);
-        return false;
-    }
-    if (h < 0) {
-        trace_vmware_verify_rect_less_than_zero(name, "h", h);
-        return false;
-    }
-    if (h > SVGA_MAX_HEIGHT) {
-        trace_vmware_verify_rect_greater_than_bound(name, "y", SVGA_MAX_HEIGHT,
-                                                    y);
-        return false;
-    }
-    if (y + h > surface_height(surface)) {
-        trace_vmware_verify_rect_surface_bound_exceeded(name, "height",
-                                                        surface_height(surface),
-                                                        "y", y, "h", h);
-        return false;
-    }
-
     return true;
 }
 
@@ -328,7 +278,7 @@ static inline int vmsvga_copy_rect(struct vmsvga_state_s *s,
         }
     }
 
-    vmsvga_update_rect_delayed(s, x1, y1, w, h);
+    vmsvga_update_rect(s, x1, y1, w, h);
     return 0;
 }
 #endif
@@ -374,7 +324,7 @@ static inline int vmsvga_fill_rect(struct vmsvga_state_s *s,
         }
     }
 
-    vmsvga_update_rect_delayed(s, x, y, w, h);
+    vmsvga_update_rect(s, x, y, w, h);
     return 0;
 }
 #endif
@@ -490,10 +440,10 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s *s)
     if (s->fifo_min < sizeof(uint32_t) * 4) {
         return 0;
     }
-    if (s->fifo_max > SVGA_FIFO_SIZE ||
-        s->fifo_min >= SVGA_FIFO_SIZE ||
-        s->fifo_stop >= SVGA_FIFO_SIZE ||
-        s->fifo_next >= SVGA_FIFO_SIZE) {
+    if (s->fifo_max > (8 * 1024 * 1024) ||
+        s->fifo_min >= (8 * 1024 * 1024) ||
+        s->fifo_stop >= (8 * 1024 * 1024) ||
+        s->fifo_next >= (8 * 1024 * 1024)) {
         return 0;
     }
     if (s->fifo_max < s->fifo_min + 10 * KiB) {
@@ -533,7 +483,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
     uint32_t cmd_start;
     uint32_t fence_arg;
     uint32_t flags, num_pages;
-    bool cmd_ignored;
+//    bool cmd_ignored;
     bool irq_pending = false;
     bool fifo_progress = false;
 
@@ -541,19 +491,41 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
     while (len > 0 && --maxloop > 0) {
         /* May need to go back to the start of the command if incomplete */
         cmd_start = s->fifo_stop;
-        cmd_ignored = false;
+//        cmd_ignored = false;
 
 #ifdef VERBOSE
-        printf("%s: command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+        printf("%s: Unknown command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
 #endif
 
         switch (cmd = vmsvga_fifo_read(s)) {
 
         /* Implemented commands */
         case SVGA_CMD_UPDATE_VERBOSE:
-            /* One extra word: an opaque cookie which is used for debugging */
-            len -= 1;
-            /* fall through */
+            len -= 6;
+            if (len < 0) {
+                goto rewind;
+            }
+
+            x = vmsvga_fifo_read(s);
+            y = vmsvga_fifo_read(s);
+            width = vmsvga_fifo_read(s);
+            height = vmsvga_fifo_read(s);
+    if ((x == 0) || (y == 0) || (width == 0) || (height == 0)) {
+	printf("0-size res err!\n");
+	x = 1024 / 2;
+	y = 768 / 2;
+	width = 1024 / 2;
+	height = 768 / 2;
+	};
+            vmsvga_fifo_read(s);
+            vmsvga_update_rect(s, x, y, width, height);
+
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_UPDATE_VERBOSE command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
         case SVGA_CMD_UPDATE:
             len -= 5;
             if (len < 0) {
@@ -564,9 +536,18 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             y = vmsvga_fifo_read(s);
             width = vmsvga_fifo_read(s);
             height = vmsvga_fifo_read(s);
-            if (cmd == SVGA_CMD_UPDATE_VERBOSE)
-                vmsvga_fifo_read(s);
-            vmsvga_update_rect_delayed(s, x, y, width, height);
+    if ((x == 0) || (y == 0) || (width == 0) || (height == 0)) {
+	printf("0-size res err!\n");
+	x = 1024 / 2;
+	y = 768 / 2;
+	width = 1024 / 2;
+	height = 768 / 2;
+	};
+            vmsvga_update_rect(s, x, y, width, height);
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_UPDATE command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
             break;
 
         case SVGA_CMD_RECT_COPY:
@@ -581,13 +562,21 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             dy = vmsvga_fifo_read(s);
             width = vmsvga_fifo_read(s);
             height = vmsvga_fifo_read(s);
-#ifdef HW_RECT_ACCEL
-            if (vmsvga_copy_rect(s, x, y, dx, dy, width, height) == 0) {
-                break;
-            }
+    if ((x == 0) || (y == 0) || (width == 0) || (height == 0) || (dx == 0) || (dy == 0)) {
+	printf("0-size res err!\n");
+	x = 1024 / 2;
+	y = 768 / 2;
+	width = 1024 / 2;
+	height = 768 / 2;
+	dx = 1024 / 2;
+	dy = 768 / 2;
+	};
+            vmsvga_copy_rect(s, x, y, dx, dy, width, height);
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_RECT_COPY command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
 #endif
-            args = 0;
-            goto badcmd;
+            break;
 
         case SVGA_CMD_DEFINE_CURSOR:
             len -= 8;
@@ -613,7 +602,10 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                     > ARRAY_SIZE(cursor.and_mask)
                 || SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp)
                     > ARRAY_SIZE(cursor.xor_mask)) {
-                    goto badcmd;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_DEFINE_CURSOR command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+                   break;
             }
 
             len -= args;
@@ -627,13 +619,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             for (args = 0; args < SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp); args++) {
                 cursor.xor_mask[args] = vmsvga_fifo_read_raw(s);
             }
-#ifdef HW_MOUSE_ACCEL
             vmsvga_cursor_define(s, &cursor);
-            break;
-#else
-            args = 0;
-            goto badcmd;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_DEFINE_CURSOR command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
 #endif
+            break;
 
         case SVGA_CMD_DEFINE_ALPHA_CURSOR:
             len -= 6;
@@ -649,10 +639,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             cursor.and_mask_bpp = 32;
             cursor.xor_mask_bpp = 32;
             args = x * y;
-            if ((SVGA_PIXMAP_SIZE(x, y, 32) > ARRAY_SIZE(cursor.and_mask))
-               || (SVGA_PIXMAP_SIZE(x, y, 32) > ARRAY_SIZE(cursor.xor_mask))) {
-                    goto badcmd;
-            }
 
             len -= args;
             if (len < 0) {
@@ -665,13 +651,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                 cursor.and_mask[i] = rgba & 0xff000000;
             }
 
-#ifdef HW_MOUSE_ACCEL
             vmsvga_rgba_cursor_define(s, &cursor);
-            break;
-#else
-            args = 0;
-            goto badcmd;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
 #endif
+            break;
 
         case SVGA_CMD_FRONT_ROP_FILL:
             len -= 1;
@@ -679,7 +663,10 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                 goto rewind;
             }
             args = 6;
-            goto ignoredcmd;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_FRONT_ROP_FILL command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
 
         case SVGA_CMD_FENCE:
             len -= 2;
@@ -702,6 +689,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                 irq_pending = true;
             }
 
+            if ((s->irq_mask & SVGA_IRQFLAG_FENCE_GOAL)
+               && (s->fifo_min > s->fg)
+               && (s->fg == fence_arg)) {
+                s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
+                irq_pending = true;
+            }
+
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_FENCE command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
             break;
 
         case SVGA_CMD_DEFINE_GMR2:
@@ -710,7 +707,10 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                 goto rewind;
             }
             args = 2;
-            goto badcmd;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_DEFINE_GMR2 command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
 
         case SVGA_CMD_REMAP_GMR2:
             len -= 5;
@@ -732,7 +732,10 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                     args *= 2;
             }
 
-            goto badcmd;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_REMAP_GMR2 command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
 
         case SVGA_CMD_RECT_ROP_COPY: 
             len -= 1;
@@ -740,28 +743,132 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                 goto rewind;
             }
             args = 7;
-            goto badcmd;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_RECT_ROP_COPY command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_INVALID_CMD:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_INVALID_CMD command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_ESCAPE:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_ESCAPE command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_DEFINE_SCREEN:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_DEFINE_SCREEN command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_DESTROY_SCREEN:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_DESTROY_SCREEN command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_DEFINE_GMRFB:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_DEFINE_GMRFB command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_BLIT_GMRFB_TO_SCREEN:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_BLIT_GMRFB_TO_SCREEN command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_BLIT_SCREEN_TO_GMRFB:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_BLIT_SCREEN_TO_GMRFB command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_ANNOTATION_FILL:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_ANNOTATION_FILL command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_ANNOTATION_COPY:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_ANNOTATION_COPY command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_DEAD:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_DEAD command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_DEAD_2:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_DEAD_2 command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_NOP:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_NOP command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_NOP_ERROR:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_NOP_ERROR command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
+
+        case SVGA_CMD_MAX:
+	args = 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_MAX command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
+            break;
 
         default:
-            args = 0;
-        ignoredcmd:
-            cmd_ignored = true;
-        badcmd:
+            args = 1;
             len -= 2;
             if (len < 0) {
                 goto rewind;
             }
+/*
             while (args--) {
                 vmsvga_fifo_read(s);
             }
-            if (!cmd_ignored) {
-                printf("%s: Unknown command %d in SVGA command FIFO\n", __func__, cmd);
-            }
+*/
+            printf("%s: Bad command %d in SVGA command FIFO\n", __func__, cmd);
+#ifdef VERBOSE
+        printf("%s: default command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
             break;
 
         rewind:
             s->fifo_stop = cmd_start;
             s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%s: rewind command %d in SVGA command FIFO\n", __func__, (cmd = vmsvga_fifo_read(s)));
+#endif
             break;
         }
 
@@ -812,7 +919,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
     uint32_t ret;
 
 #ifdef VERBOSE
-//        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: Unknown register %d\n", __func__, s->index);
 #endif
 
     switch (s->index) {
@@ -840,116 +947,143 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
     case SVGA_REG_FENCE_GOAL:
         ret = s->fg;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_FENCE_GOAL register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_ID:
         ret = s->svgaid;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_ID register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_ENABLE:
         ret = s->enable;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_ENABLE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_WIDTH:
-	ret = s->new_width ? s->new_width : 1024;
+	if (s->new_width == 0) {
+	printf("0-size res err!\n");
+	ret = 1024;
+	} else {
+	ret = s->new_width;
+	};
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_WIDTH register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_HEIGHT:
-	ret = s->new_height ? s->new_height : 768;
+	if (s->new_height == 0) {
+	printf("0-size res err!\n");
+	ret = 768;
+	} else {
+	ret = s->new_height;
+	};
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_HEIGHT register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_MAX_WIDTH:
         ret = SVGA_MAX_WIDTH;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_MAX_WIDTH register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_SCREENTARGET_MAX_WIDTH:
         ret = SVGA_MAX_WIDTH;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_SCREENTARGET_MAX_WIDTH register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_MAX_HEIGHT:
         ret = SVGA_MAX_HEIGHT;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_MAX_HEIGHT register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_SCREENTARGET_MAX_HEIGHT:
         ret = SVGA_MAX_HEIGHT;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_SCREENTARGET_MAX_HEIGHT register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_BITS_PER_PIXEL:
-        ret = s->new_depth;
+	if (s->new_depth == 0) {
+	printf("0 bpp err!\n");
+	ret = 32;
+	} else {
+	ret = s->new_depth;
+	};
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_BITS_PER_PIXEL register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_HOST_BITS_PER_PIXEL:
-        ret = s->new_depth;
+	if (s->new_depth == 0) {
+	printf("0 bpp err!\n");
+	ret = 32;
+	} else {
+	ret = s->new_depth;
+	};
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_HOST_BITS_PER_PIXEL register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_DEPTH:
-        ret = (s->new_depth == 32) ? 24 : s->new_depth;
+	if (s->new_depth == 0) {
+	printf("0 bpp err!\n");
+	ret = 32;
+	} else if (s->new_depth == 32) {
+	ret = 24;
+	} else {
+	ret = s->new_depth;
+	};
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_DEPTH register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_PSEUDOCOLOR:
-        ret = 0x0;
+        ret = 0;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_PSEUDOCOLOR register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_RED_MASK:
         ret = s->wred;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_RED_MASK register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_GREEN_MASK:
         ret = s->wgreen;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_GREEN_MASK register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_BLUE_MASK:
         ret = s->wblue;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_BLUE_MASK register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_BYTES_PER_LINE:
         ret = (s->new_depth * s->new_width) / 8;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_BYTES_PER_LINE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
@@ -957,7 +1091,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         struct pci_vmsvga_state_s *pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
         ret = pci_get_bar_addr(PCI_DEVICE(pci_vmsvga), 1);
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_FB_START register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     }
@@ -965,56 +1099,56 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
     case SVGA_REG_FB_OFFSET:
         ret = 0;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_FB_OFFSET register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_BLANK_SCREEN_TARGETS:
         ret = 0;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_BLANK_SCREEN_TARGETS register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_VRAM_SIZE:
         ret = s->vga.vram_size;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_VRAM_SIZE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_MAX_PRIMARY_BOUNDING_BOX_MEM:
         ret = s->vga.vram_size;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_MAX_PRIMARY_BOUNDING_BOX_MEM register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_FB_SIZE:
         ret = s->vga.vram_size;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_FB_SIZE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_MOB_MAX_SIZE:
-        ret = 0;
+        ret = s->vga.vram_size;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_MOB_MAX_SIZE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_GBOBJECT_MEM_SIZE_KB:
-        ret = 0;
+        ret = s->vga.vram_size;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_GBOBJECT_MEM_SIZE_KB register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB:
-        ret = 0;
+        ret = s->vga.vram_size;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
@@ -1050,6 +1184,9 @@ caps |= SVGA_CAP_HP_CMD_QUEUE;
 caps |= SVGA_CAP_NO_BB_RESTRICTION;
 caps |= SVGA_CAP_CAP2_REGISTER;
         ret = caps;
+#ifdef VERBOSE
+        printf("%s: SVGA_REG_CAPABILITIES register %d with the return of %u\n", __func__, s->index, ret);
+#endif
         break;
 
     case SVGA_REG_CAP2:
@@ -1073,13 +1210,16 @@ cap2 |= SVGA_CAP2_LO_STAGING;
 cap2 |= SVGA_CAP2_VIDEO_BLT;
 cap2 |= SVGA_CAP2_RESERVED;
         ret = cap2;
+#ifdef VERBOSE
+        printf("%s: SVGA_REG_CAP2 register %d with the return of %u\n", __func__, s->index, ret);
+#endif
         break;
 
     case SVGA_REG_MEM_START: {
         struct pci_vmsvga_state_s *pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
         ret = pci_get_bar_addr(PCI_DEVICE(pci_vmsvga), 2);
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_MEM_START register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     }
@@ -1087,225 +1227,234 @@ cap2 |= SVGA_CAP2_RESERVED;
     case SVGA_REG_MEM_SIZE:
         ret = s->fifo_size;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_MEM_SIZE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_CONFIG_DONE:
         ret = s->config;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_CONFIG_DONE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_SYNC:
         ret = s->syncing;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_SYNC register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_BUSY:
         ret = s->syncbusy;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_BUSY register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_GUEST_ID:
         ret = s->guest;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_GUEST_ID register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_CURSOR_ID:
         ret = s->cursor.id;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_CURSOR_ID register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_CURSOR_X:
         ret = s->cursor.x;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_CURSOR_X register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_CURSOR_Y:
         ret = s->cursor.y;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_CURSOR_Y register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_CURSOR_ON:
         ret = s->cursor.on;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_CURSOR_ON register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_SCRATCH_SIZE:
         ret = s->scratch_size;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_SCRATCH_SIZE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_MEM_REGS:
         ret = s->num_fifo_regs;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_MEM_REGS register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_NUM_DISPLAYS:
         ret = 1;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_NUM_DISPLAYS register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_PITCHLOCK:
        ret = s->pitchlock;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_PITCHLOCK register %d with the return of %u\n", __func__, s->index, ret);
 #endif
        break;
 
     case SVGA_REG_IRQMASK:
         ret = s->irq_mask;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_IRQMASK register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_NUM_GUEST_DISPLAYS:
         ret = s->num_gd;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_NUM_GUEST_DISPLAYS register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_DISPLAY_ID:
         ret = s->display_id;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_DISPLAY_ID register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_DISPLAY_IS_PRIMARY:
         ret = s->disp_prim;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_DISPLAY_IS_PRIMARY register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_DISPLAY_POSITION_X:
         ret = s->disp_x;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_DISPLAY_POSITION_X register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_DISPLAY_POSITION_Y:
         ret = s->disp_y;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_DISPLAY_POSITION_Y register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_DISPLAY_WIDTH:
-	ret = s->new_width ? s->new_width : 1024;
+	if (s->new_width == 0) {
+	printf("0-size res err!\n");
+	ret = 1024;
+	} else {
+	ret = s->new_width;
+	};
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_DISPLAY_WIDTH register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_DISPLAY_HEIGHT:
-	ret = s->new_height ? s->new_height : 768;
+	if (s->new_height == 0) {
+	printf("0-size res err!\n");
+	ret = 768;
+	} else {
+	ret = s->new_height;
+	};
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_DISPLAY_HEIGHT register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
-    /* Guest memory regions */
     case SVGA_REG_GMRS_MAX_PAGES:
         ret = 1048576;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_GMRS_MAX_PAGES register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_GMR_ID:
         ret = s->gmrid;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_GMR_ID register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_GMR_DESCRIPTOR:
         ret = s->gmrdesc;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_GMR_DESCRIPTOR register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_GMR_MAX_IDS:
         ret = 8192;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_GMR_MAX_IDS register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_GMR_MAX_DESCRIPTOR_LENGTH:
-        ret = 0;
+        ret = 1048576;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_GMR_MAX_DESCRIPTOR_LENGTH register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_TRACES:
         ret = s->tracez;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_TRACES register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_COMMAND_LOW:
         ret = (((unsigned long long)s->cmd_high << 32) | (s->cmd_low & ~SVGA_CB_CONTEXT_MASK));
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_COMMAND_LOW register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_COMMAND_HIGH:
         ret = s->cmd_high;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_COMMAND_HIGH register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_DEV_CAP:
         ret = s->devcap_val;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_DEV_CAP register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_MEMORY_SIZE:
         ret = s->vga.vram_size * 2;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_REG_MEMORY_SIZE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_PALETTE_BASE ... (SVGA_PALETTE_BASE + 767):
         ret = s->svgabasea;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_PALETTE_BASE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_SCRATCH_BASE:
         ret = s->svgabaseb;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: SVGA_SCRATCH_BASE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
@@ -1316,9 +1465,9 @@ cap2 |= SVGA_CAP2_RESERVED;
             break;
         }
         printf("%s: Bad register %d\n", __func__, s->index);
-        ret = 0;
+        ret = 1;
 #ifdef VERBOSE
-        printf("%s: register %d with the return of %u\n", __func__, s->index, ret);
+        printf("%s: default register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     }
@@ -1351,35 +1500,35 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         trace_vmware_value_write(s->index, value);
 
 #ifdef VERBOSE
-//        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: Unknown register %d with the value of %u\n", __func__, s->index, value);
 #endif
 
     switch (s->index) {
     case SVGA_REG_ID:
 	s->svgaid = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_ID register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_FENCE_GOAL:
 	s->fg = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_FENCE_GOAL register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_PALETTE_BASE ... (SVGA_PALETTE_BASE + 767):
         s->svgabasea = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_PALETTE_BASE register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_SCRATCH_BASE:
         s->svgabaseb = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_SCRATCH_BASE register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
@@ -1398,28 +1547,43 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
                 s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
         }
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_ENABLE register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_WIDTH:
+	if (value == 0) {
+	printf("0-size res err!\n");
+	s->new_width = 1024;
+	} else {
 	s->new_width = value;
+	};
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_WIDTH register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_HEIGHT:
+	if (value == 0) {
+	printf("0-size res err!\n");
+	s->new_height = 768;
+	} else {
 	s->new_height = value;
+	};
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_HEIGHT register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_BITS_PER_PIXEL:
-        s->new_depth = value;
+	if (value == 0) {
+	printf("0 bpp err!\n");
+	s->new_depth = 32;
+	} else {
+	s->new_depth = value;
+	};
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_BITS_PER_PIXEL register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
@@ -1429,7 +1593,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 //        }
         s->config = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_CONFIG_DONE register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
@@ -1437,76 +1601,74 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         s->syncing = value;
         vmsvga_fifo_run(s); /* Or should we just wait for update_display? */
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_SYNC register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_BUSY:
         s->syncbusy = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_BUSY register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_GUEST_ID:
         s->guest = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_GUEST_ID register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_CURSOR_ID:
         s->cursor.id = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_CURSOR_ID register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_CURSOR_X:
         s->cursor.x = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_CURSOR_X register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_CURSOR_Y:
         s->cursor.y = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_CURSOR_Y register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_CURSOR_ON:
         s->cursor.on |= (value == SVGA_CURSOR_ON_SHOW);
         s->cursor.on &= (value != SVGA_CURSOR_ON_HIDE);
-#ifdef HW_MOUSE_ACCEL
         if (value <= SVGA_CURSOR_ON_SHOW) {
             dpy_mouse_set(s->vga.con, s->cursor.x, s->cursor.y, s->cursor.on);
         }
-#endif
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_CURSOR_ON register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_PITCHLOCK:
        s->pitchlock = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_PITCHLOCK register %d with the value of %u\n", __func__, s->index, value);
 #endif
        break;
 
     case SVGA_REG_IRQMASK:
         s->irq_mask = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_IRQMASK register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_NUM_GUEST_DISPLAYS:
         s->num_gd = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_NUM_GUEST_DISPLAYS register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
@@ -1514,77 +1676,86 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
     case SVGA_REG_DISPLAY_IS_PRIMARY:
         s->disp_prim = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_DISPLAY_IS_PRIMARY register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_DISPLAY_POSITION_X:
         s->disp_x = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_DISPLAY_POSITION_X register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_DISPLAY_POSITION_Y:
         s->disp_y = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_DISPLAY_POSITION_Y register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
-    /* We support single legacy screen at fixed offset of (0,0) */
     case SVGA_REG_DISPLAY_ID:
         s->display_id = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_DISPLAY_ID register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_DISPLAY_WIDTH:
+	if (value == 0) {
+	printf("0-size res err!\n");
+	s->new_width = 1024;
+	} else {
 	s->new_width = value;
+	};
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_DISPLAY_WIDTH register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_DISPLAY_HEIGHT:
+	if (value == 0) {
+	printf("0-size res err!\n");
+	s->new_height = 768;
+	} else {
 	s->new_height = value;
+	};
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_DISPLAY_HEIGHT register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_TRACES:
         s->tracez = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_TRACES register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_COMMAND_LOW:
         s->cmd_low = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_COMMAND_LOW register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_COMMAND_HIGH:
         s->cmd_high = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_COMMAND_HIGH register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_GMR_ID:
         s->gmrid = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_GMR_ID register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
     case SVGA_REG_GMR_DESCRIPTOR:
         s->gmrdesc = value;
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_GMR_DESCRIPTOR register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
@@ -1853,7 +2024,7 @@ if(value==260){s->devcap_val=0x00000010;};
 if(value==261){s->devcap_val=0x00000001;};
 if(value>=262){s->devcap_val=0x00000000;};
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: SVGA_REG_DEV_CAP register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
@@ -1865,7 +2036,7 @@ if(value>=262){s->devcap_val=0x00000000;};
         }
         printf("%s: Bad register %d with the value of %u\n", __func__, s->index, value);
 #ifdef VERBOSE
-        printf("%s: register %d with the value of %u\n", __func__, s->index, value);
+        printf("%s: default register %d with the value of %u\n", __func__, s->index, value);
 #endif
     }
 }
@@ -1910,10 +2081,10 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
     DisplaySurface *surface = qemu_console_surface(s->vga.con);
     uint32_t new_stride;
 
-    if ((s->new_width == 0) || (s->new_height == 0)) {
-	printf("0-size res err!\n");
-	s->new_width = 1024;
-	s->new_height = 768;
+	if ((s->new_width == 0) || (s->new_height == 0)) {
+		printf("0-size res err!\n");
+		s->new_width = 1024;
+		s->new_height = 768;
 	};
 
     new_stride = (s->new_depth * s->new_width) / 8;
@@ -2069,12 +2240,12 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
 
     s->vga.con = graphic_console_init(dev, 0, &vmsvga_ops, s);
 
-    s->fifo_size = SVGA_FIFO_SIZE;
+    s->fifo_size = (8 * 1024 * 1024);
     memory_region_init_ram(&s->fifo_ram, NULL, "vmsvga.fifo", s->fifo_size,
                            &error_fatal);
     s->fifo = (uint32_t *)memory_region_get_ram_ptr(&s->fifo_ram);
     s->num_fifo_regs = SVGA_FIFO_NUM_REGS;
-    s->	fifo[SVGA_FIFO_CAPABILITIES] =
+    s->fifo[SVGA_FIFO_CAPABILITIES] =
       SVGA_FIFO_CAP_NONE | 
       SVGA_FIFO_CAP_FENCE | 
       SVGA_FIFO_CAP_ACCELFRONT | 
@@ -2194,7 +2365,7 @@ static void pci_vmsvga_realize(PCIDevice *dev, Error **errp)
     vmsvga_init(DEVICE(dev), &s->chip,
                 pci_address_space(dev), pci_address_space_io(dev));
 
-    pci_register_bar(dev, 1, PCI_BASE_ADDRESS_MEM_PREFETCH,
+    pci_register_bar(dev, 1, PCI_BASE_ADDRESS_MEM_TYPE_32,
                      &s->chip.vga.vram);
     pci_register_bar(dev, 2, PCI_BASE_ADDRESS_MEM_PREFETCH,
                      &s->chip.fifo_ram);
