@@ -1835,17 +1835,13 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 /*
     if (s->index >= SVGA_SCRATCH_BASE) {
         trace_vmware_scratch_write(s->index, value);
-        vmsvga_fifo_read(s);
     } else if (s->index >= SVGA_PALETTE_BASE) {
         trace_vmware_palette_write(s->index, value);
-        vmsvga_fifo_read(s);
     } else {
         trace_vmware_value_write(s->index, value);
-        vmsvga_fifo_read(s);
     }
 */
         trace_vmware_value_write(s->index, value);
-        vmsvga_fifo_read(s);
 
 #ifndef VERBOSE
         vmsvga_fifo_read(s);
