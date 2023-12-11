@@ -56,16 +56,7 @@
 #include "include/vmware_pack_begin.h"
 #include "include/vmware_pack_end.h"
 
-
-#define SVGA_PCI_DEVICE_ID     PCI_DEVICE_ID_VMWARE_SVGA2
-
-#define HW_RECT_ACCEL
-#define HW_FILL_ACCEL
-#define HW_MOUSE_ACCEL
-
 #include "vga_int.h"
-
-/* See http://vmware-svga.sf.net/ for some documentation on VMWare SVGA */
 
 struct vmsvga_state_s {
     VGACommonState vga;
@@ -168,9 +159,7 @@ static void cursor_update_from_fifo(struct vmsvga_state_s *s)
     s->cursor.x = s->fifo[SVGA_FIFO_CURSOR_X];
     s->cursor.y = s->fifo[SVGA_FIFO_CURSOR_Y];
 
-#ifdef HW_MOUSE_ACCEL
     dpy_mouse_set(s->vga.con, s->cursor.x, s->cursor.y, s->cursor.on);
-#endif
 }
 
 static inline bool vmsvga_verify_rect(DisplaySurface *surface,
@@ -242,11 +231,10 @@ static inline void vmsvga_update_rect(struct vmsvga_state_s *s,
     uint8_t *dst;
 
     if (!vmsvga_verify_rect(surface, __func__, x, y, w, h)) {
-        /* go for a fullscreen update as fallback */
-        x = surface_width(surface) / 2;
-        y = surface_height(surface) / 2;
-        w = surface_width(surface) / 2;
-        h = surface_height(surface) / 2;
+        x = 0;
+        y = 0;
+        w = s->new_width;
+        h = s->new_height;
     }
 
     bypl = surface_stride(surface);
@@ -261,42 +249,6 @@ static inline void vmsvga_update_rect(struct vmsvga_state_s *s,
     dpy_gfx_update(s->vga.con, x, y, w, h);
 }
 
-static inline void vmsvga_update_rect_flush(struct vmsvga_state_s *s)
-{
-    struct vmsvga_rect_s *rect;
-
-    if (s->invalidated) {
-        s->redraw_fifo_last = 0;
-        return;
-    }
-    /* Overlapping region updates can be optimised out here - if someone
-     * knows a smart algorithm to do that, please share.  */
-    for (int i = 0; i < s->redraw_fifo_last; i++) {
-        rect = &s->redraw_fifo[i];
-        vmsvga_update_rect(s, rect->x, rect->y, rect->w, rect->h);
-    }
-
-    s->redraw_fifo_last = 0;
-}
-
-static inline void vmsvga_update_rect_delayed(struct vmsvga_state_s *s,
-                int x, int y, int w, int h)
-{
-
-    if (s->redraw_fifo_last >= REDRAW_FIFO_LEN) {
-        trace_vmware_update_rect_delayed_flush();
-        vmsvga_update_rect_flush(s);
-    }
-
-    struct vmsvga_rect_s *rect = &s->redraw_fifo[s->redraw_fifo_last++];
-
-    rect->x = x;
-    rect->y = y;
-    rect->w = w;
-    rect->h = h;
-}
-
-#ifdef HW_RECT_ACCEL
 static inline int vmsvga_copy_rect(struct vmsvga_state_s *s,
                 int x0, int y0, int x1, int y1, int w, int h)
 {
@@ -309,10 +261,10 @@ static inline int vmsvga_copy_rect(struct vmsvga_state_s *s,
     uint8_t *ptr[2];
 
     if (!vmsvga_verify_rect(surface, "vmsvga_copy_rect/src", x0, y0, w, h)) {
-        return -1;
+	return 1;
     }
     if (!vmsvga_verify_rect(surface, "vmsvga_copy_rect/dst", x1, y1, w, h)) {
-        return -1;
+	return 1;
     }
 
     if (y1 > y0) {
@@ -332,9 +284,7 @@ static inline int vmsvga_copy_rect(struct vmsvga_state_s *s,
     vmsvga_update_rect(s, x1, y1, w, h);
     return 0;
 }
-#endif
 
-#ifdef HW_FILL_ACCEL
 static inline int vmsvga_fill_rect(struct vmsvga_state_s *s,
                 uint32_t c, int x, int y, int w, int h)
 {
@@ -349,7 +299,7 @@ static inline int vmsvga_fill_rect(struct vmsvga_state_s *s,
     uint8_t col[4];
 
     if (!vmsvga_verify_rect(surface, __func__, x, y, w, h)) {
-        return -1;
+	return 1;
     }
 
     col[0] = c;
@@ -378,7 +328,6 @@ static inline int vmsvga_fill_rect(struct vmsvga_state_s *s,
     vmsvga_update_rect(s, x, y, w, h);
     return 0;
 }
-#endif
 
 struct vmsvga_cursor_definition_s {
     uint32_t width;
@@ -395,7 +344,6 @@ struct vmsvga_cursor_definition_s {
 #define SVGA_BITMAP_SIZE(w, h)          ((((w) + 31) >> 5) * (h))
 #define SVGA_PIXMAP_SIZE(w, h, bpp)     (((((w) * (bpp)) + 31) >> 5) * (h))
 
-#ifdef HW_MOUSE_ACCEL
 static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
                 struct vmsvga_cursor_definition_s *c)
 {
@@ -411,9 +359,6 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
     case 1:
         cursor_set_mono(qc, 0xffffff, 0x000000, (void *)c->xor_mask,
                         1, (void *)c->and_mask);
-#ifdef DEBUG
-        cursor_print_ascii_art(qc, "vmware/mono");
-#endif
         break;
     case 32:
         /* fill alpha channel from mask, set color to zero */
@@ -424,9 +369,6 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
         for (i = 0; i < pixels; i++) {
             qc->data[i] |= c->xor_mask[i] & 0xffffff;
         }
-#ifdef DEBUG
-        cursor_print_ascii_art(qc, "vmware/32bit");
-#endif
         break;
     default:
         fprintf(stderr, "%s: unhandled bpp %d, using fallback cursor\n", __func__, c->xor_mask_bpp);
@@ -463,13 +405,9 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s *s,
             qc->data[i] |= 0xff000000;
         }
     }
-#ifdef DEBUG
-    cursor_print_ascii_art(qc, "rgba");
-#endif
     dpy_cursor_define(s->vga.con, qc);
     cursor_put(qc);
 }
-#endif
 
 static inline int vmsvga_fifo_length(struct vmsvga_state_s *s)
 {
@@ -561,26 +499,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             y = vmsvga_fifo_read(s);
             width = vmsvga_fifo_read(s);
             height = vmsvga_fifo_read(s);
-    if (x == 0) {
-	printf("0-size res err!\n");
-	x = 1024 / 2;
-	};
-    if (y == 0) {
-	printf("0-size res err!\n");
-	y = 768 / 2;
-	};
-    if (width == 0) {
-	printf("0-size res err!\n");
-	width = 1024 / 2;
-	};
-    if (height == 0) {
-	printf("0-size res err!\n");
-	height = 768 / 2;
-	};
             vmsvga_fifo_read(s);
             vmsvga_update_rect(s, x, y, width, height);
-
-	args = 1;
+            args = 1;
 #ifdef VERBOSE
         printf("%s: SVGA_CMD_UPDATE_VERBOSE command in SVGA command FIFO\n", __func__);
 #endif
@@ -596,24 +517,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             y = vmsvga_fifo_read(s);
             width = vmsvga_fifo_read(s);
             height = vmsvga_fifo_read(s);
-    if (x == 0) {
-	printf("0-size res err!\n");
-	x = 1024 / 2;
-	};
-    if (y == 0) {
-	printf("0-size res err!\n");
-	y = 768 / 2;
-	};
-    if (width == 0) {
-	printf("0-size res err!\n");
-	width = 1024 / 2;
-	};
-    if (height == 0) {
-	printf("0-size res err!\n");
-	height = 768 / 2;
-	};
             vmsvga_update_rect(s, x, y, width, height);
-	args = 1;
+            args = 1;
 #ifdef VERBOSE
         printf("%s: SVGA_CMD_UPDATE command in SVGA command FIFO\n", __func__);
 #endif
@@ -631,30 +536,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             dy = vmsvga_fifo_read(s);
             width = vmsvga_fifo_read(s);
             height = vmsvga_fifo_read(s);
-    if (x == 0) {
-	printf("0-size res err!\n");
-	x = 1024 / 2;
-	};
-    if (y == 0) {
-	printf("0-size res err!\n");
-	y = 768 / 2;
-	};
-    if (dx == 0) {
-	printf("0-size res err!\n");
-	dx = 1024 / 2;
-	};
-    if (dy == 0) {
-	printf("0-size res err!\n");
-	dy = 768 / 2;
-	};
-    if (width == 0) {
-	printf("0-size res err!\n");
-	width = 1024 / 2;
-	};
-    if (height == 0) {
-	printf("0-size res err!\n");
-	height = 768 / 2;
-	};
             vmsvga_copy_rect(s, x, y, dx, dy, width, height);
 	args = 1;
 #ifdef VERBOSE
@@ -1050,24 +931,14 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_WIDTH:
-	if (s->new_width == 0) {
-	printf("0-size res err!\n");
-	ret = 1024;
-	} else {
 	ret = s->new_width;
-	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_WIDTH register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_HEIGHT:
-	if (s->new_height == 0) {
-	printf("0-size res err!\n");
-	ret = 768;
-	} else {
 	ret = s->new_height;
-	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_HEIGHT register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -1102,33 +973,20 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_BITS_PER_PIXEL:
-	if (s->new_depth == 0) {
-	printf("0 bpp err!\n");
-	ret = 32;
-	} else {
 	ret = s->new_depth;
-	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_BITS_PER_PIXEL register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_HOST_BITS_PER_PIXEL:
-	if (s->new_depth == 0) {
-	printf("0 bpp err!\n");
-	ret = 32;
-	} else {
 	ret = s->new_depth;
-	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_HOST_BITS_PER_PIXEL register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_DEPTH:
-	if (s->new_depth == 0) {
-	printf("0 bpp err!\n");
-	ret = 32;
-	} else if (s->new_depth == 32) {
+	if (s->new_depth == 32) {
 	ret = 24;
 	} else {
 	ret = s->new_depth;
@@ -1440,23 +1298,13 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_DISPLAY_WIDTH:
-	if (s->new_width == 0) {
-	printf("0-size res err!\n");
-	ret = 1024;
-	} else {
 	ret = s->new_width;
-	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_DISPLAY_WIDTH register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_DISPLAY_HEIGHT:
-	if (s->new_height == 0) {
-	printf("0-size res err!\n");
-	ret = 768;
-	} else {
 	ret = s->new_height;
-	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_DISPLAY_HEIGHT register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -1567,15 +1415,21 @@ cap2 |= SVGA_CAP2_RESERVED;
         trace_vmware_value_read(s->index, ret);
     return ret;
 }
-/*
-void *vmsvga_fifo_hack(void *s);
 
-void *vmsvga_fifo_hack(void *s) {
+void *vmsvga_fifo_hack(void *arg);
+
+void *vmsvga_fifo_hack(void *arg) {
+	struct vmsvga_state_s *s = (struct vmsvga_state_s *)arg;
 	while (true) {
-		vmsvga_fifo_read(s);
+		int cx = 0;
+		int cy = 0;
+		if (s->enable != 1 || s->config != 1) {
+			return 0;
+		};
+		vmsvga_update_rect(s, cx, cy, s->new_width, s->new_height);
 	};
 };
-*/
+
 static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 {
     struct vmsvga_state_s *s = opaque;
@@ -1597,8 +1451,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 
     switch (s->index) {
     case SVGA_REG_ID:
-//	pthread_t threads[1];
-//	pthread_create(threads, NULL, vmsvga_fifo_hack, s);
 	s->svgaid = value;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_ID register %d with the value of %u\n", __func__, s->index, value);
@@ -1637,6 +1489,8 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         }
 */
         if (s->enable) {
+		pthread_t threads[1];
+		pthread_create(threads, NULL, vmsvga_fifo_hack, (void *)s);
                 s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
                 s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
         }
@@ -1646,36 +1500,21 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_WIDTH:
-	if (value == 0) {
-	printf("0-size res err!\n");
-	s->new_width = 1024;
-	} else {
 	s->new_width = value;
-	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_WIDTH register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_HEIGHT:
-	if (value == 0) {
-	printf("0-size res err!\n");
-	s->new_height = 768;
-	} else {
 	s->new_height = value;
-	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_HEIGHT register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_BITS_PER_PIXEL:
-	if (value == 0) {
-	printf("0 bpp err!\n");
-	s->new_depth = 32;
-	} else {
 	s->new_depth = value;
-	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_BITS_PER_PIXEL register %d with the value of %u\n", __func__, s->index, value);
 #endif
@@ -1796,24 +1635,14 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_DISPLAY_WIDTH:
-	if (value == 0) {
-	printf("0-size res err!\n");
-	s->new_width = 1024;
-	} else {
 	s->new_width = value;
-	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_DISPLAY_WIDTH register %d with the value of %u\n", __func__, s->index, value);
 #endif
         break;
 
     case SVGA_REG_DISPLAY_HEIGHT:
-	if (value == 0) {
-	printf("0-size res err!\n");
-	s->new_height = 768;
-	} else {
 	s->new_height = value;
-	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_DISPLAY_HEIGHT register %d with the value of %u\n", __func__, s->index, value);
 #endif
@@ -2144,8 +1973,7 @@ static uint32_t vmsvga_irqstatus_read(void *opaque, uint32_t address)
 static void vmsvga_irqstatus_write(void *opaque, uint32_t address, uint32_t data)
 {
     struct vmsvga_state_s *s = opaque;
-    struct pci_vmsvga_state_s *pci_vmsvga =
-        container_of(s, struct pci_vmsvga_state_s, chip);
+    struct pci_vmsvga_state_s *pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
     PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
 
     /*
@@ -2176,13 +2004,11 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
     uint32_t new_stride;
 
 	if (s->new_width == 0) {
-		printf("0-size res err!\n");
-		s->new_width = 1024;
+		return;
 	};
 
 	if (s->new_height == 0) {
-		printf("0-size res err!\n");
-		s->new_height = 768;
+		return;
 	};
 
     new_stride = (s->new_depth * s->new_width) / 8;
@@ -2190,8 +2016,7 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
         s->new_height != surface_height(surface) ||
         (new_stride != surface_stride(surface)) ||
         s->new_depth != surface_bits_per_pixel(surface)) {
-        pixman_format_code_t format =
-            qemu_default_pixman_format(s->new_depth, true);
+        pixman_format_code_t format = qemu_default_pixman_format(s->new_depth, true);
         trace_vmware_setmode(s->new_width, s->new_height, s->new_depth);
         surface = qemu_create_displaysurface_from(s->new_width, s->new_height,
                                                   format, new_stride,
@@ -2214,13 +2039,8 @@ static void vmsvga_update_display(void *opaque)
     vmsvga_check_size(s);
 
     vmsvga_fifo_run(s);
-    vmsvga_update_rect_flush(s);
     cursor_update_from_fifo(s);
 
-    if (s->invalidated) {
-        s->invalidated = 0;
-        dpy_gfx_update_full(s->vga.con);
-    }
 }
 
 static void vmsvga_reset(DeviceState *dev)
@@ -2482,10 +2302,10 @@ static void vmsvga_class_init(ObjectClass *klass, void *data)
     k->realize = pci_vmsvga_realize;
     k->romfile = "vgabios-vmware.bin";
     k->vendor_id = PCI_VENDOR_ID_VMWARE;
-    k->device_id = SVGA_PCI_DEVICE_ID;
+    k->device_id = PCI_DEVICE_ID_VMWARE_SVGA2;
     k->class_id = PCI_CLASS_DISPLAY_VGA;
     k->subsystem_vendor_id = PCI_VENDOR_ID_VMWARE;
-    k->subsystem_id = SVGA_PCI_DEVICE_ID;
+    k->subsystem_id = PCI_DEVICE_ID_VMWARE_SVGA2;
     k->revision = 0x00;
     dc->reset = vmsvga_reset;
     dc->vmsd = &vmstate_vmware_vga;
