@@ -93,6 +93,7 @@ struct vmsvga_state_s {
     uint32_t cmd_high;
     uint32_t guest;
     uint32_t svgaid;
+    uint32_t thread;
     uint32_t fg;
     int syncing;
     int syncbusy;
@@ -1423,7 +1424,7 @@ void *vmsvga_fifo_hack(void *arg) {
 	while (true) {
 		int cx = 0;
 		int cy = 0;
-		if (s->enable != 1 || s->config != 1) {
+		if (s->enable != 1 && s->config != 1) {
 			return 0;
 		};
 		vmsvga_update_rect(s, cx, cy, s->new_width, s->new_height);
@@ -1452,6 +1453,11 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
     switch (s->index) {
     case SVGA_REG_ID:
 	s->svgaid = value;
+	if (s->thread != 1) {
+		s->thread = 1;
+		pthread_t threads[1];
+		pthread_create(threads, NULL, vmsvga_fifo_hack, (void *)s);
+	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_ID register %d with the value of %u\n", __func__, s->index, value);
 #endif
@@ -1489,8 +1495,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         }
 */
         if (s->enable) {
-		pthread_t threads[1];
-		pthread_create(threads, NULL, vmsvga_fifo_hack, (void *)s);
                 s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
                 s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
         }
@@ -2001,7 +2005,7 @@ static void vmsvga_bios_write(void *opaque, uint32_t address, uint32_t data)
 static inline void vmsvga_check_size(struct vmsvga_state_s *s)
 {
     DisplaySurface *surface = qemu_console_surface(s->vga.con);
-    uint32_t new_stride;
+    float new_stride;
 
 	if (s->new_width == 0) {
 		return;
@@ -2030,7 +2034,7 @@ static void vmsvga_update_display(void *opaque)
 {
     struct vmsvga_state_s *s = opaque;
 
-    if (s->enable != 1 || s->config != 1) {
+    if (s->enable != 1 && s->config != 1) {
         /* in standard vga mode */
         s->vga.hw_ops->gfx_update(&s->vga);
         return;
