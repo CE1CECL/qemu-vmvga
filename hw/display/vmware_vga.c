@@ -94,6 +94,7 @@ struct vmsvga_state_s {
     uint32_t guest;
     uint32_t svgaid;
     uint32_t thread;
+    uint32_t threadz;
     uint32_t fg;
     int syncing;
     int syncbusy;
@@ -875,6 +876,20 @@ static void vmsvga_index_write(void *opaque, uint32_t address, uint32_t index)
     s->index = index;
 }
 
+void *vmsvga_fifo_hack(void *arg);
+
+void *vmsvga_fifo_hack(void *arg) {
+	struct vmsvga_state_s *s = (struct vmsvga_state_s *)arg;
+	while (true) {
+		int cx = 0;
+		int cy = 0;
+		if (s->enable != 1 && s->config != 1) {
+			return 0;
+		};
+		vmsvga_update_rect(s, cx, cy, s->new_width, s->new_height);
+	};
+};
+
 static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
 {
     uint32_t caps;
@@ -919,6 +934,11 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
 
     case SVGA_REG_ID:
         ret = s->svgaid;
+	if (s->threadz != 1) {
+		s->threadz = 1;
+		pthread_t threads[1];
+		pthread_create(threads, NULL, vmsvga_fifo_hack, (void *)s);
+	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_ID register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -1416,20 +1436,6 @@ cap2 |= SVGA_CAP2_RESERVED;
         trace_vmware_value_read(s->index, ret);
     return ret;
 }
-
-void *vmsvga_fifo_hack(void *arg);
-
-void *vmsvga_fifo_hack(void *arg) {
-	struct vmsvga_state_s *s = (struct vmsvga_state_s *)arg;
-	while (true) {
-		int cx = 0;
-		int cy = 0;
-		if (s->enable != 1 && s->config != 1) {
-			return 0;
-		};
-		vmsvga_update_rect(s, cx, cy, s->new_width, s->new_height);
-	};
-};
 
 static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 {
