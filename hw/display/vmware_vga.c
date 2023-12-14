@@ -2011,7 +2011,7 @@ static void vmsvga_bios_write(void *opaque, uint32_t address, uint32_t data)
 static inline void vmsvga_check_size(struct vmsvga_state_s *s)
 {
     DisplaySurface *surface = qemu_console_surface(s->vga.con);
-    float new_stride;
+    uint32_t new_stride;
 
 	if (s->new_width == 0) {
 		return;
