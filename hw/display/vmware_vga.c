@@ -715,9 +715,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             break;
 
         case SVGA_CMD_INVALID_CMD:
-		int cx = 0;
-		int cy = 0;
-		vmsvga_update_rect(s, cx, cy, s->new_width, s->new_height);
 	args = 0;
 #ifdef VERBOSE
         printf("%s: SVGA_CMD_INVALID_CMD command in SVGA command FIFO\n", __func__);
