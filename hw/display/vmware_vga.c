@@ -884,7 +884,7 @@ void *vmsvga_fifo_hack(void *arg) {
 	while (true) {
 		int cx = 0;
 		int cy = 0;
-		if (s->enable != 1 && s->config != 1) {
+		if (s->enable != 1 || s->config != 1) {
 			return 0;
 		};
 		vmsvga_update_rect(s, cx, cy, s->new_width, s->new_height);
@@ -1491,7 +1491,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         s->enable = value;
 /*
         s->vga.hw_ops->invalidate(&s->vga);
-        if (s->enable && s->config) {
+        if (s->enable || s->config) {
             vga_dirty_log_stop(&s->vga);
         } else {
             vga_dirty_log_start(&s->vga);
@@ -2037,7 +2037,7 @@ static void vmsvga_update_display(void *opaque)
 {
     struct vmsvga_state_s *s = opaque;
 
-    if (s->enable != 1 && s->config != 1) {
+    if (s->enable != 1 || s->config != 1) {
         /* in standard vga mode */
         s->vga.hw_ops->gfx_update(&s->vga);
         return;
