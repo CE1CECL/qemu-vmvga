@@ -936,8 +936,8 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         ret = s->svgaid;
 	if (s->threadz != 1) {
 		s->threadz = 1;
-		pthread_t threads[1];
-		pthread_create(threads, NULL, vmsvga_fifo_hack, (void *)s);
+//		pthread_t threads[1];
+//		pthread_create(threads, NULL, vmsvga_fifo_hack, (void *)s);
 	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_ID register %d with the return of %u\n", __func__, s->index, ret);
