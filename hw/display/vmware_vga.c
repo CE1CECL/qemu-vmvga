@@ -430,10 +430,10 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s *s)
     if (s->fifo_min < sizeof(uint32_t) * 4) {
         return 0;
     }
-    if (s->fifo_max > (8 * 1024 * 1024) ||
-        s->fifo_min >= (8 * 1024 * 1024) ||
-        s->fifo_stop >= (8 * 1024 * 1024) ||
-        s->fifo_next >= (8 * 1024 * 1024)) {
+    if (s->fifo_max > 8388608 ||
+        s->fifo_min >= 8388608 ||
+        s->fifo_stop >= 8388608 ||
+        s->fifo_next >= 8388608) {
         return 0;
     }
     if (s->fifo_max < s->fifo_min + 10 * KiB) {
@@ -1067,21 +1067,14 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_VRAM_SIZE:
-        ret = 4194304;
+        ret = s->vga.vram_size;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_VRAM_SIZE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
-    case SVGA_REG_MAX_PRIMARY_BOUNDING_BOX_MEM:
-        ret = 134217728;
-#ifdef VERBOSE
-        printf("%s: SVGA_REG_MAX_PRIMARY_BOUNDING_BOX_MEM register %d with the return of %u\n", __func__, s->index, ret);
-#endif
-        break;
-
     case SVGA_REG_FB_SIZE:
-        ret = 4194304;
+        ret = 3145728;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_FB_SIZE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -1102,7 +1095,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB:
-        ret = 8388608;
+        ret = 3145728;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -1181,7 +1174,7 @@ cap2 |= SVGA_CAP2_RESERVED;
     }
 
     case SVGA_REG_MEM_SIZE:
-        ret = 4194304;
+        ret = 262144;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_MEM_SIZE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -1325,7 +1318,7 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_GMRS_MAX_PAGES:
-        ret = 1048576;
+        ret = 65536;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_GMRS_MAX_PAGES register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -1343,13 +1336,13 @@ cap2 |= SVGA_CAP2_RESERVED;
 #endif
         break;
     case SVGA_REG_GMR_MAX_IDS:
-        ret = 8192;
+        ret = 64;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_GMR_MAX_IDS register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_GMR_MAX_DESCRIPTOR_LENGTH:
-        ret = 1048576;
+        ret = 4096;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_GMR_MAX_DESCRIPTOR_LENGTH register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -1384,7 +1377,7 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_MEMORY_SIZE:
-        ret = 8388608;
+        ret = 4194304;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_MEMORY_SIZE register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -1535,8 +1528,8 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_SYNC:
-        s->syncing = value;
         vmsvga_fifo_run(s); /* Or should we just wait for update_display? */
+        s->syncing = value;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_SYNC register %d with the value of %u\n", __func__, s->index, value);
 #endif
@@ -2163,7 +2156,7 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
 
     s->vga.con = graphic_console_init(dev, 0, &vmsvga_ops, s);
 
-    s->fifo_size = (8 * 1024 * 1024);
+    s->fifo_size = 8388608;
     memory_region_init_ram(&s->fifo_ram, NULL, "vmsvga.fifo", s->fifo_size,
                            &error_fatal);
     s->fifo = (uint32_t *)memory_region_get_ram_ptr(&s->fifo_ram);
@@ -2292,7 +2285,7 @@ static void pci_vmsvga_realize(PCIDevice *dev, Error **errp)
 
 static Property vga_vmware_properties[] = {
     DEFINE_PROP_UINT32("vgamem_mb", struct pci_vmsvga_state_s,
-                       chip.vga.vram_size_mb, 512),
+                       chip.vga.vram_size_mb, 128),
     DEFINE_PROP_BOOL("global-vmstate", struct pci_vmsvga_state_s,
                      chip.vga.global_vmstate, true),
     DEFINE_PROP_END_OF_LIST(),
