@@ -352,7 +352,6 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
     int i, pixels;
 
     qc = cursor_alloc(c->width, c->height);
-    assert(qc != NULL);
 
     qc->hot_x = c->hot_x;
     qc->hot_y = c->hot_y;
@@ -878,12 +877,9 @@ void *vmsvga_fifo_hack(void *arg);
 
 void *vmsvga_fifo_hack(void *arg) {
 	struct vmsvga_state_s *s = (struct vmsvga_state_s *)arg;
+	int cx = 0;
+	int cy = 0;
 	while (true) {
-		int cx = 0;
-		int cy = 0;
-		if (s->enable != 1 || s->config != 1) {
-			return 0;
-		};
 		vmsvga_update_rect(s, cx, cy, s->new_width, s->new_height);
 	};
 };
@@ -1441,12 +1437,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 #ifdef VERBOSE
         printf("%s: Unknown register %d with the value of %u\n", __func__, s->index, value);
 #endif
-
-	if (s->thread != 1) {
-		s->thread = 1;
-		pthread_t threads[1];
-		pthread_create(threads, NULL, vmsvga_fifo_hack, (void *)s);
-	};
 
     switch (s->index) {
     case SVGA_REG_ID:
@@ -2037,6 +2027,12 @@ static void vmsvga_update_display(void *opaque)
 
     vmsvga_fifo_run(s);
     cursor_update_from_fifo(s);
+
+	if (s->thread != 1) {
+		s->thread = 1;
+		pthread_t threads[1];
+		pthread_create(threads, NULL, vmsvga_fifo_hack, (void *)s);
+	};
 
 }
 
