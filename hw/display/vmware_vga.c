@@ -880,6 +880,9 @@ void *vmsvga_fifo_hack(void *arg) {
 	int cx = 0;
 	int cy = 0;
 	while (true) {
+		if (s->enable == 0 && s->config == 0) {
+			return 0;
+		};
 		vmsvga_update_rect(s, cx, cy, s->new_width, s->new_height);
 	};
 };
