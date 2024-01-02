@@ -38,6 +38,8 @@
 
 //#define VERBOSE
 
+#include <pthread.h>
+
 #include "include/includeCheck.h"
 #include "include/svga3d_caps.h"
 #include "include/svga3d_cmd.h"
