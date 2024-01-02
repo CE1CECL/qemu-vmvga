@@ -465,6 +465,7 @@ static inline uint32_t vmsvga_fifo_read(struct vmsvga_state_s *s)
 
 static void vmsvga_fifo_run(struct vmsvga_state_s *s)
 {
+#ifdef VERBOSE
     int UnknownCommandA;
     int UnknownCommandB;
     int UnknownCommandC;
@@ -505,9 +506,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
     int UnknownCommandAL;
     int UnknownCommandAM;
     int UnknownCommandAN;
+    int z, gmrIdCMD, offsetPages;
+#endif
     uint32_t cmd;
     int args, len, maxloop = 1024;
-    int i, x, y, dx, dy, width, height, z, gmrIdCMD, offsetPages;
+    int i, x, y, dx, dy, width, height;
     struct vmsvga_cursor_definition_s cursor;
     uint32_t cmd_start;
     uint32_t fence_arg;
@@ -539,7 +542,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             y = vmsvga_fifo_read(s);
             width = vmsvga_fifo_read(s);
             height = vmsvga_fifo_read(s);
+#ifdef VERBOSE
             z = vmsvga_fifo_read(s);
+#else
+            vmsvga_fifo_read(s);
+#endif
             vmsvga_update_rect(s, x, y, width, height);
             args = 1;
 #ifdef VERBOSE
@@ -684,7 +691,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
 
             if (s->irq_mask & SVGA_IRQFLAG_ANY_FENCE) {
                 s->irq_status |= SVGA_IRQFLAG_ANY_FENCE;
-                irq_pending = true;
+                irq_pending = false; //true;
             }
 
             if ((s->irq_mask & SVGA_IRQFLAG_FENCE_GOAL)
@@ -723,9 +730,17 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                 goto rewind;
             }
 
+#ifdef VERBOSE
             gmrIdCMD = vmsvga_fifo_read(s);            /* gmrId */
+#else
+            vmsvga_fifo_read(s);            /* gmrId */
+#endif
             flags = vmsvga_fifo_read(s);
+#ifdef VERBOSE
             offsetPages = vmsvga_fifo_read(s);            /* offsetPages */
+#else
+            vmsvga_fifo_read(s);            /* offsetPages */
+#endif
             num_pages = vmsvga_fifo_read(s);
 
             if (flags & SVGA_REMAP_GMR2_VIA_GMR) {
@@ -762,16 +777,20 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
 
         case SVGA_CMD_ESCAPE:
 	len -= 4;
+#ifdef VERBOSE
 UnknownCommandA=vmsvga_fifo_read(s);
 UnknownCommandB=vmsvga_fifo_read(s);
 UnknownCommandC=vmsvga_fifo_read(s);
-#ifdef VERBOSE
         printf("%s: SVGA_CMD_ESCAPE command in SVGA command FIFO %d %d %d \n", __func__, UnknownCommandA, UnknownCommandB, UnknownCommandC);
 #endif
             break;
 
         case SVGA_CMD_DEFINE_SCREEN:
 	len -= 12;
+#ifdef VERBOSE
+s->new_width = UnknownCommandG;
+s->new_height = UnknownCommandH;
+s->new_depth = 32;
 UnknownCommandD=vmsvga_fifo_read(s);
 UnknownCommandE=vmsvga_fifo_read(s);
 UnknownCommandF=vmsvga_fifo_read(s);
@@ -783,36 +802,33 @@ UnknownCommandK=vmsvga_fifo_read(s);
 UnknownCommandL=vmsvga_fifo_read(s);
 UnknownCommandM=vmsvga_fifo_read(s);
 UnknownCommandN=vmsvga_fifo_read(s);
-s->new_width = UnknownCommandG;
-s->new_height = UnknownCommandH;
-s->new_depth = 32;
-#ifdef VERBOSE
         printf("%s: SVGA_CMD_DEFINE_SCREEN command in SVGA command FIFO %d %d %d %d %d %d %d %d %d %d %d \n", __func__, UnknownCommandD, UnknownCommandE, UnknownCommandF, UnknownCommandG, UnknownCommandH, UnknownCommandI, UnknownCommandJ, UnknownCommandK, UnknownCommandL, UnknownCommandM, UnknownCommandN);
 #endif
             break;
 
         case SVGA_CMD_DESTROY_SCREEN:
 	len -= 2;
-UnknownCommandO=vmsvga_fifo_read(s);
 #ifdef VERBOSE
+UnknownCommandO=vmsvga_fifo_read(s);
         printf("%s: SVGA_CMD_DESTROY_SCREEN command in SVGA command FIFO %d \n", __func__, UnknownCommandO);
 #endif
             break;
 
         case SVGA_CMD_DEFINE_GMRFB:
 	len -= 6;
+#ifdef VERBOSE
 UnknownCommandP=vmsvga_fifo_read(s);
 UnknownCommandQ=vmsvga_fifo_read(s);
 UnknownCommandR=vmsvga_fifo_read(s);
 UnknownCommandS=vmsvga_fifo_read(s);
 UnknownCommandT=vmsvga_fifo_read(s);
-#ifdef VERBOSE
         printf("%s: SVGA_CMD_DEFINE_GMRFB command in SVGA command FIFO %d %d %d %d %d \n", __func__, UnknownCommandP, UnknownCommandQ, UnknownCommandR, UnknownCommandS, UnknownCommandT);
 #endif
             break;
 
         case SVGA_CMD_BLIT_GMRFB_TO_SCREEN:
 	len -= 8;
+#ifdef VERBOSE
 UnknownCommandU=vmsvga_fifo_read(s);
 UnknownCommandV=vmsvga_fifo_read(s);
 UnknownCommandW=vmsvga_fifo_read(s);
@@ -820,13 +836,13 @@ UnknownCommandX=vmsvga_fifo_read(s);
 UnknownCommandY=vmsvga_fifo_read(s);
 UnknownCommandZ=vmsvga_fifo_read(s);
 UnknownCommandAA=vmsvga_fifo_read(s);
-#ifdef VERBOSE
         printf("%s: SVGA_CMD_BLIT_GMRFB_TO_SCREEN command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, UnknownCommandU, UnknownCommandV, UnknownCommandW, UnknownCommandX, UnknownCommandY, UnknownCommandZ, UnknownCommandAA);
 #endif
             break;
 
         case SVGA_CMD_BLIT_SCREEN_TO_GMRFB:
 	len -= 8;
+#ifdef VERBOSE
 UnknownCommandAB=vmsvga_fifo_read(s);
 UnknownCommandAC=vmsvga_fifo_read(s);
 UnknownCommandAD=vmsvga_fifo_read(s);
@@ -834,27 +850,26 @@ UnknownCommandAE=vmsvga_fifo_read(s);
 UnknownCommandAF=vmsvga_fifo_read(s);
 UnknownCommandAG=vmsvga_fifo_read(s);
 UnknownCommandAH=vmsvga_fifo_read(s);
-#ifdef VERBOSE
         printf("%s: SVGA_CMD_BLIT_SCREEN_TO_GMRFB command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, UnknownCommandAB, UnknownCommandAC, UnknownCommandAD, UnknownCommandAE, UnknownCommandAF, UnknownCommandAG, UnknownCommandAH);
 #endif
             break;
 
         case SVGA_CMD_ANNOTATION_FILL:
 	len -= 4;
+#ifdef VERBOSE
 UnknownCommandAI=vmsvga_fifo_read(s);
 UnknownCommandAJ=vmsvga_fifo_read(s);
 UnknownCommandAK=vmsvga_fifo_read(s);
-#ifdef VERBOSE
         printf("%s: SVGA_CMD_ANNOTATION_FILL command in SVGA command FIFO %d %d %d \n", __func__, UnknownCommandAI, UnknownCommandAJ, UnknownCommandAK);
 #endif
             break;
 
         case SVGA_CMD_ANNOTATION_COPY:
 	len -= 4;
+#ifdef VERBOSE
 UnknownCommandAL=vmsvga_fifo_read(s);
 UnknownCommandAM=vmsvga_fifo_read(s);
 UnknownCommandAN=vmsvga_fifo_read(s);
-#ifdef VERBOSE
         printf("%s: SVGA_CMD_ANNOTATION_COPY command in SVGA command FIFO %d %d %d \n", __func__, UnknownCommandAL, UnknownCommandAM, UnknownCommandAN);
 #endif
             break;
