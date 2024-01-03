@@ -2121,7 +2121,7 @@ static void vmsvga_update_display(void *opaque)
 {
     struct vmsvga_state_s *s = opaque;
 
-    if (s->enable != 1 || s->config != 1) {
+    if (s->enable == 0 && s->config == 0) {
         /* in standard vga mode */
         s->vga.hw_ops->gfx_update(&s->vga);
         return;
