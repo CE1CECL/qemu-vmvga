@@ -790,9 +790,6 @@ UnknownCommandC=vmsvga_fifo_read(s);
         case SVGA_CMD_DEFINE_SCREEN:
 	len -= 12;
 #ifdef VERBOSE
-s->new_width = UnknownCommandG;
-s->new_height = UnknownCommandH;
-s->new_depth = 32;
 UnknownCommandD=vmsvga_fifo_read(s);
 UnknownCommandE=vmsvga_fifo_read(s);
 UnknownCommandF=vmsvga_fifo_read(s);
@@ -804,6 +801,9 @@ UnknownCommandK=vmsvga_fifo_read(s);
 UnknownCommandL=vmsvga_fifo_read(s);
 UnknownCommandM=vmsvga_fifo_read(s);
 UnknownCommandN=vmsvga_fifo_read(s);
+s->new_width = UnknownCommandG;
+s->new_height = UnknownCommandH;
+s->new_depth = 32;
         printf("%s: SVGA_CMD_DEFINE_SCREEN command in SVGA command FIFO %d %d %d %d %d %d %d %d %d %d %d \n", __func__, UnknownCommandD, UnknownCommandE, UnknownCommandF, UnknownCommandG, UnknownCommandH, UnknownCommandI, UnknownCommandJ, UnknownCommandK, UnknownCommandL, UnknownCommandM, UnknownCommandN);
 #endif
             break;
