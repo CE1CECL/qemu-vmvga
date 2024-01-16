@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2007 Andrzej Zaborowski  <balrog@zabor.org>
  *
- * Copyright (c) 2023 Christopher Lentocha <christopherericlentocha@gmail.com>
+ * Copyright (c) 2023-2024 Christopher Eric Lentocha <christopherericlentocha@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1220,13 +1220,19 @@ caps |= SVGA_CAP_GMR2;
 #ifdef VERBOSE
 caps |= SVGA_CAP_SCREEN_OBJECT_2;
 #endif
+#ifdef VERBOSE
 caps |= SVGA_CAP_COMMAND_BUFFERS;
+#endif
 caps |= SVGA_CAP_DEAD1;
+#ifdef VERBOSE
 caps |= SVGA_CAP_CMD_BUFFERS_2;
+#endif
 #ifdef VERBOSE
 caps |= SVGA_CAP_GBOBJECTS;
 #endif
+#ifdef VERBOSE
 caps |= SVGA_CAP_CMD_BUFFERS_3;
+#endif
 caps |= SVGA_CAP_DX;
 caps |= SVGA_CAP_HP_CMD_QUEUE;
 caps |= SVGA_CAP_NO_BB_RESTRICTION;
@@ -1343,7 +1349,7 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_MEM_REGS:
-        ret = s->num_fifo_regs;
+        ret = 291;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_MEM_REGS register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -2270,10 +2276,14 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
       SVGA_FIFO_CAP_CURSOR_BYPASS_3 | 
       SVGA_FIFO_CAP_ESCAPE | 
       SVGA_FIFO_CAP_RESERVE | 
+#ifdef VERBOSE
       SVGA_FIFO_CAP_SCREEN_OBJECT | 
+#endif
       SVGA_FIFO_CAP_GMR2 | 
       SVGA_FIFO_CAP_3D_HWVERSION_REVISED | 
+#ifdef VERBOSE
       SVGA_FIFO_CAP_SCREEN_OBJECT_2 | 
+#endif
       SVGA_FIFO_CAP_DEAD;
     s->fifo[SVGA_FIFO_FLAGS] = 0;
 
