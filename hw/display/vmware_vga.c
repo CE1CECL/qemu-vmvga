@@ -1214,9 +1214,13 @@ caps |= SVGA_CAP_MULTIMON;
 caps |= SVGA_CAP_PITCHLOCK;
 caps |= SVGA_CAP_IRQMASK;
 caps |= SVGA_CAP_DISPLAY_TOPOLOGY;
+#ifdef VERBOSE
 caps |= SVGA_CAP_GMR;
+#endif
 caps |= SVGA_CAP_TRACES;
+#ifdef VERBOSE
 caps |= SVGA_CAP_GMR2;
+#endif
 #ifdef VERBOSE
 caps |= SVGA_CAP_SCREEN_OBJECT_2;
 #endif
@@ -2279,7 +2283,9 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
 #ifdef VERBOSE
       SVGA_FIFO_CAP_SCREEN_OBJECT | 
 #endif
+#ifdef VERBOSE
       SVGA_FIFO_CAP_GMR2 | 
+#endif
       SVGA_FIFO_CAP_3D_HWVERSION_REVISED | 
 #ifdef VERBOSE
       SVGA_FIFO_CAP_SCREEN_OBJECT_2 | 
