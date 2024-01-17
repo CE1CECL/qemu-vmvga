@@ -693,7 +693,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
 
             if (s->irq_mask & SVGA_IRQFLAG_ANY_FENCE) {
                 s->irq_status |= SVGA_IRQFLAG_ANY_FENCE;
-                irq_pending = false; //true;
+                irq_pending = true;
             }
 
             if ((s->irq_mask & SVGA_IRQFLAG_FENCE_GOAL)
