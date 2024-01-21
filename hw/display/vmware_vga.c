@@ -147,7 +147,7 @@ static void cursor_update_from_fifo(struct vmsvga_state_s *s)
     if (s->config != 1 || s->enable != 1) {
         return;
     }
-
+	s->fifo[SVGA_FIFO_CURSOR_SCREEN_ID] = SVGA_ID_INVALID;
     if (s->fifo_min <= SVGA_FIFO_CURSOR_LAST_UPDATED) {
         return;
     }
@@ -389,6 +389,8 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s *s,
     int i, pixels = c->width * c->height;
 
     qc = cursor_alloc(c->width, c->height);
+    if (qc != NULL) {
+
     qc->hot_x = c->hot_x;
     qc->hot_y = c->hot_y;
 
@@ -409,6 +411,7 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s *s,
     }
     dpy_cursor_define(s->vga.con, qc);
     cursor_put(qc);
+  }
 }
 
 static inline int vmsvga_fifo_length(struct vmsvga_state_s *s)
@@ -952,8 +955,7 @@ UnknownCommandAN=vmsvga_fifo_read(s);
     /* Need to raise irq ? */
 
     if (irq_pending && (s->irq_status & s->irq_mask)) {
-        struct pci_vmsvga_state_s *pci_vmsvga
-            = container_of(s, struct pci_vmsvga_state_s, chip);
+        struct pci_vmsvga_state_s *pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
         pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
     }
 
@@ -983,6 +985,271 @@ void *vmsvga_fifo_hack(void *arg) {
 		if (s->enable == 0 && s->config == 0) {
 			return 0;
 		};
+
+if(s->fifo[SVGA_FIFO_3D_CAPS]==0){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==1){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000008;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==2){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000008;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==3){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000008;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==4){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000007;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==5){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==6){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000000d;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==7){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==8){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000008;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==9){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==10){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==11){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000004;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==12){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==13){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==14){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==15){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==16){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==17){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000bd;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==18){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000014;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==19){s->fifo[SVGA_FIFO_3D_CAPS]=0x00008000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==20){s->fifo[SVGA_FIFO_3D_CAPS]=0x00008000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==21){s->fifo[SVGA_FIFO_3D_CAPS]=0x00004000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==22){s->fifo[SVGA_FIFO_3D_CAPS]=0x00008000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==23){s->fifo[SVGA_FIFO_3D_CAPS]=0x00008000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==24){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000010;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==25){s->fifo[SVGA_FIFO_3D_CAPS]=0x001fffff;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==26){s->fifo[SVGA_FIFO_3D_CAPS]=0x000fffff;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==27){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000ffff;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==28){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000ffff;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==29){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000020;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==30){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000020;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==31){s->fifo[SVGA_FIFO_3D_CAPS]=0x03ffffff;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==32){s->fifo[SVGA_FIFO_3D_CAPS]=0x0018ec1f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==33){s->fifo[SVGA_FIFO_3D_CAPS]=0x0018e11f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==34){s->fifo[SVGA_FIFO_3D_CAPS]=0x0008601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==35){s->fifo[SVGA_FIFO_3D_CAPS]=0x0008601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==36){s->fifo[SVGA_FIFO_3D_CAPS]=0x0008611f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==37){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000611f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==38){s->fifo[SVGA_FIFO_3D_CAPS]=0x0018ec1f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==39){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==40){s->fifo[SVGA_FIFO_3D_CAPS]=0x00006007;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==41){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==42){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==43){s->fifo[SVGA_FIFO_3D_CAPS]=0x000040c5;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==44){s->fifo[SVGA_FIFO_3D_CAPS]=0x000040c5;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==45){s->fifo[SVGA_FIFO_3D_CAPS]=0x000040c5;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==46){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000e005;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==47){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000e005;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==48){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000e005;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==49){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000e005;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==50){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000e005;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==51){s->fifo[SVGA_FIFO_3D_CAPS]=0x00014005;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==52){s->fifo[SVGA_FIFO_3D_CAPS]=0x00014007;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==53){s->fifo[SVGA_FIFO_3D_CAPS]=0x00014007;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==54){s->fifo[SVGA_FIFO_3D_CAPS]=0x00014005;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==55){s->fifo[SVGA_FIFO_3D_CAPS]=0x00014001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==56){s->fifo[SVGA_FIFO_3D_CAPS]=0x0080601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==57){s->fifo[SVGA_FIFO_3D_CAPS]=0x0080601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==58){s->fifo[SVGA_FIFO_3D_CAPS]=0x0080601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==59){s->fifo[SVGA_FIFO_3D_CAPS]=0x0080601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==60){s->fifo[SVGA_FIFO_3D_CAPS]=0x0080601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==61){s->fifo[SVGA_FIFO_3D_CAPS]=0x0080601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==62){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==63){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000004;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==64){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000008;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==65){s->fifo[SVGA_FIFO_3D_CAPS]=0x00014007;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==66){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==67){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000601f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==68){s->fifo[SVGA_FIFO_3D_CAPS]=0x01246000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==69){s->fifo[SVGA_FIFO_3D_CAPS]=0x01246000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==70){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==71){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==72){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==73){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==74){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==75){s->fifo[SVGA_FIFO_3D_CAPS]=0x01246000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==76){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==77){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000100;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==78){s->fifo[SVGA_FIFO_3D_CAPS]=0x00008000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==79){s->fifo[SVGA_FIFO_3D_CAPS]=0x000040c5;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==80){s->fifo[SVGA_FIFO_3D_CAPS]=0x000040c5;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==81){s->fifo[SVGA_FIFO_3D_CAPS]=0x000040c5;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==82){s->fifo[SVGA_FIFO_3D_CAPS]=0x00006005;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==83){s->fifo[SVGA_FIFO_3D_CAPS]=0x00006005;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==84){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==85){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==86){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==87){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==88){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==89){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000000a;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==90){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000000a;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==91){s->fifo[SVGA_FIFO_3D_CAPS]=0x01246000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==92){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==93){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==94){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==95){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==96){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==97){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000010;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==98){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000000f;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==99){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==100){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==101){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==102){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==103){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==104){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==105){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==106){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000009;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==107){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000026b;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==108){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000026b;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==109){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000000b;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==110){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==111){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==112){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==113){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==114){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==115){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==116){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==117){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==118){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==119){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==120){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==121){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==122){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==123){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==124){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==125){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==126){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==127){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==128){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==129){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==130){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==131){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==132){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==133){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==134){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==135){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==136){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==137){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000026b;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==138){s->fifo[SVGA_FIFO_3D_CAPS]=0x000001e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==139){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==140){s->fifo[SVGA_FIFO_3D_CAPS]=0x000001f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==141){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==142){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000041;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==143){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000041;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==144){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==145){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==146){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==147){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==148){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==149){s->fifo[SVGA_FIFO_3D_CAPS]=0x000001e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==150){s->fifo[SVGA_FIFO_3D_CAPS]=0x000001e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==151){s->fifo[SVGA_FIFO_3D_CAPS]=0x000001e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==152){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==153){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==154){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==155){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==156){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==157){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==158){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==159){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000261;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==160){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000269;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==161){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==162){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==163){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==164){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==165){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==166){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==167){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==168){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==169){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==170){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==171){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==172){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==173){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==174){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==175){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000269;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==176){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==177){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==178){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000261;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==179){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000269;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==180){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==181){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==182){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==183){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==184){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==185){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==186){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==187){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==188){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==189){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==190){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==191){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==192){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==193){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==194){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==195){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003e7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==196){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==197){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==198){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==199){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==200){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==201){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==202){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==203){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==204){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==205){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==206){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==207){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==208){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==209){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==210){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000063;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==211){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==212){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000045;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==213){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==214){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==215){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==216){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==217){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000006b;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==218){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000006b;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==219){s->fifo[SVGA_FIFO_3D_CAPS]=0x0000006b;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==220){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==221){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==222){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==223){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==224){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==225){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==226){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==227){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==228){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==229){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==230){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==231){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==232){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==233){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000269;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==234){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==235){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==236){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==237){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==238){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==239){s->fifo[SVGA_FIFO_3D_CAPS]=0x000002f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==240){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==241){s->fifo[SVGA_FIFO_3D_CAPS]=0x000003f7;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==242){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==243){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==244){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==245){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==246){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==247){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==248){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==249){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==250){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==251){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==252){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==253){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==254){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e1;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==255){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==256){s->fifo[SVGA_FIFO_3D_CAPS]=0x000000e3;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==257){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==258){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==259){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==260){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000010;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]==261){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
+if(s->fifo[SVGA_FIFO_3D_CAPS]>=262){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
+
 		vmsvga_update_rect(s, cx, cy, s->new_width, s->new_height);
 	};
 };
@@ -1197,6 +1464,22 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         ret = 3145728;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB register %d with the return of %u\n", __func__, s->index, ret);
+#endif
+        break;
+
+#define SVGA_REG_MSHINT 81
+    case SVGA_REG_MSHINT:
+        ret = 0x1;
+#ifdef VERBOSE
+        printf("%s: SVGA_REG_MSHINT register %d with the return of %u\n", __func__, s->index, ret);
+#endif
+        break;
+
+#define SVGA_REG_MAX_PRIMARY_MEM 50
+    case SVGA_REG_MAX_PRIMARY_MEM:
+        ret = 134217728;
+#ifdef VERBOSE
+        printf("%s: SVGA_REG_MAX_PRIMARY_MEM register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
@@ -1513,7 +1796,7 @@ cap2 |= SVGA_CAP2_RESERVED;
             break;
         }
         printf("%s: Bad register %d\n", __func__, s->index);
-        ret = 1;
+        ret = 0;
 #ifdef VERBOSE
         printf("%s: default register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -1591,9 +1874,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         }
 */
         if (s->enable) {
-                s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
-                s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
-        }
+                s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;        }
 #ifdef VERBOSE
         printf("%s: SVGA_REG_ENABLE register %d with the value of %u\n", __func__, s->index, value);
 #endif
@@ -1686,6 +1967,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 
     case SVGA_REG_PITCHLOCK:
        s->pitchlock = value;
+	s->fifo[SVGA_FIFO_PITCHLOCK] = value;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_PITCHLOCK register %d with the value of %u\n", __func__, s->index, value);
 #endif
@@ -2158,14 +2440,14 @@ static void vmsvga_reset(DeviceState *dev)
     s->index = 0;
     s->enable = 0;
     s->config = 0;
-    s->svgaid = SVGA_ID_2;
+    s->svgaid = SVGA_ID_INVALID;
     s->cursor.on = 0;
     s->redraw_fifo_last = 0;
     s->syncing = 0;
     s->irq_mask = 0;
     s->irq_status = 0;
     s->last_fifo_cursor_count = 0;
-    s->display_id = SVGA_ID_2;
+    s->display_id = SVGA_ID_INVALID;
     s->pitchlock = 0;
 
     vga_dirty_log_start(&s->vga);
@@ -2201,7 +2483,7 @@ static int vmsvga_post_load(void *opaque, int version_id)
         s->irq_mask = 0;
         s->irq_status = 0;
         s->last_fifo_cursor_count = 0;
-        s->display_id = SVGA_ID_2;
+        s->display_id = SVGA_ID_INVALID;
         s->pitchlock = 0;
     }
 
@@ -2271,6 +2553,8 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
                            &error_fatal);
     s->fifo = (uint32_t *)memory_region_get_ram_ptr(&s->fifo_ram);
     s->num_fifo_regs = SVGA_FIFO_NUM_REGS;
+    s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
+    s->fifo[SVGA_FIFO_BUSY] = 0;
     s->fifo[SVGA_FIFO_CAPABILITIES] =
       SVGA_FIFO_CAP_NONE | 
       SVGA_FIFO_CAP_FENCE | 
@@ -2286,12 +2570,11 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
 #ifdef VERBOSE
       SVGA_FIFO_CAP_GMR2 | 
 #endif
-      SVGA_FIFO_CAP_3D_HWVERSION_REVISED | 
 #ifdef VERBOSE
       SVGA_FIFO_CAP_SCREEN_OBJECT_2 | 
 #endif
       SVGA_FIFO_CAP_DEAD;
-    s->fifo[SVGA_FIFO_FLAGS] = 0;
+    s->fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
 
     vga_common_init(&s->vga, OBJECT(dev), &error_fatal);
     vga_init(&s->vga, OBJECT(dev), address_space, io, true);
