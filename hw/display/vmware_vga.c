@@ -520,9 +520,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
     uint32_t cmd_start;
     uint32_t fence_arg;
     uint32_t flags, num_pages;
-//    bool cmd_ignored;
-    bool irq_pending = false;
-    bool fifo_progress = false;
 
     len = vmsvga_fifo_length(s);
     while (len > 0 && --maxloop > 0) {
@@ -701,27 +698,17 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             fence_arg = vmsvga_fifo_read(s);
             s->fifo[SVGA_FIFO_FENCE] = cpu_to_le32(fence_arg);
 
-            if (s->irq_mask & SVGA_IRQFLAG_ANY_FENCE) {
+            if (s->irq_mask & (SVGA_IRQFLAG_FIFO_PROGRESS)) {
+                s->irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
+            }
+
+            if (s->irq_mask & (SVGA_IRQFLAG_ANY_FENCE)) {
                 s->irq_status |= SVGA_IRQFLAG_ANY_FENCE;
-                irq_pending = true;
             }
 
-            if ((s->irq_mask & SVGA_IRQFLAG_FENCE_GOAL)
-               && (s->fifo_min > SVGA_FIFO_FENCE_GOAL)
-               && (s->fifo[SVGA_FIFO_FENCE_GOAL] == fence_arg)) {
-                s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
-                irq_pending = true;
-            }
-
-            if ((s->irq_mask & SVGA_IRQFLAG_FENCE_GOAL)
-               && (s->fifo_min > s->fg)
-               && (s->fg == fence_arg)) {
-                s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
-                irq_pending = true;
-            }
 
 #ifdef VERBOSE
-        printf("%s: SVGA_CMD_FENCE command in SVGA command FIFO %d \n", __func__, fence_arg);
+        printf("%s: SVGA_CMD_FENCE command in SVGA command FIFO %d %d %d \n", __func__, fence_arg, s->irq_mask, s->irq_status);
 #endif
             break;
 
@@ -946,22 +933,13 @@ UnknownCommandAN=vmsvga_fifo_read(s);
             break;
         }
 
-        if (s->fifo_stop != cmd_start)
-            fifo_progress = true;
-
-    }
-
-    if ((s->irq_mask & SVGA_IRQFLAG_FIFO_PROGRESS) &&
-        fifo_progress) {
-        s->irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
-        irq_pending = true;
     }
 
     s->syncing = 0;
 
     /* Need to raise irq ? */
 
-    if (irq_pending && (s->irq_status & s->irq_mask)) {
+    if ((((s->irq_status & SVGA_IRQFLAG_ANY_FENCE) || (s->irq_status & SVGA_IRQFLAG_FIFO_PROGRESS)) && (s->irq_status & s->irq_mask)) || (s->irq_mask & SVGA_IRQFLAG_FIFO_PROGRESS)) {
         struct pci_vmsvga_state_s *pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
         pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
     }
