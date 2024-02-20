@@ -656,6 +656,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             cursor.and_mask_bpp = 32;
             cursor.xor_mask_bpp = 32;
             args = x * y;
+            if ((SVGA_PIXMAP_SIZE(x, y, 32) > ARRAY_SIZE(cursor.and_mask))
+               || (SVGA_PIXMAP_SIZE(x, y, 32) > ARRAY_SIZE(cursor.xor_mask))) {
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command in SVGA command FIFO %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height);
+#endif
+                    break;
+            }
 
             len -= args;
             if (len < 0) {
