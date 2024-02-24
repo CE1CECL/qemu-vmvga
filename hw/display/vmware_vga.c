@@ -695,12 +695,10 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
                 goto rewind;
             }
 
-            #define VMSVGA_IS_VALID_FIFO_REG(a_iIndex, a_offFifoMin) ( ((a_iIndex) + 1) * sizeof(uint32_t) <= (a_offFifoMin) )
-
             fence_arg = vmsvga_fifo_read(s);
             s->fifo[SVGA_FIFO_FENCE] = cpu_to_le32(fence_arg);
 
-            if (VMSVGA_IS_VALID_FIFO_REG(SVGA_FIFO_FENCE, s->fifo_min)) {
+            if (( ((SVGA_FIFO_FENCE) + 1) * sizeof(uint32_t) <= (s->fifo_min) )) {
 #ifdef VERBOSE
         printf("VMSVGA_IS_VALID_FIFO_REG=Y\n");
 #endif
@@ -709,7 +707,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
         printf("s->irq_status |= SVGA_IRQFLAG_ANY_FENCE\n");
 #endif
                 s->irq_status |= SVGA_IRQFLAG_ANY_FENCE;
-            } else if (VMSVGA_IS_VALID_FIFO_REG(SVGA_FIFO_FENCE_GOAL, s->fifo_min) && (s->irq_mask & SVGA_IRQFLAG_FENCE_GOAL) && s->fifo[SVGA_FIFO_FENCE_GOAL] == fence_arg) {
+            } else if (( ((SVGA_FIFO_FENCE) + 1) * sizeof(uint32_t) <= (s->fifo_min) ) && (s->irq_mask & SVGA_IRQFLAG_FENCE_GOAL) && s->fifo[SVGA_FIFO_FENCE_GOAL] == fence_arg) {
 #ifdef VERBOSE
         printf("s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
 #endif
