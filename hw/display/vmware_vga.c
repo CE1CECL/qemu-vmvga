@@ -98,8 +98,8 @@ struct vmsvga_state_s {
     uint32_t thread;
     uint32_t fg;
     uint32_t pcisetirq;
+    int syncin;
     int syncing;
-    int syncbusy;
 
     MemoryRegion fifo_ram;
     unsigned int fifo_size;
@@ -947,7 +947,6 @@ UnknownCommandAN=vmsvga_fifo_read(s);
 
     }
 
-    s->syncing = 0;
 
             if (s->irq_mask & (SVGA_IRQFLAG_FIFO_PROGRESS)) {
 #ifdef VERBOSE
@@ -971,6 +970,8 @@ UnknownCommandAN=vmsvga_fifo_read(s);
 		s->pcisetirq=0;
 	}
 
+    s->syncin = 0;
+    s->syncing = 0;
 }
 
 static uint32_t vmsvga_index_read(void *opaque, uint32_t address)
@@ -1599,7 +1600,7 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     case SVGA_REG_BUSY:
-        ret = s->syncbusy;
+        ret = s->syncing;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_BUSY register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -1924,7 +1925,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_SYNC:
-        vmsvga_fifo_run(s); /* Or should we just wait for update_display? */
         s->syncing = value;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_SYNC register %d with the value of %u\n", __func__, s->index, value);
@@ -1932,7 +1932,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_BUSY:
-        s->syncbusy = value;
+        s->syncing = value;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_BUSY register %d with the value of %u\n", __func__, s->index, value);
 #endif
@@ -2454,10 +2454,13 @@ static void vmsvga_update_display(void *opaque)
         return;
     }
 
-    vmsvga_check_size(s);
-
-    vmsvga_fifo_run(s);
-    cursor_update_from_fifo(s);
+    if (s->syncin == 0) {
+        s->syncin = 1;
+        s->syncing = 1;
+        vmsvga_check_size(s);
+        vmsvga_fifo_run(s);
+        cursor_update_from_fifo(s);
+    }
 
 	if (s->thread != 1) {
 		s->thread = 1;
