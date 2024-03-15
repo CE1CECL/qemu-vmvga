@@ -97,6 +97,20 @@ struct vmsvga_state_s {
     uint32_t svgaid;
     uint32_t thread;
     uint32_t fg;
+    uint32_t pcisetirq;
+    uint32_t pcisetirq0;
+    uint32_t pcisetirq1;
+    uint32_t sync1;
+    uint32_t sync2;
+    uint32_t sync3;
+    uint32_t sync4;
+    uint32_t sync5;
+    uint32_t sync6;
+    uint32_t sync7;
+    uint32_t sync8;
+    uint32_t sync9;
+    uint32_t sync0;
+    uint32_t sync;
     int syncing;
 
     MemoryRegion fifo_ram;
@@ -144,16 +158,20 @@ static void cursor_update_from_fifo(struct vmsvga_state_s *s)
     uint32_t on_off;
 
     if (s->config != 1 || s->enable != 1) {
+    	s->sync3--;
         return;
     }
 	s->fifo[SVGA_FIFO_CURSOR_SCREEN_ID] = SVGA_ID_INVALID;
     if (s->fifo_min <= SVGA_FIFO_CURSOR_LAST_UPDATED) {
+    	s->sync3--;
         return;
     }
 
-    fifo_cursor_count = s->fifo[SVGA_FIFO_CURSOR_COUNT];
+    fifo_cursor_count = s->fifo[SVGA_FIFO_CURSOR_COUNT]; {
     if (fifo_cursor_count == s->last_fifo_cursor_count)
+    	s->sync3--;
         return;
+    }
 
     s->last_fifo_cursor_count = fifo_cursor_count;
     on_off = s->fifo[SVGA_FIFO_CURSOR_ON] ? SVGA_CURSOR_ON_SHOW : SVGA_CURSOR_ON_HIDE;
@@ -162,6 +180,7 @@ static void cursor_update_from_fifo(struct vmsvga_state_s *s)
     s->cursor.y = s->fifo[SVGA_FIFO_CURSOR_Y];
 
     dpy_mouse_set(s->vga.con, s->cursor.x, s->cursor.y, s->cursor.on);
+    s->sync3--;
 }
 
 static inline bool vmsvga_verify_rect(DisplaySurface *surface,
@@ -703,12 +722,14 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
 #endif
                 s->irq_status |= SVGA_IRQFLAG_ANY_FENCE;
             }
+
             if ((s->irq_mask & SVGA_IRQFLAG_FENCE_GOAL) && (s->fifo[SVGA_FIFO_FENCE_GOAL] == fence_arg || s->fg == fence_arg)) {
 #ifdef VERBOSE
         printf("s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
 #endif
                 s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
             }
+
 #ifdef VERBOSE
         printf("%s: SVGA_CMD_FENCE command in SVGA command FIFO %d %d %d %d \n", __func__, fence_arg, s->irq_mask, s->irq_status, cpu_to_le32(fence_arg));
 #endif
@@ -946,28 +967,46 @@ UnknownCommandAN=vmsvga_fifo_read(s);
             }
 
         struct pci_vmsvga_state_s *pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
-	if ((s->irq_mask & s->irq_status)) {
+	if ( ((s->irq_mask & s->irq_status)) && ((s->pcisetirq0 > s->pcisetirq1)) && ((s->pcisetirq == 0)) ) {
 #ifdef VERBOSE
         printf("Pci_set_irq=1\n");
 #endif
 	       pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
+		s->pcisetirq1++;
+		s->pcisetirq=1;
+	} else {
+#ifdef VERBOSE
+        printf("Pci_set_irq=0\n");
+#endif
+	       pci_set_irq(PCI_DEVICE(pci_vmsvga), 0);
+		s->pcisetirq0++;
+		s->pcisetirq=0;
 	}
 
     s->syncing = 0;
+    s->sync2--;
 }
 
 static uint32_t vmsvga_index_read(void *opaque, uint32_t address)
 {
     struct vmsvga_state_s *s = opaque;
+#ifdef VERBOSE
+        printf("%s: vmsvga_index_read\n", __func__);
+#endif
 
+        s->sync4--;
     return s->index;
 }
 
 static void vmsvga_index_write(void *opaque, uint32_t address, uint32_t index)
 {
     struct vmsvga_state_s *s = opaque;
+#ifdef VERBOSE
+        printf("%s: vmsvga_index_write\n", __func__);
+#endif
 
     s->index = index;
+        s->sync8--;
 }
 
 void *vmsvga_fifo_hack(void *arg);
@@ -1254,8 +1293,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
     uint32_t caps;
     uint32_t cap2;
     struct vmsvga_state_s *s = opaque;
-//    DisplaySurface *surface = qemu_console_surface(s->vga.con);
-//    PixelFormat pf;
     uint32_t ret;
 
 #ifdef VERBOSE
@@ -1807,6 +1844,7 @@ cap2 |= SVGA_CAP2_RESERVED;
     }
 */
         trace_vmware_value_read(s->index, ret);
+        s->sync5--;
     return ret;
 }
 
@@ -1973,16 +2011,20 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
     struct pci_vmsvga_state_s *pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
     PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
 
-	if ((s->irq_status & value)) {
+	if ( ((value & s->irq_status)) && ((s->pcisetirq0 > s->pcisetirq1)) && ((s->pcisetirq == 0)) ) {
 #ifdef VERBOSE
         printf("pci_set_irq=1\n");
 #endif
 	       pci_set_irq(pci_dev, 1);
-	} else if ((!(s->irq_status & value))) {
+		s->pcisetirq1++;
+		s->pcisetirq=1;
+	} else {
 #ifdef VERBOSE
         printf("pci_set_irq=0\n");
 #endif
 	       pci_set_irq(pci_dev, 0);
+		s->pcisetirq0++;
+		s->pcisetirq=0;
 	}
 #ifdef VERBOSE
         printf("%s: SVGA_REG_IRQMASK register %d with the value of %u\n", __func__, s->index, value);
@@ -2353,40 +2395,65 @@ if(value>=262){s->devcap_val=0x00000000;};
         printf("%s: default register %d with the value of %u\n", __func__, s->index, value);
 #endif
     }
+        s->sync9--;
 }
 
 static uint32_t vmsvga_irqstatus_read(void *opaque, uint32_t address)
 {
     struct vmsvga_state_s *s = opaque;
+#ifdef VERBOSE
+        printf("%s: vmsvga_irqstatus_read\n", __func__);
+#endif
+        s->sync7--;
     return s->irq_status;
 }
 
-static void vmsvga_irqstatus_write(void *opaque, uint32_t address, uint32_t data)
+static void vmsvga_irqstatus_write(void *opaque, uint32_t address, uint32_t data) 
 {
+
     struct vmsvga_state_s *s = opaque;
     struct pci_vmsvga_state_s *pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
     PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
     s->irq_status &= ~data;
-
-	if ((!(s->irq_status & s->irq_mask))) {
 #ifdef VERBOSE
-        printf("Pci_set_irq=0\n");
+        printf("%s: vmsvga_irqstatus_write %d\n", __func__, data);
+#endif
+
+	if ( (( ~data == 0 )) && ((s->pcisetirq0 > s->pcisetirq1)) && ((s->pcisetirq == 0)) ) {
+#ifdef VERBOSE
+        printf("Pci_set_irq=I\n");
+#endif
+	       pci_set_irq(pci_dev, 1);
+		s->pcisetirq1++;
+		s->pcisetirq=1;
+	} else {
+#ifdef VERBOSE
+        printf("Pci_set_irq=O\n");
 #endif
 	       pci_set_irq(pci_dev, 0);
+		s->pcisetirq0++;
+		s->pcisetirq=0;
 	}
-
+        s->sync--;
 }
 
 static uint32_t vmsvga_bios_read(void *opaque, uint32_t address)
 {
+    struct vmsvga_state_s *s = opaque;
+#ifdef VERBOSE
+        printf("%s: vmsvga_bios_read\n", __func__);
+#endif
+        s->sync6--;
     return 0;
 }
 
 static void vmsvga_bios_write(void *opaque, uint32_t address, uint32_t data)
 {
+    struct vmsvga_state_s *s = opaque;
 #ifdef VERBOSE
-        printf("%s: vmsvga_bios_write %x\n", __func__, data);
+        printf("%s: vmsvga_bios_write %d\n", __func__, data);
 #endif
+        s->sync0--;
 }
 
 static inline void vmsvga_check_size(struct vmsvga_state_s *s)
@@ -2395,10 +2462,12 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
     uint32_t new_stride;
 
 	if (s->new_width == 0) {
+    		s->sync1--;
 		return;
 	};
 
 	if (s->new_height == 0) {
+    		s->sync1--;
 		return;
 	};
 
@@ -2415,6 +2484,7 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
         dpy_gfx_replace_surface(s->vga.con, surface);
         s->invalidated = 1;
     }
+    s->sync1--;
 }
 
 static void vmsvga_update_display(void *opaque)
@@ -2427,12 +2497,18 @@ static void vmsvga_update_display(void *opaque)
         return;
     }
 
-    //if (s->syncing == 0) {
-    //    s->syncing = 1;
+    if (s->sync1 < 1) {
+        s->sync1++;
         vmsvga_check_size(s);
+    }
+    if (s->sync2 < 1) {
+        s->sync2++;
         vmsvga_fifo_run(s);
+    }
+    if (s->sync3 < 1) {
+        s->sync3++;
         cursor_update_from_fifo(s);
-    //}
+    }
 
 	if (s->thread != 1) {
 		s->thread = 1;
@@ -2626,11 +2702,36 @@ static uint64_t vmsvga_io_read(void *opaque, hwaddr addr, unsigned size)
     struct vmsvga_state_s *s = opaque;
 
     switch (addr) {
-    case 1 * SVGA_INDEX_PORT: return vmsvga_index_read(s, addr);
-    case 1 * SVGA_VALUE_PORT: return vmsvga_value_read(s, addr);
-    case 1 * SVGA_BIOS_PORT: return vmsvga_bios_read(s, addr);
-    case 1 * SVGA_IRQSTATUS_PORT: return vmsvga_irqstatus_read(s, addr);
-    default: return -1u;
+    case 1 * SVGA_INDEX_PORT: 
+      if (s->sync4 < 1) {
+        s->sync4++;
+        return vmsvga_index_read(s, addr);
+      } else {
+        return 0;
+      }
+    case 1 * SVGA_VALUE_PORT:
+      if (s->sync5 < 1) {
+        s->sync5++;
+        return vmsvga_value_read(s, addr);
+      } else {
+        return 0;
+      }
+    case 1 * SVGA_BIOS_PORT:
+      if (s->sync6 < 1) {
+        s->sync6++;
+        return vmsvga_bios_read(s, addr);
+      } else {
+        return 0;
+      }
+    case 1 * SVGA_IRQSTATUS_PORT:
+      if (s->sync7 < 1) {
+        s->sync7++;
+        return vmsvga_irqstatus_read(s, addr);
+      } else {
+        return 0;
+      }
+    default:
+      return 0;
     }
 }
 
@@ -2641,17 +2742,29 @@ static void vmsvga_io_write(void *opaque, hwaddr addr,
 
     switch (addr) {
     case 1 * SVGA_INDEX_PORT:
+      if (s->sync8 < 1) {
+        s->sync8++;
         vmsvga_index_write(s, addr, data);
-        break;
+      }
+      break;
     case 1 * SVGA_VALUE_PORT:
+      if (s->sync9 < 1) {
+        s->sync9++;
         vmsvga_value_write(s, addr, data);
-        break;
+      }
+      break;
     case 1 * SVGA_BIOS_PORT:
+      if (s->sync0 < 1) {
+        s->sync0++;
         vmsvga_bios_write(s, addr, data);
-        break;
+      }
+      break;
     case 1 * SVGA_IRQSTATUS_PORT:
+      if (s->sync < 1) {
+        s->sync++;
         vmsvga_irqstatus_write(s, addr, data);
-        break;
+      }
+      break;
     }
 }
 
