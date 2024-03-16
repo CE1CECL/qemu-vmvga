@@ -167,8 +167,8 @@ static void cursor_update_from_fifo(struct vmsvga_state_s *s)
         return;
     }
 
-    fifo_cursor_count = s->fifo[SVGA_FIFO_CURSOR_COUNT]; {
-    if (fifo_cursor_count == s->last_fifo_cursor_count)
+    fifo_cursor_count = s->fifo[SVGA_FIFO_CURSOR_COUNT];
+    if (fifo_cursor_count == s->last_fifo_cursor_count) {
     	s->sync3--;
         return;
     }
@@ -721,9 +721,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
         printf("s->irq_status |= SVGA_IRQFLAG_ANY_FENCE\n");
 #endif
                 s->irq_status |= SVGA_IRQFLAG_ANY_FENCE;
-            }
-
-            if ((s->irq_mask & SVGA_IRQFLAG_FENCE_GOAL) && (s->fifo[SVGA_FIFO_FENCE_GOAL] == fence_arg || s->fg == fence_arg)) {
+            } else if ((s->irq_mask & SVGA_IRQFLAG_FENCE_GOAL) && (s->fifo[SVGA_FIFO_FENCE_GOAL] == fence_arg || s->fg == fence_arg)) {
 #ifdef VERBOSE
         printf("s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
 #endif
@@ -2419,14 +2417,7 @@ static void vmsvga_irqstatus_write(void *opaque, uint32_t address, uint32_t data
         printf("%s: vmsvga_irqstatus_write %d\n", __func__, data);
 #endif
 
-	if ( (( ~data == 0 )) && ((s->pcisetirq0 > s->pcisetirq1)) && ((s->pcisetirq == 0)) ) {
-#ifdef VERBOSE
-        printf("Pci_set_irq=I\n");
-#endif
-	       pci_set_irq(pci_dev, 1);
-		s->pcisetirq1++;
-		s->pcisetirq=1;
-	} else {
+	if ( (!(s->irq_mask & s->irq_status)) ) {
 #ifdef VERBOSE
         printf("Pci_set_irq=O\n");
 #endif
