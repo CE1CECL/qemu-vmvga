@@ -188,52 +188,34 @@ static inline bool vmsvga_verify_rect(DisplaySurface *surface,
                                       int x, int y, int w, int h)
 {
     if (x < 0) {
-        trace_vmware_verify_rect_less_than_zero(name, "x", x);
         return false;
     }
     if (x > SVGA_MAX_WIDTH) {
-        trace_vmware_verify_rect_greater_than_bound(name, "x", SVGA_MAX_WIDTH,
-                                                    x);
         return false;
     }
     if (w < 0) {
-        trace_vmware_verify_rect_less_than_zero(name, "w", w);
         return false;
     }
     if (w > SVGA_MAX_WIDTH) {
-        trace_vmware_verify_rect_greater_than_bound(name, "w", SVGA_MAX_WIDTH,
-                                                    w);
         return false;
     }
     if (x + w > surface_width(surface)) {
-        trace_vmware_verify_rect_surface_bound_exceeded(name, "width",
-                                                        surface_width(surface),
-                                                        "x", x, "w", w);
         return false;
     }
 
     if (y < 0) {
-        trace_vmware_verify_rect_less_than_zero(name, "y", y);
         return false;
     }
     if (y > SVGA_MAX_WIDTH) {
-        trace_vmware_verify_rect_greater_than_bound(name, "y", SVGA_MAX_HEIGHT,
-                                                    y);
         return false;
     }
     if (h < 0) {
-        trace_vmware_verify_rect_less_than_zero(name, "h", h);
         return false;
     }
     if (h > SVGA_MAX_HEIGHT) {
-        trace_vmware_verify_rect_greater_than_bound(name, "y", SVGA_MAX_HEIGHT,
-                                                    y);
         return false;
     }
     if (y + h > surface_height(surface)) {
-        trace_vmware_verify_rect_surface_bound_exceeded(name, "height",
-                                                        surface_height(surface),
-                                                        "y", y, "h", h);
         return false;
     }
 
@@ -965,7 +947,7 @@ UnknownCommandAN=vmsvga_fifo_read(s);
             }
 
         struct pci_vmsvga_state_s *pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
-	if ( ((s->irq_mask & s->irq_status)) && ((s->pcisetirq0 > s->pcisetirq1)) && ((s->pcisetirq == 0)) ) {
+	if ( ((s->irq_mask & s->irq_status)) && ((s->pcisetirq0 > s->pcisetirq1)) && ((s->pcisetirq == 0)) && ((s->irq_status != SVGA_IRQFLAG_COMMAND_BUFFER)) && ((s->irq_status != SVGA_IRQFLAG_ERROR)) ) {
 #ifdef VERBOSE
         printf("Pci_set_irq=1\n");
 #endif
@@ -1820,11 +1802,6 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     default:
-        if (s->index >= SVGA_SCRATCH_BASE &&
-            s->index < SVGA_SCRATCH_BASE + s->scratch_size) {
-            ret = s->scratch[s->index - SVGA_SCRATCH_BASE];
-            break;
-        }
         printf("%s: Bad register %d\n", __func__, s->index);
         ret = 0;
 #ifdef VERBOSE
@@ -1832,16 +1809,7 @@ cap2 |= SVGA_CAP2_RESERVED;
 #endif
         break;
     }
-/*
-    if (s->index >= SVGA_SCRATCH_BASE) {
-        trace_vmware_scratch_read(s->index, ret);
-    } else if (s->index >= SVGA_PALETTE_BASE) {
-        trace_vmware_palette_read(s->index, ret);
-    } else {
-        trace_vmware_value_read(s->index, ret);
-    }
-*/
-        trace_vmware_value_read(s->index, ret);
+
         s->sync5--;
     return ret;
 }
@@ -1849,17 +1817,6 @@ cap2 |= SVGA_CAP2_RESERVED;
 static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 {
     struct vmsvga_state_s *s = opaque;
-
-/*
-    if (s->index >= SVGA_SCRATCH_BASE) {
-        trace_vmware_scratch_write(s->index, value);
-    } else if (s->index >= SVGA_PALETTE_BASE) {
-        trace_vmware_palette_write(s->index, value);
-    } else {
-        trace_vmware_value_write(s->index, value);
-    }
-*/
-        trace_vmware_value_write(s->index, value);
 
 #ifdef VERBOSE
         printf("%s: Unknown register %d with the value of %u\n", __func__, s->index, value);
@@ -1896,14 +1853,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 
     case SVGA_REG_ENABLE:
         s->enable = value;
-/*
-        s->vga.hw_ops->invalidate(&s->vga);
-        if (s->enable || s->config) {
-            vga_dirty_log_stop(&s->vga);
-        } else {
-            vga_dirty_log_start(&s->vga);
-        }
-*/
         if (s->enable) {
                 s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;        }
 #ifdef VERBOSE
@@ -1933,9 +1882,6 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
         break;
 
     case SVGA_REG_CONFIG_DONE:
-//        if (value) {
-//            vga_dirty_log_stop(&s->vga);
-//        }
         s->config = value;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_CONFIG_DONE register %d with the value of %u\n", __func__, s->index, value);
@@ -2009,7 +1955,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
     struct pci_vmsvga_state_s *pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
     PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
 
-	if ( ((value & s->irq_status)) && ((s->pcisetirq0 > s->pcisetirq1)) && ((s->pcisetirq == 0)) ) {
+	if ( ((value & s->irq_status)) && ((s->pcisetirq0 > s->pcisetirq1)) && ((s->pcisetirq == 0)) && ((s->irq_status != SVGA_IRQFLAG_COMMAND_BUFFER)) && ((s->irq_status != SVGA_IRQFLAG_ERROR)) ) {
 #ifdef VERBOSE
         printf("pci_set_irq=1\n");
 #endif
@@ -2383,11 +2329,6 @@ if(value>=262){s->devcap_val=0x00000000;};
         break;
 
     default:
-        if (s->index >= SVGA_SCRATCH_BASE &&
-                s->index < SVGA_SCRATCH_BASE + s->scratch_size) {
-            s->scratch[s->index - SVGA_SCRATCH_BASE] = value;
-            break;
-        }
         printf("%s: Bad register %d with the value of %u\n", __func__, s->index, value);
 #ifdef VERBOSE
         printf("%s: default register %d with the value of %u\n", __func__, s->index, value);
@@ -2403,7 +2344,7 @@ static uint32_t vmsvga_irqstatus_read(void *opaque, uint32_t address)
         printf("%s: vmsvga_irqstatus_read\n", __func__);
 #endif
         s->sync7--;
-    return s->irq_status;
+    return s->irq_status + SVGA_IRQFLAG_COMMAND_BUFFER;
 }
 
 static void vmsvga_irqstatus_write(void *opaque, uint32_t address, uint32_t data) 
@@ -2468,7 +2409,6 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
         (new_stride != surface_stride(surface)) ||
         s->new_depth != surface_bits_per_pixel(surface)) {
         pixman_format_code_t format = qemu_default_pixman_format(s->new_depth, true);
-        trace_vmware_setmode(s->new_width, s->new_height, s->new_depth);
         surface = qemu_create_displaysurface_from(s->new_width, s->new_height,
                                                   format, new_stride,
                                                   s->vga.vram_ptr);
@@ -2526,8 +2466,6 @@ static void vmsvga_reset(DeviceState *dev)
     s->last_fifo_cursor_count = 0;
     s->display_id = SVGA_ID_INVALID;
     s->pitchlock = 0;
-
-    vga_dirty_log_start(&s->vga);
 }
 
 static void vmsvga_invalidate_display(void *opaque)
@@ -2555,14 +2493,6 @@ static int vmsvga_post_load(void *opaque, int version_id)
     struct vmsvga_state_s *s = opaque;
 
     s->invalidated = 1;
-
-    if (version_id < 1) {
-        s->irq_mask = 0;
-        s->irq_status = 0;
-        s->last_fifo_cursor_count = 0;
-        s->display_id = SVGA_ID_INVALID;
-        s->pitchlock = 0;
-    }
 
     return 0;
 }
