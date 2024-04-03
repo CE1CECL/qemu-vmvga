@@ -62,7 +62,6 @@
 struct vmsvga_state_s {
     VGACommonState vga;
 
-    int invalidated;
     int enable;
     int config;
     struct {
@@ -2737,7 +2736,6 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
                                                   format, new_stride,
                                                   s->vga.vram_ptr);
         dpy_gfx_replace_surface(s->vga.con, surface);
-        s->invalidated = 1;
     }
     s->sync1--;
 }
