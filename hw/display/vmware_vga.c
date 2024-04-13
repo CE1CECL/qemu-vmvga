@@ -56,7 +56,6 @@
 #include "include/VGPU10ShaderTokens.h"
 #include "include/vmware_pack_begin.h"
 #include "include/vmware_pack_end.h"
-
 #include "vga_int.h"
 
 struct vmsvga_state_s {
@@ -109,6 +108,7 @@ struct vmsvga_state_s {
     uint32_t sync9;
     uint32_t sync0;
     uint32_t sync;
+    uint32_t bios;
     int syncing;
 
     MemoryRegion fifo_ram;
@@ -1686,10 +1686,10 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_DEPTH:
-	if (s->new_depth == 32) {
-	ret = 24;
+	if (s->new_depth != 32 || s->new_depth == 15 || s->new_depth == 16 || s->new_depth == 24) {
+		ret = s->new_depth;
 	} else {
-	ret = s->new_depth;
+		ret = 24;
 	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_DEPTH register %d with the return of %u\n", __func__, s->index, ret);
@@ -1697,7 +1697,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_PSEUDOCOLOR:
-        ret = 0;
+        ret = s->new_depth == 8;
 #ifdef VERBOSE
         printf("%s: SVGA_REG_PSEUDOCOLOR register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -2132,7 +2132,9 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
 
     switch (s->index) {
     case SVGA_REG_ID:
-	s->svgaid = value;
+	if (value == SVGA_ID_0 || value == SVGA_ID_1 || value == SVGA_ID_2) {
+		s->svgaid = value;
+	}
 #ifdef VERBOSE
         printf("%s: SVGA_REG_ID register %d with the value of %u\n", __func__, s->index, value);
 #endif
@@ -2162,7 +2164,8 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value)
     case SVGA_REG_ENABLE:
         s->enable = value;
         if (s->enable) {
-                s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;        }
+                s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
+        }
 #ifdef VERBOSE
         printf("%s: SVGA_REG_ENABLE register %d with the value of %u\n", __func__, s->index, value);
 #endif
@@ -2693,7 +2696,7 @@ static uint32_t vmsvga_bios_read(void *opaque, uint32_t address)
         printf("%s: vmsvga_bios_read\n", __func__);
 #endif
         s->sync6--;
-    return 0;
+    return s->bios;
 }
 
 static void vmsvga_bios_write(void *opaque, uint32_t address, uint32_t data)
@@ -2702,6 +2705,7 @@ static void vmsvga_bios_write(void *opaque, uint32_t address, uint32_t data)
 	printf("vmvga: vmsvga_bios_write was just executed\n");
 #endif
     struct vmsvga_state_s *s = opaque;
+    s->bios = data;
 #ifdef VERBOSE
         printf("%s: vmsvga_bios_write %d\n", __func__, data);
 #endif
@@ -2916,11 +2920,8 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
         s->wblue  = 0x0000f800;
         break;
     case 24:
-        s->wred   = 0x00ff0000;
-        s->wgreen = 0x0000ff00;
-        s->wblue  = 0x000000ff;
-        break;
     case 32:
+    default:
         s->wred   = 0x00ff0000;
         s->wgreen = 0x0000ff00;
         s->wblue  = 0x000000ff;
