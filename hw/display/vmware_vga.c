@@ -861,11 +861,11 @@ s->new_depth = 32;
             break;
 
         case SVGA_CMD_DISPLAY_CURSOR:
-	len -= 11;
+	len -= 3;
 #ifdef VERBOSE
 UnknownCommandC=vmsvga_fifo_read(s);
 UnknownCommandN=vmsvga_fifo_read(s);
-        printf("%s: SVGA_CMD_DISPLAY_CURSOR command in SVGA command FIFO %d %d  \n", __func__, UnknownCommandC, UnknownCommandN);
+        printf("%s: SVGA_CMD_DISPLAY_CURSOR command in SVGA command FIFO %d %d \n", __func__, UnknownCommandC, UnknownCommandN);
 #endif
             break;
 
