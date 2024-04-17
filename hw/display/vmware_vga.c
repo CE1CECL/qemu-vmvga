@@ -557,7 +557,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
     int UnknownCommandBB;
     int UnknownCommandBC;
     int UnknownCommandBD;
-    int UnknownCommandBE;
     int z, gmrIdCMD, offsetPages;
 #endif
     uint32_t cmd;
@@ -826,8 +825,8 @@ UnknownCommandBA=vmsvga_fifo_read(s);
 UnknownCommandBB=vmsvga_fifo_read(s);
 UnknownCommandBC=vmsvga_fifo_read(s);
 UnknownCommandBD=vmsvga_fifo_read(s);
-UnknownCommandBE=vmsvga_fifo_read(s);
-        printf("%s: SVGA_CMD_RECT_ROP_COPY command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, UnknownCommandAY, UnknownCommandAZ, UnknownCommandBA, UnknownCommandBB, UnknownCommandBC, UnknownCommandBD, UnknownCommandBE);
+UnknownCommandM=vmsvga_fifo_read(s);
+        printf("%s: SVGA_CMD_RECT_ROP_COPY command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, UnknownCommandAY, UnknownCommandAZ, UnknownCommandBA, UnknownCommandBB, UnknownCommandBC, UnknownCommandBD, UnknownCommandM);
 #endif
             break;
 
@@ -841,7 +840,7 @@ UnknownCommandB=vmsvga_fifo_read(s);
             break;
 
         case SVGA_CMD_DEFINE_SCREEN:
-	len -= 11;
+	len -= 10;
 #ifdef VERBOSE
 UnknownCommandD=vmsvga_fifo_read(s);
 UnknownCommandE=vmsvga_fifo_read(s);
@@ -852,11 +851,10 @@ UnknownCommandI=vmsvga_fifo_read(s);
 UnknownCommandJ=vmsvga_fifo_read(s);
 UnknownCommandK=vmsvga_fifo_read(s);
 UnknownCommandL=vmsvga_fifo_read(s);
-UnknownCommandM=vmsvga_fifo_read(s);
 s->new_width = UnknownCommandG;
 s->new_height = UnknownCommandH;
 s->new_depth = 32;
-        printf("%s: SVGA_CMD_DEFINE_SCREEN command in SVGA command FIFO %d %d %d %d %d %d %d %d %d %d \n", __func__, UnknownCommandD, UnknownCommandE, UnknownCommandF, UnknownCommandG, UnknownCommandH, UnknownCommandI, UnknownCommandJ, UnknownCommandK, UnknownCommandL, UnknownCommandM);
+        printf("%s: SVGA_CMD_DEFINE_SCREEN command in SVGA command FIFO %d %d %d %d %d %d %d %d %d \n", __func__, UnknownCommandD, UnknownCommandE, UnknownCommandF, UnknownCommandG, UnknownCommandH, UnknownCommandI, UnknownCommandJ, UnknownCommandK, UnknownCommandL);
 #endif
             break;
 
@@ -2754,6 +2752,11 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
 		return;
 	};
 
+	if (s->new_depth == 0) {
+    		s->sync1--;
+		return;
+	};
+
     new_stride = (s->new_depth * s->new_width) / 8;
     if (s->new_width != surface_width(surface) ||
         s->new_height != surface_height(surface) ||
@@ -2901,8 +2904,6 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
     vga_common_init(&s->vga, OBJECT(dev), &error_fatal);
     vga_init(&s->vga, OBJECT(dev), address_space, io, true);
     vmstate_register(NULL, 0, &vmstate_vga_common, &s->vga);
-    s->new_width = 800;
-    s->new_height = 600;
     s->new_depth = 32;
     switch (s->new_depth) {
     case 8:
