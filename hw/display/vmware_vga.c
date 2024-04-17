@@ -2980,6 +2980,29 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
         s->wblue  = 0x000000ff;
         break;
     }
+    s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
+    s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
+    s->fifo[SVGA_FIFO_BUSY] = s->syncing;
+    s->fifo[SVGA_FIFO_CAPABILITIES] =
+      SVGA_FIFO_CAP_NONE | 
+      SVGA_FIFO_CAP_FENCE | 
+      SVGA_FIFO_CAP_ACCELFRONT | 
+      SVGA_FIFO_CAP_PITCHLOCK | 
+      SVGA_FIFO_CAP_VIDEO | 
+      SVGA_FIFO_CAP_CURSOR_BYPASS_3 | 
+      SVGA_FIFO_CAP_ESCAPE | 
+      SVGA_FIFO_CAP_RESERVE | 
+#ifdef VERBOSE
+      SVGA_FIFO_CAP_SCREEN_OBJECT | 
+#endif
+#ifdef VERBOSE
+      SVGA_FIFO_CAP_GMR2 | 
+#endif
+#ifdef VERBOSE
+      SVGA_FIFO_CAP_SCREEN_OBJECT_2 | 
+#endif
+      SVGA_FIFO_CAP_DEAD;
+    s->fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
 }
 
 static uint64_t vmsvga_io_read(void *opaque, hwaddr addr, unsigned size)
