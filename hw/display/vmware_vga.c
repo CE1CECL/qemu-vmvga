@@ -621,7 +621,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
             break;
 
         case SVGA_CMD_RECT_FILL:
-            len -= 7;
+            len -= 6;
             if (len < 0) {
                 goto rewind;
             }
@@ -631,13 +631,12 @@ UnknownCommandAR=vmsvga_fifo_read(s);
 UnknownCommandAS=vmsvga_fifo_read(s);
 UnknownCommandAT=vmsvga_fifo_read(s);
 UnknownCommandAU=vmsvga_fifo_read(s);
-UnknownCommandAV=vmsvga_fifo_read(s);
-        printf("%s: SVGA_CMD_RECT_FILL command in SVGA command FIFO %d %d %d %d %d %d \n", __func__, UnknownCommandAQ, UnknownCommandAR, UnknownCommandAS, UnknownCommandAT, UnknownCommandAU, UnknownCommandAV);
+        printf("%s: SVGA_CMD_RECT_FILL command in SVGA command FIFO %d %d %d %d %d \n", __func__, UnknownCommandAQ, UnknownCommandAR, UnknownCommandAS, UnknownCommandAT, UnknownCommandAU);
 #endif
             break;
 
         case SVGA_CMD_RECT_COPY:
-            len -= 8;
+            len -= 7;
             if (len < 0) {
                 goto rewind;
             }
@@ -831,11 +830,12 @@ UnknownCommandM=vmsvga_fifo_read(s);
             break;
 
         case SVGA_CMD_ESCAPE:
-	len -= 3;
+	len -= 4;
 #ifdef VERBOSE
 UnknownCommandA=vmsvga_fifo_read(s);
 UnknownCommandB=vmsvga_fifo_read(s);
-        printf("%s: SVGA_CMD_ESCAPE command in SVGA command FIFO %d %d \n", __func__, UnknownCommandA, UnknownCommandB);
+UnknownCommandAV=vmsvga_fifo_read(s);
+        printf("%s: SVGA_CMD_ESCAPE command in SVGA command FIFO %d %d %d \n", __func__, UnknownCommandA, UnknownCommandB, UnknownCommandAV);
 #endif
             break;
 
@@ -941,6 +941,55 @@ UnknownCommandAN=vmsvga_fifo_read(s);
 UnknownCommandAO=vmsvga_fifo_read(s);
 UnknownCommandAP=vmsvga_fifo_read(s);
         printf("%s: SVGA_CMD_MOVE_CURSOR command in SVGA command FIFO %d %d \n", __func__, UnknownCommandAO, UnknownCommandAP);
+#endif
+            break;
+
+        case SVGA_CMD_INVALID_CMD:
+	len -= 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_INVALID_CMD command in SVGA command FIFO \n", __func__);
+#endif
+            break;
+
+        case SVGA_CMD_FRONT_ROP_FILL:
+	len -= 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_FRONT_ROP_FILL command in SVGA command FIFO \n", __func__);
+#endif
+            break;
+
+        case SVGA_CMD_DEAD:
+	len -= 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_DEAD command in SVGA command FIFO \n", __func__);
+#endif
+            break;
+
+        case SVGA_CMD_DEAD_2:
+	len -= 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_DEAD_2 command in SVGA command FIFO \n", __func__);
+#endif
+            break;
+
+        case SVGA_CMD_NOP:
+	len -= 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_NOP command in SVGA command FIFO \n", __func__);
+#endif
+            break;
+
+        case SVGA_CMD_NOP_ERROR:
+	len -= 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_NOP_ERROR command in SVGA command FIFO \n", __func__);
+#endif
+            break;
+
+        case SVGA_CMD_MAX:
+	len -= 1;
+#ifdef VERBOSE
+        printf("%s: SVGA_CMD_MAX command in SVGA command FIFO \n", __func__);
 #endif
             break;
 
@@ -2904,6 +2953,8 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
     vga_common_init(&s->vga, OBJECT(dev), &error_fatal);
     vga_init(&s->vga, OBJECT(dev), address_space, io, true);
     vmstate_register(NULL, 0, &vmstate_vga_common, &s->vga);
+    s->new_width = 800;
+    s->new_height = 600;
     s->new_depth = 32;
     switch (s->new_depth) {
     case 8:
