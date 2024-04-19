@@ -77,9 +77,6 @@ struct vmsvga_state_s {
     int new_width;
     int new_height;
     int new_depth;
-    uint32_t wred;
-    uint32_t wgreen;
-    uint32_t wblue;
     uint32_t num_gd;
     uint32_t disp_prim;
     uint32_t disp_x;
@@ -752,8 +749,9 @@ UnknownCommandAU=vmsvga_fifo_read(s);
             if (s->irq_mask & (SVGA_IRQFLAG_ANY_FENCE)) {
 #ifdef VERBOSE
         printf("s->irq_status |= SVGA_IRQFLAG_ANY_FENCE\n");
-#endif
+#else
                 s->irq_status |= SVGA_IRQFLAG_ANY_FENCE;
+#endif
             } else if ((s->irq_mask & SVGA_IRQFLAG_FENCE_GOAL) && (s->fifo[SVGA_FIFO_FENCE_GOAL] == fence_arg || s->fg == fence_arg)) {
 #ifdef VERBOSE
         printf("s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
@@ -853,7 +851,6 @@ UnknownCommandK=vmsvga_fifo_read(s);
 UnknownCommandL=vmsvga_fifo_read(s);
 s->new_width = UnknownCommandG;
 s->new_height = UnknownCommandH;
-s->new_depth = 32;
         printf("%s: SVGA_CMD_DEFINE_SCREEN command in SVGA command FIFO %d %d %d %d %d %d %d %d %d \n", __func__, UnknownCommandD, UnknownCommandE, UnknownCommandF, UnknownCommandG, UnknownCommandH, UnknownCommandI, UnknownCommandJ, UnknownCommandK, UnknownCommandL);
 #endif
             break;
@@ -1086,9 +1083,6 @@ void *vmsvga_fifo_hack(void *arg) {
 	int cx = 0;
 	int cy = 0;
 	while (true) {
-		if (s->enable == 0 && s->config == 0) {
-			return 0;
-		};
 #ifdef VERBOSE
 if(s->fifo[SVGA_FIFO_3D_CAPS]==0){printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s->fifo[SVGA_FIFO_3D_CAPS]);s->fifo[SVGA_FIFO_3D_CAPS]=0x00000001;};
 if(s->fifo[SVGA_FIFO_3D_CAPS]==1){printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s->fifo[SVGA_FIFO_3D_CAPS]);s->fifo[SVGA_FIFO_3D_CAPS]=0x00000008;};
@@ -1643,7 +1637,9 @@ if(s->fifo[SVGA_FIFO_3D_CAPS]>=262){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
       SVGA_FIFO_CAP_DEAD;
     s->fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
 
-		vmsvga_update_rect(s, cx, cy, s->new_width, s->new_height);
+		if (s->enable != 0 && s->config != 0) {
+			vmsvga_update_rect(s, cx, cy, s->new_width, s->new_height);
+		};
 	};
 };
 
@@ -1760,10 +1756,10 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_DEPTH:
-	if (s->new_depth != 32 || s->new_depth == 15 || s->new_depth == 16 || s->new_depth == 24) {
-		ret = s->new_depth;
-	} else {
+	if (s->new_depth == 32) {
 		ret = 24;
+	} else {
+		ret = s->new_depth;
 	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_DEPTH register %d with the return of %u\n", __func__, s->index, ret);
@@ -1771,26 +1767,50 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
         break;
 
     case SVGA_REG_PSEUDOCOLOR:
-        ret = s->new_depth == 8;
+        ret = (s->new_depth == 8);
 #ifdef VERBOSE
         printf("%s: SVGA_REG_PSEUDOCOLOR register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
 
     case SVGA_REG_RED_MASK:
-        ret = s->wred;
+	if (s->new_depth == 8) {
+		ret = 0x00000007;
+	} else if (s->new_depth == 15) {
+		ret = 0x0000001f;
+	} else if (s->new_depth == 16) {
+		ret = 0x0000001f;
+	} else {
+		ret = 0x00ff0000;
+	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_RED_MASK register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_GREEN_MASK:
-        ret = s->wgreen;
+	if (s->new_depth == 8) {
+		ret = 0x00000038;
+	} else if (s->new_depth == 15) {
+		ret = 0x000003e0;
+	} else if (s->new_depth == 16) {
+		ret = 0x000007e0;
+	} else {
+		ret = 0x0000ff00;
+	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_GREEN_MASK register %d with the return of %u\n", __func__, s->index, ret);
 #endif
         break;
     case SVGA_REG_BLUE_MASK:
-        ret = s->wblue;
+	if (s->new_depth == 8) {
+		ret = 0x000000c0;
+	} else if (s->new_depth == 15) {
+		ret = 0x00007c00;
+	} else if (s->new_depth == 16) {
+		ret = 0x0000f800;
+	} else {
+		ret = 0x000000ff;
+	};
 #ifdef VERBOSE
         printf("%s: SVGA_REG_BLUE_MASK register %d with the return of %u\n", __func__, s->index, ret);
 #endif
@@ -2792,16 +2812,19 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
     uint32_t new_stride;
 
 	if (s->new_width == 0) {
+		s->new_width = 800;
     		s->sync1--;
 		return;
 	};
 
 	if (s->new_height == 0) {
+		s->new_height = 600;
     		s->sync1--;
 		return;
 	};
 
 	if (s->new_depth == 0) {
+		s->new_depth = 32;
     		s->sync1--;
 		return;
 	};
@@ -2845,12 +2868,6 @@ static void vmsvga_update_display(void *opaque)
         s->sync3++;
         cursor_update_from_fifo(s);
     }
-
-	if (s->thread != 1) {
-		s->thread = 1;
-		pthread_t threads[1];
-		pthread_create(threads, NULL, vmsvga_fifo_hack, (void *)s);
-	};
 
 }
 
@@ -2953,56 +2970,13 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
     vga_common_init(&s->vga, OBJECT(dev), &error_fatal);
     vga_init(&s->vga, OBJECT(dev), address_space, io, true);
     vmstate_register(NULL, 0, &vmstate_vga_common, &s->vga);
-    s->new_width = 800;
-    s->new_height = 600;
-    s->new_depth = 32;
-    switch (s->new_depth) {
-    case 8:
-        s->wred   = 0x00000007;
-        s->wgreen = 0x00000038;
-        s->wblue  = 0x000000c0;
-        break;
-    case 15:
-        s->wred   = 0x0000001f;
-        s->wgreen = 0x000003e0;
-        s->wblue  = 0x00007c00;
-        break;
-    case 16:
-        s->wred   = 0x0000001f;
-        s->wgreen = 0x000007e0;
-        s->wblue  = 0x0000f800;
-        break;
-    case 24:
-    case 32:
-    default:
-        s->wred   = 0x00ff0000;
-        s->wgreen = 0x0000ff00;
-        s->wblue  = 0x000000ff;
-        break;
-    }
-    s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
-    s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
-    s->fifo[SVGA_FIFO_BUSY] = s->syncing;
-    s->fifo[SVGA_FIFO_CAPABILITIES] =
-      SVGA_FIFO_CAP_NONE | 
-      SVGA_FIFO_CAP_FENCE | 
-      SVGA_FIFO_CAP_ACCELFRONT | 
-      SVGA_FIFO_CAP_PITCHLOCK | 
-      SVGA_FIFO_CAP_VIDEO | 
-      SVGA_FIFO_CAP_CURSOR_BYPASS_3 | 
-      SVGA_FIFO_CAP_ESCAPE | 
-      SVGA_FIFO_CAP_RESERVE | 
-#ifdef VERBOSE
-      SVGA_FIFO_CAP_SCREEN_OBJECT | 
-#endif
-#ifdef VERBOSE
-      SVGA_FIFO_CAP_GMR2 | 
-#endif
-#ifdef VERBOSE
-      SVGA_FIFO_CAP_SCREEN_OBJECT_2 | 
-#endif
-      SVGA_FIFO_CAP_DEAD;
-    s->fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
+
+	if (s->thread != 1) {
+		s->thread = 1;
+		pthread_t threads[1];
+		pthread_create(threads, NULL, vmsvga_fifo_hack, (void *)s);
+	};
+
 }
 
 static uint64_t vmsvga_io_read(void *opaque, hwaddr addr, unsigned size)
