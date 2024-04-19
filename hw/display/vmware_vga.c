@@ -2812,19 +2812,25 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s)
     uint32_t new_stride;
 
 	if (s->new_width == 0) {
-		s->new_width = 800;
+#ifdef VERBOSE
+        printf("s->new_width == 0\n");
+#endif
     		s->sync1--;
 		return;
 	};
 
 	if (s->new_height == 0) {
-		s->new_height = 600;
+#ifdef VERBOSE
+        printf("s->new_height == 0\n");
+#endif
     		s->sync1--;
 		return;
 	};
 
 	if (s->new_depth == 0) {
-		s->new_depth = 32;
+#ifdef VERBOSE
+        printf("s->new_depth == 0\n");
+#endif
     		s->sync1--;
 		return;
 	};
