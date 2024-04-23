@@ -137,15 +137,12 @@ DECLARE_INSTANCE_CHECKER(struct pci_vmsvga_state_s, VMWARE_SVGA,
                          TYPE_VMWARE_SVGA)
 
 struct pci_vmsvga_state_s {
-    /*< private >*/
     PCIDevice parent_obj;
-    /*< public >*/
 
     struct vmsvga_state_s chip;
     MemoryRegion io_bar;
 };
 
-/* Update cursor position from SVGA_FIFO_CURSOR registers */
 static void cursor_update_from_fifo(struct vmsvga_state_s *s)
 {
 #ifdef VERBOSE
@@ -190,13 +187,7 @@ static inline bool vmsvga_verify_rect(DisplaySurface *surface,
     if (x < 0) {
         return false;
     }
-    if (x > SVGA_MAX_WIDTH) {
-        return false;
-    }
     if (w < 0) {
-        return false;
-    }
-    if (w > SVGA_MAX_WIDTH) {
         return false;
     }
     if (x + w > surface_width(surface)) {
@@ -206,13 +197,7 @@ static inline bool vmsvga_verify_rect(DisplaySurface *surface,
     if (y < 0) {
         return false;
     }
-    if (y > SVGA_MAX_WIDTH) {
-        return false;
-    }
     if (h < 0) {
-        return false;
-    }
-    if (h > SVGA_MAX_HEIGHT) {
         return false;
     }
     if (y + h > surface_height(surface)) {
@@ -347,8 +332,8 @@ struct vmsvga_cursor_definition_s {
     int id;
     int hot_x;
     int hot_y;
-    uint32_t and_mask_bpp; // Value must be 1 or equal to BITS_PER_PIXEL
-    uint32_t xor_mask_bpp; // Value must be 1 or equal to BITS_PER_PIXEL
+    uint32_t and_mask_bpp;
+    uint32_t xor_mask_bpp;
     uint32_t and_mask[4096];
     uint32_t xor_mask[4096];
 };
@@ -375,17 +360,17 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
                         1, (void *)c->and_mask);
         break;
     case 32:
-        /* fill alpha channel from mask, set color to zero */
         cursor_set_mono(qc, 0x000000, 0x000000, (void *)c->and_mask,
                         1, (void *)c->and_mask);
-        /* add in rgb values */
         pixels = c->width * c->height;
         for (i = 0; i < pixels; i++) {
             qc->data[i] |= c->xor_mask[i] & 0xffffff;
         }
         break;
     default:
-        fprintf(stderr, "%s: unhandled bpp %d, using fallback cursor\n", __func__, c->xor_mask_bpp);
+#ifdef VERBOSE
+	printf(stderr, "%s: unhandled bpp %d, using fallback cursor\n", __func__, c->xor_mask_bpp);
+#endif
         cursor_put(qc);
         qc = cursor_builtin_left_ptr();
     }
@@ -409,17 +394,8 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s *s,
     qc->hot_x = c->hot_x;
     qc->hot_y = c->hot_y;
 
-    /* fill alpha channel and rgb values */
     for (i = 0; i < pixels; i++) {
         qc->data[i] = c->xor_mask[i];
-        /*
-         * Turn semi-transparent pixels to fully opaque
-         * (opaque pixels stay opaque), due to lack of
-         * alpha-blending support in QEMU framework.
-         * This is a trade-off between cursor completely
-         * missing and cursors with some minor artifacts
-         * (such as Windows Aero style cursors).
-         */
         if (c->and_mask[i]) {
             qc->data[i] |= 0xff000000;
         }
@@ -445,7 +421,6 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s *s)
     s->fifo_next = le32_to_cpu(s->fifo[SVGA_FIFO_NEXT_CMD]);
     s->fifo_stop = le32_to_cpu(s->fifo[SVGA_FIFO_STOP]);
 
-    /* Check range and alignment.  */
     if ((s->fifo_min | s->fifo_max | s->fifo_next | s->fifo_stop) & 3) {
         return 0;
     }
@@ -667,9 +642,7 @@ UnknownCommandAU=vmsvga_fifo_read(s);
 
             args = SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) +
                 SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp);
-            if (cursor.width > 2048
-                || cursor.height > 2048
-                || cursor.and_mask_bpp > 32
+            if (cursor.and_mask_bpp > 32
                 || cursor.xor_mask_bpp > 32
                 || SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp)
                     > ARRAY_SIZE(cursor.and_mask)
@@ -784,20 +757,19 @@ UnknownCommandAX=vmsvga_fifo_read(s);
             }
 
 #ifdef VERBOSE
-            gmrIdCMD = vmsvga_fifo_read(s);            /* gmrId */
+            gmrIdCMD = vmsvga_fifo_read(s);
 #else
-            vmsvga_fifo_read(s);            /* gmrId */
+            vmsvga_fifo_read(s);
 #endif
             flags = vmsvga_fifo_read(s);
 #ifdef VERBOSE
-            offsetPages = vmsvga_fifo_read(s);            /* offsetPages */
+            offsetPages = vmsvga_fifo_read(s);
 #else
-            vmsvga_fifo_read(s);            /* offsetPages */
+            vmsvga_fifo_read(s);
 #endif
             num_pages = vmsvga_fifo_read(s);
 
             if (flags & SVGA_REMAP_GMR2_VIA_GMR) {
-                /* Read single struct SVGAGuestPtr */
                 args = 2;
             } else {
                 args = (flags & SVGA_REMAP_GMR2_SINGLE_PPN) ? 1 : num_pages;
@@ -1000,7 +972,6 @@ UnknownCommandAP=vmsvga_fifo_read(s);
                 vmsvga_fifo_read(s);
             }
 
-            printf("%s: Bad command %d in SVGA command FIFO\n", __func__, cmd);
 #ifdef VERBOSE
         printf("%s: default command in SVGA command FIFO\n", __func__);
 #endif
@@ -2204,7 +2175,6 @@ cap2 |= SVGA_CAP2_RESERVED;
         break;
 
     default:
-        printf("%s: Bad register %d\n", __func__, s->index);
         ret = 0;
 #ifdef VERBOSE
         printf("%s: default register %d with the return of %u\n", __func__, s->index, ret);
@@ -2731,7 +2701,6 @@ if(value>=262){s->devcap_val=0x00000000;};
         break;
 
     default:
-        printf("%s: Bad register %d with the value of %u\n", __func__, s->index, value);
 #ifdef VERBOSE
         printf("%s: default register %d with the value of %u\n", __func__, s->index, value);
 #endif
@@ -2857,7 +2826,6 @@ static void vmsvga_update_display(void *opaque)
     struct vmsvga_state_s *s = opaque;
 
     if (s->enable == 0 && s->config == 0) {
-        /* in standard vga mode */
         s->vga.hw_ops->gfx_update(&s->vga);
         return;
     }
@@ -2882,6 +2850,10 @@ static void vmsvga_reset(DeviceState *dev)
 #ifdef VERBOSE
 	printf("vmvga: vmsvga_reset was just executed\n");
 #endif
+    struct pci_vmsvga_state_s *pci = VMWARE_SVGA(dev);
+    struct vmsvga_state_s *s = &pci->chip;
+    s->enable = 0;
+    s->config = 0;
 }
 
 static void vmsvga_invalidate_display(void *opaque)
@@ -2932,7 +2904,7 @@ static const VMStateDescription vmstate_vmware_vga_internal = {
         VMSTATE_UINT32(guest, struct vmsvga_state_s),
         VMSTATE_UINT32(svgaid, struct vmsvga_state_s),
         VMSTATE_INT32(syncing, struct vmsvga_state_s),
-        VMSTATE_UNUSED(4), /* was fb_size */
+        VMSTATE_UNUSED(4),
         VMSTATE_UINT32_V(irq_mask, struct vmsvga_state_s, 0),
         VMSTATE_UINT32_V(irq_status, struct vmsvga_state_s, 0),
         VMSTATE_UINT32_V(last_fifo_cursor_count, struct vmsvga_state_s, 0),
@@ -2977,8 +2949,8 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
     vga_init(&s->vga, OBJECT(dev), address_space, io, true);
     vmstate_register(NULL, 0, &vmstate_vga_common, &s->vga);
 
-	if (s->thread != 1) {
-		s->thread = 1;
+	if (s->thread > 0) {
+		s->thread++;
 		pthread_t threads[1];
 		pthread_create(threads, NULL, vmsvga_fifo_hack, (void *)s);
 	};
@@ -3085,8 +3057,8 @@ static void pci_vmsvga_realize(PCIDevice *dev, Error **errp)
     struct pci_vmsvga_state_s *s = VMWARE_SVGA(dev);
     dev->config[PCI_CACHE_LINE_SIZE] = 0x08;
     dev->config[PCI_LATENCY_TIMER] = 0x40;
-    dev->config[PCI_INTERRUPT_LINE] = 0xff;          /* End */
-    dev->config[PCI_INTERRUPT_PIN] = 1;  /* interrupt pin A */
+    dev->config[PCI_INTERRUPT_LINE] = 0xff;
+    dev->config[PCI_INTERRUPT_PIN] = 1;
     memory_region_init_io(&s->io_bar, OBJECT(dev), &vmsvga_io_ops, &s->chip, "vmsvga-io", 0x10);
     memory_region_set_flush_coalesced(&s->io_bar);
     pci_register_bar(dev, 0, PCI_BASE_ADDRESS_SPACE_IO, &s->io_bar);
