@@ -369,7 +369,7 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
         break;
     default:
 #ifdef VERBOSE
-	printf(stderr, "%s: unhandled bpp %d, using fallback cursor\n", __func__, c->xor_mask_bpp);
+	printf("%s: unhandled bpp %d, using fallback cursor\n", __func__, c->xor_mask_bpp);
 #endif
         cursor_put(qc);
         qc = cursor_builtin_left_ptr();
@@ -1586,6 +1586,7 @@ if(s->fifo[SVGA_FIFO_3D_CAPS]>=262){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
 
     s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
     s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
+    s->fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
     s->fifo[SVGA_FIFO_BUSY] = s->syncing;
     s->fifo[SVGA_FIFO_CAPABILITIES] =
       SVGA_FIFO_CAP_NONE | 
@@ -1606,7 +1607,6 @@ if(s->fifo[SVGA_FIFO_3D_CAPS]>=262){s->fifo[SVGA_FIFO_3D_CAPS]=0x00000000;};
       SVGA_FIFO_CAP_SCREEN_OBJECT_2 | 
 #endif
       SVGA_FIFO_CAP_DEAD;
-    s->fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
 
 		if (s->enable != 0 && s->config != 0) {
 			vmsvga_update_rect(s, cx, cy, s->new_width, s->new_height);
@@ -2949,7 +2949,7 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
     vga_init(&s->vga, OBJECT(dev), address_space, io, true);
     vmstate_register(NULL, 0, &vmstate_vga_common, &s->vga);
 
-	if (s->thread > 0) {
+	if (s->thread <= 0) {
 		s->thread++;
 		pthread_t threads[1];
 		pthread_create(threads, NULL, vmsvga_fifo_hack, (void *)s);
