@@ -2949,6 +2949,10 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
     vga_init(&s->vga, OBJECT(dev), address_space, io, true);
     vmstate_register(NULL, 0, &vmstate_vga_common, &s->vga);
 
+	s->new_width = 800;
+	s->new_height = 600;
+	s->new_depth = 32;
+
 	if (s->thread <= 0) {
 		s->thread++;
 		pthread_t threads[1];
