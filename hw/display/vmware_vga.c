@@ -187,23 +187,33 @@ static inline bool vmsvga_verify_rect(DisplaySurface *surface,
     if (x < 0) {
         return false;
     }
+    if (x > SVGA_MAX_WIDTH) {
+        return false;
+    }
     if (w < 0) {
+        return false;
+    }
+    if (w > SVGA_MAX_WIDTH) {
         return false;
     }
     if (x + w > surface_width(surface)) {
         return false;
     }
-
     if (y < 0) {
+        return false;
+    }
+    if (y > SVGA_MAX_WIDTH) {
         return false;
     }
     if (h < 0) {
         return false;
     }
+    if (h > SVGA_MAX_HEIGHT) {
+        return false;
+    }
     if (y + h > surface_height(surface)) {
         return false;
     }
-
     return true;
 }
 
