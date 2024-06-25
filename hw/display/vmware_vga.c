@@ -24,6 +24,9 @@
  * THE SOFTWARE.
  */
 
+//#define VERBOSE
+
+#include <pthread.h>
 #include "qemu/osdep.h"
 #include "qemu/module.h"
 #include "qemu/units.h"
@@ -35,10 +38,7 @@
 #include "hw/qdev-properties.h"
 #include "migration/vmstate.h"
 #include "qom/object.h"
-#include <pthread.h>
-
-//#define VERBOSE
-
+#include "vga_int.h"
 #include "include/includeCheck.h"
 #include "include/svga3d_caps.h"
 #include "include/svga3d_cmd.h"
@@ -56,7 +56,32 @@
 #include "include/VGPU10ShaderTokens.h"
 #include "include/vmware_pack_begin.h"
 #include "include/vmware_pack_end.h"
-#include "vga_int.h"
+#define SVGA_PIXMAP_SIZE(w, h, bpp) (((((w) * (bpp)) + 31) >> 5) * (h))
+#define SVGA_CMD_RECT_FILL 2
+#define SVGA_CMD_DISPLAY_CURSOR 20
+#define SVGA_CMD_MOVE_CURSOR 21
+#define SVGA_CAP_DX 0x10000000
+#define SVGA_CAP_HP_CMD_QUEUE 0x20000000
+#define SVGA_CAP_NO_BB_RESTRICTION 0x40000000
+#define SVGA_CAP2_DX2 0x00000004
+#define SVGA_CAP2_GB_MEMSIZE_2 0x00000008
+#define SVGA_CAP2_SCREENDMA_REG 0x00000010
+#define SVGA_CAP2_OTABLE_PTDEPTH_2 0x00000020
+#define SVGA_CAP2_NON_MS_TO_MS_STRETCHBLT 0x00000040
+#define SVGA_CAP2_CURSOR_MOB 0x00000080
+#define SVGA_CAP2_MSHINT 0x00000100
+#define SVGA_CAP2_CB_MAX_SIZE_4MB 0x00000200
+#define SVGA_CAP2_DX3 0x00000400
+#define SVGA_CAP2_FRAME_TYPE 0x00000800
+#define SVGA_CAP2_COTABLE_COPY 0x00001000
+#define SVGA_CAP2_TRACE_FULL_FB 0x00002000
+#define SVGA_CAP2_EXTRA_REGS 0x00004000
+#define SVGA_CAP2_LO_STAGING 0x00008000
+#define SVGA_CAP2_VIDEO_BLT 0x00010000
+#define SVGA_REG_GBOBJECT_MEM_SIZE_KB 76
+#define SVGA_REG_FENCE_GOAL 84
+#define SVGA_REG_MSHINT 81
+#define SVGA_REG_MAX_PRIMARY_MEM 50
 
 struct vmsvga_state_s {
     VGACommonState vga;
@@ -117,10 +142,9 @@ struct vmsvga_state_s {
     uint32_t fifo_next;
     uint32_t fifo_stop;
 
-#define REDRAW_FIFO_LEN  512
     struct vmsvga_rect_s {
         int x, y, w, h;
-    } redraw_fifo[REDRAW_FIFO_LEN];
+    } redraw_fifo[512];
     int redraw_fifo_last;
 
     uint32_t irq_mask;
@@ -131,10 +155,7 @@ struct vmsvga_state_s {
     uint32_t svgabaseb;
 };
 
-#define TYPE_VMWARE_SVGA "vmware-svga"
-
-DECLARE_INSTANCE_CHECKER(struct pci_vmsvga_state_s, VMWARE_SVGA,
-                         TYPE_VMWARE_SVGA)
+DECLARE_INSTANCE_CHECKER(struct pci_vmsvga_state_s, VMWARE_SVGA, "vmware-svga")
 
 struct pci_vmsvga_state_s {
     PCIDevice parent_obj;
@@ -348,9 +369,6 @@ struct vmsvga_cursor_definition_s {
     uint32_t xor_mask[4096];
 };
 
-#define SVGA_BITMAP_SIZE(w, h)          ((((w) + 31) >> 5) * (h))
-#define SVGA_PIXMAP_SIZE(w, h, bpp)     (((((w) * (bpp)) + 31) >> 5) * (h))
-
 static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
                 struct vmsvga_cursor_definition_s *c)
 {
@@ -361,17 +379,16 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
     int i, pixels;
 
     qc = cursor_alloc(c->width, c->height);
+    if (qc != NULL) {
 
     qc->hot_x = c->hot_x;
     qc->hot_y = c->hot_y;
     switch (c->xor_mask_bpp) {
     case 1:
-        cursor_set_mono(qc, 0xffffff, 0x000000, (void *)c->xor_mask,
-                        1, (void *)c->and_mask);
+        cursor_set_mono(qc, 0xffffff, 0x000000, (void *)c->xor_mask, 1, (void *)c->and_mask);
         break;
     case 32:
-        cursor_set_mono(qc, 0x000000, 0x000000, (void *)c->and_mask,
-                        1, (void *)c->and_mask);
+        cursor_set_mono(qc, 0x000000, 0x000000, (void *)c->and_mask, 1, (void *)c->and_mask);
         pixels = c->width * c->height;
         for (i = 0; i < pixels; i++) {
             qc->data[i] |= c->xor_mask[i] & 0xffffff;
@@ -387,6 +404,7 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
 
     dpy_cursor_define(s->vga.con, qc);
     cursor_put(qc);
+  }
 }
 
 static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s *s,
@@ -549,10 +567,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s)
     uint32_t fence_arg;
     uint32_t flags, num_pages;
 
-#define SVGA_CMD_RECT_FILL             2
-#define SVGA_CMD_DISPLAY_CURSOR        20
-#define SVGA_CMD_MOVE_CURSOR           21
-
     len = vmsvga_fifo_length(s);
     while (len > 0 && --maxloop > 0) {
         cmd_start = s->fifo_stop;
@@ -650,14 +664,8 @@ UnknownCommandAU=vmsvga_fifo_read(s);
             cursor.and_mask_bpp = vmsvga_fifo_read(s);
             cursor.xor_mask_bpp = vmsvga_fifo_read(s);
 
-            args = SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) +
-                SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp);
-            if (cursor.and_mask_bpp > 32
-                || cursor.xor_mask_bpp > 32
-                || SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp)
-                    > ARRAY_SIZE(cursor.and_mask)
-                || SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp)
-                    > ARRAY_SIZE(cursor.xor_mask)) {
+            args = SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) + SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp);
+            if (cursor.width > 256 || cursor.height > 256 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32 || SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) > ARRAY_SIZE(cursor.and_mask) || SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp) > ARRAY_SIZE(cursor.xor_mask)) {
 #ifdef VERBOSE
         printf("%s: SVGA_CMD_DEFINE_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
 #endif
@@ -695,10 +703,9 @@ UnknownCommandAU=vmsvga_fifo_read(s);
             cursor.and_mask_bpp = 32;
             cursor.xor_mask_bpp = 32;
             args = x * y;
-            if ((SVGA_PIXMAP_SIZE(x, y, 32) > ARRAY_SIZE(cursor.and_mask))
-               || (SVGA_PIXMAP_SIZE(x, y, 32) > ARRAY_SIZE(cursor.xor_mask))) {
+            if (cursor.width > 256 || cursor.height > 256 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32 || SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) > ARRAY_SIZE(cursor.and_mask) || SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp) > ARRAY_SIZE(cursor.xor_mask)) {
 #ifdef VERBOSE
-        printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command in SVGA command FIFO %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height);
+        printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
 #endif
                     break;
             }
@@ -716,7 +723,7 @@ UnknownCommandAU=vmsvga_fifo_read(s);
 
             vmsvga_rgba_cursor_define(s, &cursor);
 #ifdef VERBOSE
-        printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command in SVGA command FIFO %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height);
+        printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
 #endif
             break;
 
@@ -1643,26 +1650,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
 #endif
 
     switch (s->index) {
-#define SVGA_CAP_DX 0x10000000
-#define SVGA_CAP_HP_CMD_QUEUE 0x20000000
-#define SVGA_CAP_NO_BB_RESTRICTION 0x40000000
-#define SVGA_CAP2_DX2 0x00000004
-#define SVGA_CAP2_GB_MEMSIZE_2 0x00000008
-#define SVGA_CAP2_SCREENDMA_REG 0x00000010
-#define SVGA_CAP2_OTABLE_PTDEPTH_2 0x00000020
-#define SVGA_CAP2_NON_MS_TO_MS_STRETCHBLT 0x00000040
-#define SVGA_CAP2_CURSOR_MOB 0x00000080
-#define SVGA_CAP2_MSHINT 0x00000100
-#define SVGA_CAP2_CB_MAX_SIZE_4MB 0x00000200
-#define SVGA_CAP2_DX3 0x00000400
-#define SVGA_CAP2_FRAME_TYPE 0x00000800
-#define SVGA_CAP2_COTABLE_COPY 0x00001000
-#define SVGA_CAP2_TRACE_FULL_FB 0x00002000
-#define SVGA_CAP2_EXTRA_REGS 0x00004000
-#define SVGA_CAP2_LO_STAGING 0x00008000
-#define SVGA_CAP2_VIDEO_BLT 0x00010000
-#define SVGA_REG_GBOBJECT_MEM_SIZE_KB 76
-#define SVGA_REG_FENCE_GOAL 84
 
     case SVGA_REG_FENCE_GOAL:
         ret = s->fg;
@@ -1866,7 +1853,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
 #endif
         break;
 
-#define SVGA_REG_MSHINT 81
     case SVGA_REG_MSHINT:
         ret = 0x1;
 #ifdef VERBOSE
@@ -1874,7 +1860,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address)
 #endif
         break;
 
-#define SVGA_REG_MAX_PRIMARY_MEM 50
     case SVGA_REG_MAX_PRIMARY_MEM:
         ret = 134217728;
 #ifdef VERBOSE
@@ -3117,7 +3102,7 @@ static void vmsvga_class_init(ObjectClass *klass, void *data)
 }
 
 static const TypeInfo vmsvga_info = {
-    .name          = TYPE_VMWARE_SVGA,
+    .name          = "vmware-svga",
     .parent        = TYPE_PCI_DEVICE,
     .instance_size = sizeof(struct pci_vmsvga_state_s),
     .class_init    = vmsvga_class_init,
