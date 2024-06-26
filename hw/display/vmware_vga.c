@@ -414,20 +414,35 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s *s,
 	printf("vmvga: vmsvga_rgba_cursor_define was just executed\n");
 #endif
     QEMUCursor *qc;
-    int i, pixels = c->width * c->height;
+    int i, pixels;
 
     qc = cursor_alloc(c->width, c->height);
     if (qc != NULL) {
 
     qc->hot_x = c->hot_x;
     qc->hot_y = c->hot_y;
-
-    for (i = 0; i < pixels; i++) {
-        qc->data[i] = c->xor_mask[i];
-        if (c->and_mask[i]) {
-            qc->data[i] |= 0xff000000;
+    switch (c->xor_mask_bpp) {
+    case 1:
+        cursor_set_mono(qc, 0xffffff, 0x000000, (void *)c->xor_mask, 1, (void *)c->and_mask);
+        break;
+    case 32:
+        cursor_set_mono(qc, 0x000000, 0x000000, (void *)c->and_mask, 1, (void *)c->and_mask);
+        pixels = c->width * c->height;
+        for (i = 0; i < pixels; i++) {
+            qc->data[i] = c->xor_mask[i];
+            if (c->and_mask[i]) {
+                qc->data[i] |= 0xff000000;
+            }
         }
+        break;
+    default:
+#ifdef VERBOSE
+	printf("%s: unhandled bpp %d, using fallback cursor\n", __func__, c->xor_mask_bpp);
+#endif
+        cursor_put(qc);
+        qc = cursor_builtin_left_ptr();
     }
+
     dpy_cursor_define(s->vga.con, qc);
     cursor_put(qc);
   }
@@ -665,7 +680,7 @@ UnknownCommandAU=vmsvga_fifo_read(s);
             cursor.xor_mask_bpp = vmsvga_fifo_read(s);
 
             args = SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) + SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp);
-            if (cursor.width > 256 || cursor.height > 256 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32 || SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) > ARRAY_SIZE(cursor.and_mask) || SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp) > ARRAY_SIZE(cursor.xor_mask)) {
+            if (cursor.width > 512 || cursor.height > 512 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32 || SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) > ARRAY_SIZE(cursor.and_mask) || SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp) > ARRAY_SIZE(cursor.xor_mask)) {
 #ifdef VERBOSE
         printf("%s: SVGA_CMD_DEFINE_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
 #endif
@@ -703,7 +718,7 @@ UnknownCommandAU=vmsvga_fifo_read(s);
             cursor.and_mask_bpp = 32;
             cursor.xor_mask_bpp = 32;
             args = x * y;
-            if (cursor.width > 256 || cursor.height > 256 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32 || SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) > ARRAY_SIZE(cursor.and_mask) || SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp) > ARRAY_SIZE(cursor.xor_mask)) {
+            if (cursor.width > 512 || cursor.height > 512 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32 || SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) > ARRAY_SIZE(cursor.and_mask) || SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp) > ARRAY_SIZE(cursor.xor_mask)) {
 #ifdef VERBOSE
         printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
 #endif
