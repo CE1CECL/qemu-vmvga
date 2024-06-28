@@ -360,9 +360,9 @@ static inline int vmsvga_fill_rect(struct vmsvga_state_s *s,
 struct vmsvga_cursor_definition_s {
     uint32_t width;
     uint32_t height;
-    int id;
-    int hot_x;
-    int hot_y;
+    uint32_t id;
+    uint32_t hot_x;
+    uint32_t hot_y;
     uint32_t and_mask_bpp;
     uint32_t xor_mask_bpp;
     uint32_t and_mask[4096];
