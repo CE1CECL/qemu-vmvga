@@ -365,8 +365,8 @@ struct vmsvga_cursor_definition_s {
     int hot_y;
     uint32_t and_mask_bpp;
     uint32_t xor_mask_bpp;
-    uint32_t and_mask[8192];
-    uint32_t xor_mask[8192];
+    uint32_t and_mask[4096];
+    uint32_t xor_mask[4096];
 };
 
 static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
@@ -386,9 +386,6 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
     if (c->xor_mask_bpp != 1 || c->and_mask_bpp != 1) {
         for (i = 0; i < pixels; i++) {
             qc->data[i] = c->xor_mask[i];
-            if (c->and_mask[i]) {
-                qc->data[i] |= 0xff000000;
-            }
         }
     } else {
         cursor_set_mono(qc, 0xffffff, 0x000000, (void *)c->xor_mask, 1, (void *)c->and_mask);
