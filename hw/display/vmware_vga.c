@@ -89,10 +89,10 @@ struct vmsvga_state_s {
     int enable;
     int config;
     struct {
-        int id;
-        int x;
-        int y;
-        int on;
+        uint32_t id;
+        uint32_t x;
+        uint32_t y;
+        uint32_t on;
     } cursor;
     uint32_t last_fifo_cursor_count;
 
@@ -173,11 +173,6 @@ static void cursor_update_from_fifo(struct vmsvga_state_s *s)
     uint32_t on_off;
 
     if (s->config != 1 || s->enable != 1) {
-    	s->sync3--;
-        return;
-    }
-	s->fifo[SVGA_FIFO_CURSOR_SCREEN_ID] = SVGA_ID_INVALID;
-    if (s->fifo_min <= SVGA_FIFO_CURSOR_LAST_UPDATED) {
     	s->sync3--;
         return;
     }
@@ -376,20 +371,25 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
 	printf("vmvga: vmsvga_cursor_define was just executed\n");
 #endif
     QEMUCursor *qc;
-    int i, pixels = c->width * c->height;
 
     qc = cursor_alloc(c->width, c->height);
     if (qc != NULL) {
 
     qc->hot_x = c->hot_x;
     qc->hot_y = c->hot_y;
-    if (c->xor_mask_bpp != 1 || c->and_mask_bpp != 1) {
+    uint32_t i, pixels = SVGA_PIXMAP_SIZE(c->width, c->height, c->and_mask_bpp) + SVGA_PIXMAP_SIZE(c->width, c->height, c->xor_mask_bpp);
+    if (c->xor_mask_bpp != 1 && c->and_mask_bpp != 1) {
         for (i = 0; i < pixels; i++) {
-            qc->data[i] = c->xor_mask[i];
+            qc->data[i] = c->xor_mask[i] + c->and_mask[i];
         }
     } else {
         cursor_set_mono(qc, 0xffffff, 0x000000, (void *)c->xor_mask, 1, (void *)c->and_mask);
     }
+
+#ifdef VERBOSE
+	cursor_print_ascii_art(qc, "vmsvga_mono");
+	printf("vmvga: vmsvga_cursor_define | xor_mask == %d : and_mask == %d\n", *c->xor_mask, *c->and_mask);
+#endif
 
     dpy_cursor_define(s->vga.con, qc);
     cursor_put(qc);
@@ -403,23 +403,25 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s *s,
 	printf("vmvga: vmsvga_rgba_cursor_define was just executed\n");
 #endif
     QEMUCursor *qc;
-    int i, pixels = c->width * c->height;
 
     qc = cursor_alloc(c->width, c->height);
     if (qc != NULL) {
 
     qc->hot_x = c->hot_x;
     qc->hot_y = c->hot_y;
-    if (c->xor_mask_bpp != 1 || c->and_mask_bpp != 1) {
+    uint32_t i, pixels = c->width * c->height;
+    if (c->xor_mask_bpp != 1 && c->and_mask_bpp != 1) {
         for (i = 0; i < pixels; i++) {
-            qc->data[i] = c->xor_mask[i];
-            if (c->and_mask[i]) {
-                qc->data[i] |= 0xff000000;
-            }
+            qc->data[i] = c->xor_mask[i] + c->and_mask[i];
         }
     } else {
         cursor_set_mono(qc, 0xffffff, 0x000000, (void *)c->xor_mask, 1, (void *)c->and_mask);
     }
+
+#ifdef VERBOSE
+	cursor_print_ascii_art(qc, "vmsvga_rgba");
+	printf("vmvga: vmsvga_rgba_cursor_define | xor_mask == %d : and_mask == %d\n", *c->xor_mask, *c->and_mask);
+#endif
 
     dpy_cursor_define(s->vga.con, qc);
     cursor_put(qc);
@@ -657,7 +659,7 @@ UnknownCommandAU=vmsvga_fifo_read(s);
             cursor.and_mask_bpp = vmsvga_fifo_read(s);
             cursor.xor_mask_bpp = vmsvga_fifo_read(s);
             args = SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) + SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp);
-            if (x < 1 || y < 1 || x > 512 || y > 512 || cursor.and_mask_bpp < 1 || cursor.xor_mask_bpp < 1 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32 || SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) > ARRAY_SIZE(cursor.and_mask) || SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp) > ARRAY_SIZE(cursor.xor_mask)) {
+            if (x < 1 || y < 1 || x > 512 || y > 512 || cursor.and_mask_bpp < 1 || cursor.xor_mask_bpp < 1 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32) {
 #ifdef VERBOSE
         printf("%s: SVGA_CMD_DEFINE_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
 #endif
@@ -695,7 +697,7 @@ UnknownCommandAU=vmsvga_fifo_read(s);
             cursor.and_mask_bpp = 32;
             cursor.xor_mask_bpp = 32;
             args = x * y;
-            if (x < 1 || y < 1 || x > 512 || y > 512 || cursor.and_mask_bpp < 1 || cursor.xor_mask_bpp < 1 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32 || SVGA_PIXMAP_SIZE(x, y, cursor.and_mask_bpp) > ARRAY_SIZE(cursor.and_mask) || SVGA_PIXMAP_SIZE(x, y, cursor.xor_mask_bpp) > ARRAY_SIZE(cursor.xor_mask)) {
+            if (x < 1 || y < 1 || x > 512 || y > 512 || cursor.and_mask_bpp < 1 || cursor.xor_mask_bpp < 1 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32) {
 #ifdef VERBOSE
         printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
 #endif
@@ -2882,10 +2884,10 @@ static const VMStateDescription vmstate_vmware_vga_internal = {
         VMSTATE_INT32_EQUAL(new_depth, struct vmsvga_state_s, NULL),
         VMSTATE_INT32(enable, struct vmsvga_state_s),
         VMSTATE_INT32(config, struct vmsvga_state_s),
-        VMSTATE_INT32(cursor.id, struct vmsvga_state_s),
-        VMSTATE_INT32(cursor.x, struct vmsvga_state_s),
-        VMSTATE_INT32(cursor.y, struct vmsvga_state_s),
-        VMSTATE_INT32(cursor.on, struct vmsvga_state_s),
+        VMSTATE_UINT32(cursor.id, struct vmsvga_state_s),
+        VMSTATE_UINT32(cursor.x, struct vmsvga_state_s),
+        VMSTATE_UINT32(cursor.y, struct vmsvga_state_s),
+        VMSTATE_UINT32(cursor.on, struct vmsvga_state_s),
         VMSTATE_INT32(index, struct vmsvga_state_s),
         VMSTATE_VARRAY_INT32(scratch, struct vmsvga_state_s,
                              scratch_size, 0, vmstate_info_uint32, uint32_t),
