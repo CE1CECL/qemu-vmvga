@@ -339,10 +339,10 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s * s,
   if (qc != NULL) {
     qc -> hot_x = c -> hot_x;
     qc -> hot_y = c -> hot_y;
-    if (c -> xor_mask_bpp != 1 || c -> and_mask_bpp != 1) {
+    if (c -> xor_mask_bpp != 1 && c -> and_mask_bpp != 1) {
       uint32_t i, pixels = (c -> width * c -> height);
       for (i = 0; i < pixels; i++) {
-        qc -> data[i] = c -> xor_mask[i] + c -> and_mask[i];
+        qc -> data[i] |= (c -> xor_mask[i] + c -> and_mask[i]);
       }
     } else {
       cursor_set_mono(qc, 0xffffff, 0x000000, (void * ) c -> xor_mask, 1, (void * ) c -> and_mask);
@@ -365,10 +365,10 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s * s,
   if (qc != NULL) {
     qc -> hot_x = c -> hot_x;
     qc -> hot_y = c -> hot_y;
-    if (c -> xor_mask_bpp != 1 || c -> and_mask_bpp != 1) {
+    if (c -> xor_mask_bpp != 1 && c -> and_mask_bpp != 1) {
       uint32_t i, pixels = (c -> width * c -> height);
       for (i = 0; i < pixels; i++) {
-        qc -> data[i] = c -> xor_mask[i] + c -> and_mask[i];
+        qc -> data[i] |= (c -> xor_mask[i] + c -> and_mask[i]);
       }
     } else {
       cursor_set_mono(qc, 0xffffff, 0x000000, (void * ) c -> xor_mask, 1, (void * ) c -> and_mask);
