@@ -4392,23 +4392,44 @@ static inline void vmsvga_check_size(struct vmsvga_state_s * s) {
   #endif
   DisplaySurface * surface = qemu_console_surface(s -> vga.con);
   uint32_t new_stride;
-  if (s -> new_width == 0) {
+  if (s -> new_width < 1) {
     #ifdef VERBOSE
-    printf("s->new_width == 0\n");
+    printf("s->new_width < 1\n");
     #endif
     s -> sync1--;
     return;
   };
-  if (s -> new_height == 0) {
+  if (s -> new_height < 1) {
     #ifdef VERBOSE
-    printf("s->new_height == 0\n");
+    printf("s->new_height < 1\n");
     #endif
     s -> sync1--;
     return;
   };
-  if (s -> new_depth == 0) {
+  if (s -> new_depth < 1) {
     #ifdef VERBOSE
-    printf("s->new_depth == 0\n");
+    printf("s->new_depth < 1\n");
+    #endif
+    s -> sync1--;
+    return;
+  };
+  if (s -> new_width > SVGA_MAX_WIDTH) {
+    #ifdef VERBOSE
+    printf("s->new_width > SVGA_MAX_WIDTH\n");
+    #endif
+    s -> sync1--;
+    return;
+  };
+  if (s -> new_height > SVGA_MAX_HEIGHT) {
+    #ifdef VERBOSE
+    printf("s->new_height > SVGA_MAX_HEIGHT\n");
+    #endif
+    s -> sync1--;
+    return;
+  };
+  if (s -> new_depth > 32) {
+    #ifdef VERBOSE
+    printf("s->new_depth > 32\n");
     #endif
     s -> sync1--;
     return;
