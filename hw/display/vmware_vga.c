@@ -399,10 +399,10 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s * s) {
   if (s -> fifo_min < sizeof(uint32_t) * 4) {
     return 0;
   }
-  if (s -> fifo_max > 8388608 ||
-    s -> fifo_min >= 8388608 ||
-    s -> fifo_stop >= 8388608 ||
-    s -> fifo_next >= 8388608) {
+  if (s -> fifo_max > s -> fifo_size ||
+    s -> fifo_min >= s -> fifo_size ||
+    s -> fifo_stop >= s -> fifo_size ||
+    s -> fifo_next >= s -> fifo_size) {
     return 0;
   }
   if (s -> fifo_max < s -> fifo_min + 10 * KiB) {
@@ -3011,7 +3011,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_GBOBJECT_MEM_SIZE_KB:
-    ret = 8388608;
+    ret = s -> fifo_size;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_GBOBJECT_MEM_SIZE_KB register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
