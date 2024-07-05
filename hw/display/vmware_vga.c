@@ -2967,7 +2967,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_BYTES_PER_LINE:
-    ret = (s -> new_depth * s -> new_width) / 8;
+    ret = (((s -> new_depth) * (s -> new_width)) / (8));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_BYTES_PER_LINE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -2999,37 +2999,37 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_FB_SIZE:
-    ret = 3145728;
+    ret = ((s -> new_height) * (s -> pitchlock));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_FB_SIZE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_MOB_MAX_SIZE:
-    ret = 1073741824;
+    ret = ((s -> vga.vram_size) * (s -> fifo_size));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MOB_MAX_SIZE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_GBOBJECT_MEM_SIZE_KB:
-    ret = s -> fifo_size;
+    ret = ((s -> vga.vram_size) / (1024));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_GBOBJECT_MEM_SIZE_KB register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB:
-    ret = 3145728;
+    ret = ((s -> vga.vram_size) / (1024));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_MSHINT:
-    ret = 0x1;
+    ret = 1;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MSHINT register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_MAX_PRIMARY_MEM:
-    ret = 134217728;
+    ret = ((s -> vga.vram_size) + (s -> fifo_size));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MAX_PRIMARY_MEM register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3114,7 +3114,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   }
   case SVGA_REG_MEM_SIZE:
-    ret = 262144;
+    ret = s -> fifo_size;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MEM_SIZE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3180,7 +3180,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_NUM_DISPLAYS:
-    ret = 1;
+    ret = s -> num_gd;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_NUM_DISPLAYS register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3240,7 +3240,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_GMRS_MAX_PAGES:
-    ret = 65536;
+    ret = s -> gmrdesc;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_GMRS_MAX_PAGES register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3258,13 +3258,13 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_GMR_MAX_IDS:
-    ret = 64;
+    ret = s -> gmrid;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_GMR_MAX_IDS register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_GMR_MAX_DESCRIPTOR_LENGTH:
-    ret = 4096;
+    ret = s -> gmrdesc;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_GMR_MAX_DESCRIPTOR_LENGTH register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3294,7 +3294,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_MEMORY_SIZE:
-    ret = 4194304;
+    ret = ((s -> vga.vram_size) - (s -> fifo_size));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MEMORY_SIZE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -4555,12 +4555,13 @@ static void vmsvga_init(DeviceState * dev, struct vmsvga_state_s * s,
   s -> scratch_size = 0x8000;
   s -> scratch = g_malloc(s -> scratch_size * 4);
   s -> vga.con = graphic_console_init(dev, 0, & vmsvga_ops, s);
-  s -> fifo_size = 8388608;
+  s -> fifo_size = 262144;
   memory_region_init_ram( & s -> fifo_ram, NULL, "vmsvga.fifo", s -> fifo_size, & error_fatal);
   s -> fifo = (uint32_t * ) memory_region_get_ram_ptr( & s -> fifo_ram);
   vga_common_init( & s -> vga, OBJECT(dev), & error_fatal);
   vga_init( & s -> vga, OBJECT(dev), address_space, io, true);
   vmstate_register(NULL, 0, & vmstate_vga_common, & s -> vga);
+  s -> num_gd = 1;
   s -> new_width = 800;
   s -> new_height = 600;
   s -> new_depth = 32;
