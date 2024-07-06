@@ -600,16 +600,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       if (len < 0) {
         goto rewind;
       }
-      for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.xor_mask_bpp); args++) {
+      for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.and_mask_bpp); args++) {
         uint32_t rgbc = vmsvga_fifo_read_raw(s);
-        cursor.xor_mask[args] = rgbc;
+        cursor.and_mask[args] = rgbc;
         #ifdef VERBOSE
         printf("%s: rgbc %d \n", __func__, rgbc);
         #endif
       }
-      for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.and_mask_bpp); args++) {
+      for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.xor_mask_bpp); args++) {
         uint32_t rgbb = vmsvga_fifo_read_raw(s);
-        cursor.and_mask[args] = rgbb;
+        cursor.xor_mask[args] = rgbb;
         #ifdef VERBOSE
         printf("%s: rgbb %d \n", __func__, rgbb);
         #endif
