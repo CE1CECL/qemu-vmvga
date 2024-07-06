@@ -160,7 +160,6 @@ static void cursor_update_from_fifo(struct vmsvga_state_s * s) {
   printf("vmvga: cursor_update_from_fifo was just executed\n");
   #endif
   uint32_t fifo_cursor_count;
-  uint32_t on_off;
   if (s -> config != 1 || s -> enable != 1) {
     s -> sync3--;
     return;
@@ -171,8 +170,11 @@ static void cursor_update_from_fifo(struct vmsvga_state_s * s) {
     return;
   }
   s -> last_fifo_cursor_count = fifo_cursor_count;
-  on_off = s -> fifo[SVGA_FIFO_CURSOR_ON] ? SVGA_CURSOR_ON_SHOW : SVGA_CURSOR_ON_HIDE;
-  s -> cursor.on = on_off;
+  if (s -> fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_HIDE) {
+    s -> cursor.on = SVGA_CURSOR_ON_HIDE;
+  } else {
+    s -> cursor.on = SVGA_CURSOR_ON_SHOW;
+  }
   s -> cursor.x = s -> fifo[SVGA_FIFO_CURSOR_X];
   s -> cursor.y = s -> fifo[SVGA_FIFO_CURSOR_Y];
   dpy_mouse_set(s -> vga.con, s -> cursor.x, s -> cursor.y, s -> cursor.on);
@@ -598,16 +600,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       if (len < 0) {
         goto rewind;
       }
-      for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.and_mask_bpp); args++) {
+      for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.xor_mask_bpp); args++) {
         uint32_t rgbc = vmsvga_fifo_read_raw(s);
-        cursor.and_mask[args] = rgbc;
+        cursor.xor_mask[args] = rgbc;
         #ifdef VERBOSE
         printf("%s: rgbc %d \n", __func__, rgbc);
         #endif
       }
-      for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.xor_mask_bpp); args++) {
+      for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.and_mask_bpp); args++) {
         uint32_t rgbb = vmsvga_fifo_read_raw(s);
-        cursor.xor_mask[args] = rgbb;
+        cursor.and_mask[args] = rgbb;
         #ifdef VERBOSE
         printf("%s: rgbb %d \n", __func__, rgbb);
         #endif
@@ -3420,11 +3422,12 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
     #endif
     break;
   case SVGA_REG_CURSOR_ON:
-    s -> cursor.on |= (value == SVGA_CURSOR_ON_SHOW);
-    s -> cursor.on &= (value != SVGA_CURSOR_ON_HIDE);
-    if (value <= SVGA_CURSOR_ON_SHOW) {
-      dpy_mouse_set(s -> vga.con, s -> cursor.x, s -> cursor.y, s -> cursor.on);
+    if (value == SVGA_CURSOR_ON_HIDE) {
+        s -> cursor.on = SVGA_CURSOR_ON_HIDE;
+    } else {
+        s -> cursor.on = SVGA_CURSOR_ON_SHOW;
     }
+    dpy_mouse_set(s -> vga.con, s -> cursor.x, s -> cursor.y, s -> cursor.on);
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CURSOR_ON register %d with the value of %u\n", __func__, s -> index, value);
     #endif
