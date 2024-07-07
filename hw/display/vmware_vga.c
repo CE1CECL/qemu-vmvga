@@ -342,9 +342,10 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s * s,
     qc -> hot_x = c -> hot_x;
     qc -> hot_y = c -> hot_y;
     if (c -> xor_mask_bpp != 1 && c -> and_mask_bpp != 1) {
-      uint32_t i, pixels = (c -> width * c -> height);
+      uint32_t i;
+      uint32_t pixels = ((c -> width) * (c -> height));
       for (i = 0; i < pixels; i++) {
-        qc -> data[i] |= (c -> xor_mask[i] + c -> and_mask[i]);
+        qc -> data[i] = ((c -> xor_mask[i]) + (c -> and_mask[i]));
       }
     } else {
       cursor_set_mono(qc, 0xffffff, 0x000000, (void * ) c -> xor_mask, 1, (void * ) c -> and_mask);
@@ -368,9 +369,10 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s * s,
     qc -> hot_x = c -> hot_x;
     qc -> hot_y = c -> hot_y;
     if (c -> xor_mask_bpp != 1 && c -> and_mask_bpp != 1) {
-      uint32_t i, pixels = (c -> width * c -> height);
+      uint32_t i;
+      uint32_t pixels = ((c -> width) * (c -> height));
       for (i = 0; i < pixels; i++) {
-        qc -> data[i] |= (c -> xor_mask[i] + c -> and_mask[i]);
+        qc -> data[i] = ((c -> xor_mask[i]) + (c -> and_mask[i]));
       }
     } else {
       cursor_set_mono(qc, 0xffffff, 0x000000, (void * ) c -> xor_mask, 1, (void * ) c -> and_mask);
@@ -601,17 +603,15 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
         goto rewind;
       }
       for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.and_mask_bpp); args++) {
-        uint32_t rgbc = vmsvga_fifo_read_raw(s);
-        cursor.and_mask[args] = rgbc;
+        cursor.and_mask[args] = vmsvga_fifo_read_raw(s);
         #ifdef VERBOSE
-        printf("%s: rgbc %d \n", __func__, rgbc);
+        printf("%s: cursor.and_mask[args] %d \n", __func__, cursor.and_mask[args]);
         #endif
       }
       for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.xor_mask_bpp); args++) {
-        uint32_t rgbb = vmsvga_fifo_read_raw(s);
-        cursor.xor_mask[args] = rgbb;
+        cursor.xor_mask[args] = vmsvga_fifo_read_raw(s);
         #ifdef VERBOSE
-        printf("%s: rgbb %d \n", __func__, rgbb);
+        printf("%s: cursor.xor_mask[args] %d \n", __func__, cursor.xor_mask[args]);
         #endif
       }
       vmsvga_cursor_define(s, & cursor);
@@ -631,7 +631,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       cursor.height = vmsvga_fifo_read(s);
       cursor.and_mask_bpp = 32;
       cursor.xor_mask_bpp = 32;
-      args = (cursor.width * cursor.height);
+      args = ((cursor.width) * (cursor.height));
       if (cursor.width < 1 || cursor.height < 1 || cursor.width > 512 || cursor.height > 512 || cursor.and_mask_bpp < 1 || cursor.xor_mask_bpp < 1 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32) {
         #ifdef VERBOSE
         printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
