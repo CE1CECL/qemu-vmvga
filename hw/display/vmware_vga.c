@@ -56,7 +56,7 @@
 #include "include/VGPU10ShaderTokens.h"
 #include "include/vmware_pack_begin.h"
 #include "include/vmware_pack_end.h"
-#define SVGA_PIXMAP_SIZE(w, h, bpp)(((((w) * (bpp)) + 31) >> 5) * (h))
+#define SVGA_PIXMAP_SIZE(w, h, bpp)(((((w) * (bpp))) >> 5) * (h))
 #define SVGA_CMD_RECT_FILL 2
 #define SVGA_CMD_DISPLAY_CURSOR 20
 #define SVGA_CMD_MOVE_CURSOR 21
@@ -2969,7 +2969,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_BYTES_PER_LINE:
-    ret = (((s -> new_depth) * (s -> new_width)) / (8));
+    ret = ((((s -> new_depth) * (s -> new_width)) / (8)) * (s -> num_gd));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_BYTES_PER_LINE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3001,7 +3001,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_FB_SIZE:
-    ret = ((s -> new_height) * (s -> pitchlock));
+    ret = ((s -> new_height) * (((((s -> new_depth) * (s -> new_width)) / (8)) * (s -> num_gd))));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_FB_SIZE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3188,7 +3188,8 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_PITCHLOCK:
-    ret = s -> pitchlock;
+    ret = ((((s -> new_depth) * (s -> new_width)) / (8)) * (s -> num_gd));
+    s -> fifo[SVGA_FIFO_PITCHLOCK] = ((((s -> new_depth) * (s -> new_width)) / (8)) * (s -> num_gd));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_PITCHLOCK register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3434,7 +3435,6 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
     break;
   case SVGA_REG_PITCHLOCK:
     s -> pitchlock = value;
-    s -> fifo[SVGA_FIFO_PITCHLOCK] = value;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_PITCHLOCK register %d with the value of %u\n", __func__, s -> index, value);
     #endif
@@ -4564,12 +4564,12 @@ static void vmsvga_init(DeviceState * dev, struct vmsvga_state_s * s,
   vga_common_init( & s -> vga, OBJECT(dev), & error_fatal);
   vga_init( & s -> vga, OBJECT(dev), address_space, io, true);
   vmstate_register(NULL, 0, & vmstate_vga_common, & s -> vga);
-  s -> num_gd = 1;
-  s -> new_width = 800;
-  s -> new_height = 600;
-  s -> new_depth = 32;
   if (s -> thread <= 0) {
     s -> thread++;
+    s -> num_gd = 1;
+    s -> new_width = 800;
+    s -> new_height = 600;
+    s -> new_depth = 32;
     pthread_t threads[1];
     pthread_create(threads, NULL, vmsvga_fifo_hack, (void * ) s);
   };
