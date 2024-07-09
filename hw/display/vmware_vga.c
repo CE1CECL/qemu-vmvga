@@ -158,7 +158,7 @@ struct pci_vmsvga_state_s {
 };
 static void cursor_update_from_fifo(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
-  printf("vmvga: cursor_update_from_fifo was just executed\n");
+  printf("vmsvga: cursor_update_from_fifo was just executed\n");
   #endif
   uint32_t fifo_cursor_count;
   if (s -> config != 1 || s -> enable != 1) {
@@ -185,7 +185,7 @@ static inline bool vmsvga_verify_rect(DisplaySurface * surface,
   const char * name,
     int x, int y, int w, int h) {
   #ifdef VERBOSE
-  //	printf("vmvga: vmsvga_verify_rect was just executed\n");
+  //	printf("vmsvga: vmsvga_verify_rect was just executed\n");
   #endif
   if (x < 1) {
     return false;
@@ -222,7 +222,7 @@ static inline bool vmsvga_verify_rect(DisplaySurface * surface,
 static inline void vmsvga_update_rect(struct vmsvga_state_s * s,
   int x, int y, int w, int h) {
   #ifdef VERBOSE
-  //	printf("vmvga: vmsvga_update_rect was just executed\n");
+  //	printf("vmsvga: vmsvga_update_rect was just executed\n");
   #endif
   DisplaySurface * surface = qemu_console_surface(s -> vga.con);
   int line;
@@ -250,7 +250,7 @@ static inline void vmsvga_update_rect(struct vmsvga_state_s * s,
 static inline int vmsvga_copy_rect(struct vmsvga_state_s * s,
   int x0, int y0, int x1, int y1, int w, int h) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_copy_rect was just executed\n");
+  printf("vmsvga: vmsvga_copy_rect was just executed\n");
   #endif
   DisplaySurface * surface = qemu_console_surface(s -> vga.con);
   uint8_t * vram = s -> vga.vram_ptr;
@@ -284,7 +284,7 @@ static inline int vmsvga_copy_rect(struct vmsvga_state_s * s,
 static inline int vmsvga_fill_rect(struct vmsvga_state_s * s,
   uint32_t c, int x, int y, int w, int h) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_fill_rect was just executed\n");
+  printf("vmsvga: vmsvga_fill_rect was just executed\n");
   #endif
   DisplaySurface * surface = qemu_console_surface(s -> vga.con);
   int bypl = surface_stride(surface);
@@ -335,7 +335,7 @@ struct vmsvga_cursor_definition_s {
 static inline void vmsvga_cursor_define(struct vmsvga_state_s * s,
   struct vmsvga_cursor_definition_s * c) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_cursor_define was just executed\n");
+  printf("vmsvga: vmsvga_cursor_define was just executed\n");
   #endif
   QEMUCursor * qc;
   qc = cursor_alloc(c -> width, c -> height);
@@ -353,7 +353,7 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s * s,
     }
     #ifdef VERBOSE
     cursor_print_ascii_art(qc, "vmsvga_mono");
-    printf("vmvga: vmsvga_cursor_define | xor_mask == %d : and_mask == %d\n", * c -> xor_mask, * c -> and_mask);
+    printf("vmsvga: vmsvga_cursor_define | xor_mask == %d : and_mask == %d\n", * c -> xor_mask, * c -> and_mask);
     #endif
     dpy_cursor_define(s -> vga.con, qc);
     cursor_put(qc);
@@ -362,7 +362,7 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s * s,
 static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s * s,
   struct vmsvga_cursor_definition_s * c) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_rgba_cursor_define was just executed\n");
+  printf("vmsvga: vmsvga_rgba_cursor_define was just executed\n");
   #endif
   QEMUCursor * qc;
   qc = cursor_alloc(c -> width, c -> height);
@@ -380,7 +380,7 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s * s,
     }
     #ifdef VERBOSE
     cursor_print_ascii_art(qc, "vmsvga_rgba");
-    printf("vmvga: vmsvga_rgba_cursor_define | xor_mask == %d : and_mask == %d\n", * c -> xor_mask, * c -> and_mask);
+    printf("vmsvga: vmsvga_rgba_cursor_define | xor_mask == %d : and_mask == %d\n", * c -> xor_mask, * c -> and_mask);
     #endif
     dpy_cursor_define(s -> vga.con, qc);
     cursor_put(qc);
@@ -388,7 +388,7 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s * s,
 }
 static inline int vmsvga_fifo_length(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_fifo_length was just executed\n");
+  printf("vmsvga: vmsvga_fifo_length was just executed\n");
   #endif
   int num;
   if (s -> config != 1 || s -> enable != 1) {
@@ -421,7 +421,7 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s * s) {
 }
 static inline uint32_t vmsvga_fifo_read_raw(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_fifo_read_raw was just executed\n");
+  printf("vmsvga: vmsvga_fifo_read_raw was just executed\n");
   #endif
   uint32_t cmd = s -> fifo[s -> fifo_stop >> 2];
   s -> fifo_stop += 4;
@@ -433,13 +433,13 @@ static inline uint32_t vmsvga_fifo_read_raw(struct vmsvga_state_s * s) {
 }
 static inline uint32_t vmsvga_fifo_read(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_fifo_read was just executed\n");
+  printf("vmsvga: vmsvga_fifo_read was just executed\n");
   #endif
   return le32_to_cpu(vmsvga_fifo_read_raw(s));
 }
 static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_fifo_run was just executed\n");
+  printf("vmsvga: vmsvga_fifo_run was just executed\n");
   #endif
   #ifdef VERBOSE
   int UnknownCommandA;
@@ -930,7 +930,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
 }
 static uint32_t vmsvga_index_read(void * opaque, uint32_t address) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_index_read was just executed\n");
+  printf("vmsvga: vmsvga_index_read was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
   #ifdef VERBOSE
@@ -941,7 +941,7 @@ static uint32_t vmsvga_index_read(void * opaque, uint32_t address) {
 }
 static void vmsvga_index_write(void * opaque, uint32_t address, uint32_t index) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_index_write was just executed\n");
+  printf("vmsvga: vmsvga_index_write was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
   #ifdef VERBOSE
@@ -953,7 +953,7 @@ static void vmsvga_index_write(void * opaque, uint32_t address, uint32_t index) 
 void * vmsvga_fifo_hack(void * arg);
 void * vmsvga_fifo_hack(void * arg) {
   #ifdef VERBOSE
-  //	printf("vmvga: vmsvga_fifo_hack was just executed\n");
+  //	printf("vmsvga: vmsvga_fifo_hack was just executed\n");
   #endif
   struct vmsvga_state_s * s = (struct vmsvga_state_s * ) arg;
   int cx = 0;
@@ -2841,7 +2841,7 @@ void * vmsvga_fifo_hack(void * arg) {
 };
 static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_value_read was just executed\n");
+  printf("vmsvga: vmsvga_value_read was just executed\n");
   #endif
   uint32_t caps;
   uint32_t cap2;
@@ -4352,7 +4352,7 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
 }
 static uint32_t vmsvga_irqstatus_read(void * opaque, uint32_t address) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_irqstatus_read was just executed\n");
+  printf("vmsvga: vmsvga_irqstatus_read was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
   #ifdef VERBOSE
@@ -4363,7 +4363,7 @@ static uint32_t vmsvga_irqstatus_read(void * opaque, uint32_t address) {
 }
 static void vmsvga_irqstatus_write(void * opaque, uint32_t address, uint32_t data) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_irqstatus_write was just executed\n");
+  printf("vmsvga: vmsvga_irqstatus_write was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
   s -> irq_status &= ~data;
@@ -4386,7 +4386,7 @@ static void vmsvga_irqstatus_write(void * opaque, uint32_t address, uint32_t dat
 }
 static uint32_t vmsvga_bios_read(void * opaque, uint32_t address) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_bios_read was just executed\n");
+  printf("vmsvga: vmsvga_bios_read was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
   #ifdef VERBOSE
@@ -4397,7 +4397,7 @@ static uint32_t vmsvga_bios_read(void * opaque, uint32_t address) {
 }
 static void vmsvga_bios_write(void * opaque, uint32_t address, uint32_t data) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_bios_write was just executed\n");
+  printf("vmsvga: vmsvga_bios_write was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
   s -> bios = data;
@@ -4408,7 +4408,7 @@ static void vmsvga_bios_write(void * opaque, uint32_t address, uint32_t data) {
 }
 static inline void vmsvga_check_size(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_check_size was just executed\n");
+  printf("vmsvga: vmsvga_check_size was just executed\n");
   #endif
   DisplaySurface * surface = qemu_console_surface(s -> vga.con);
   uint32_t new_stride;
@@ -4469,7 +4469,7 @@ static inline void vmsvga_check_size(struct vmsvga_state_s * s) {
 }
 static void vmsvga_update_display(void * opaque) {
   #ifdef VERBOSE
-  //	printf("vmvga: vmsvga_update_display was just executed\n");
+  //	printf("vmsvga: vmsvga_update_display was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
   if (s -> enable == 0 && s -> config == 0) {
@@ -4491,7 +4491,7 @@ static void vmsvga_update_display(void * opaque) {
 }
 static void vmsvga_reset(DeviceState * dev) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_reset was just executed\n");
+  printf("vmsvga: vmsvga_reset was just executed\n");
   #endif
   struct pci_vmsvga_state_s * pci = VMWARE_SVGA(dev);
   struct vmsvga_state_s * s = & pci -> chip;
@@ -4500,12 +4500,12 @@ static void vmsvga_reset(DeviceState * dev) {
 }
 static void vmsvga_invalidate_display(void * opaque) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_invalidate_display was just executed\n");
+  printf("vmsvga: vmsvga_invalidate_display was just executed\n");
   #endif
 }
 static void vmsvga_text_update(void * opaque, console_ch_t * chardata) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_text_update was just executed\n");
+  printf("vmsvga: vmsvga_text_update was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
   if (s -> vga.hw_ops -> text_update) {
@@ -4514,7 +4514,7 @@ static void vmsvga_text_update(void * opaque, console_ch_t * chardata) {
 }
 static int vmsvga_post_load(void * opaque, int version_id) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_post_load was just executed\n");
+  printf("vmsvga: vmsvga_post_load was just executed\n");
   #endif
   return 0;
 }
@@ -4570,7 +4570,7 @@ const GraphicHwOps vmsvga_ops = {
 static void vmsvga_init(DeviceState * dev, struct vmsvga_state_s * s,
   MemoryRegion * address_space, MemoryRegion * io) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_init was just executed\n");
+  printf("vmsvga: vmsvga_init was just executed\n");
   #endif
   s -> scratch_size = 0x8000;
   s -> scratch = g_malloc(s -> scratch_size * 4);
@@ -4596,7 +4596,7 @@ static void vmsvga_init(DeviceState * dev, struct vmsvga_state_s * s,
 }
 static uint64_t vmsvga_io_read(void * opaque, hwaddr addr, unsigned size) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_io_read was just executed\n");
+  printf("vmsvga: vmsvga_io_read was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
   switch (addr) {
@@ -4635,7 +4635,7 @@ static uint64_t vmsvga_io_read(void * opaque, hwaddr addr, unsigned size) {
 static void vmsvga_io_write(void * opaque, hwaddr addr,
   uint64_t data, unsigned size) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_io_write was just executed\n");
+  printf("vmsvga: vmsvga_io_write was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
   switch (addr) {
@@ -4681,7 +4681,7 @@ const MemoryRegionOps vmsvga_io_ops = {
 };
 static void pci_vmsvga_realize(PCIDevice * dev, Error ** errp) {
   #ifdef VERBOSE
-  printf("vmvga: pci_vmsvga_realize was just executed\n");
+  printf("vmsvga: pci_vmsvga_realize was just executed\n");
   #endif
   struct pci_vmsvga_state_s * s = VMWARE_SVGA(dev);
   dev -> config[PCI_CACHE_LINE_SIZE] = 0x08;
@@ -4704,7 +4704,7 @@ static Property vga_vmware_properties[] = {
 };
 static void vmsvga_class_init(ObjectClass * klass, void * data) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_class_init was just executed\n");
+  printf("vmsvga: vmsvga_class_init was just executed\n");
   #endif
   DeviceClass * dc = DEVICE_CLASS(klass);
   PCIDeviceClass * k = PCI_DEVICE_CLASS(klass);
@@ -4736,7 +4736,7 @@ const TypeInfo vmsvga_info = {
 };
 static void vmsvga_register_types(void) {
   #ifdef VERBOSE
-  printf("vmvga: vmsvga_register_types was just executed\n");
+  printf("vmsvga: vmsvga_register_types was just executed\n");
   #endif
   type_register_static( & vmsvga_info);
 }
