@@ -1,6 +1,6 @@
  /*
   
-  QEMU Super Video Graphics Array 2 [SVGA-II]
+  QEMU VMware Super Video Graphics Array 2 [SVGA-II]
   
   Copyright (c) 2007 Andrzej Zaborowski <balrog@zabor.org>
   
@@ -342,7 +342,7 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s * s,
     qc -> hot_x = c -> hot_x;
     qc -> hot_y = c -> hot_y;
     if (c -> xor_mask_bpp != 1 && c -> and_mask_bpp != 1) {
-      uint32_t i;
+      uint32_t i = 0;
       uint32_t pixels = ((c -> width) * (c -> height));
       for (i = 0; i < pixels; i++) {
         qc -> data[i] = ((c -> xor_mask[i]) + (c -> and_mask[i]));
@@ -369,7 +369,7 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s * s,
     qc -> hot_x = c -> hot_x;
     qc -> hot_y = c -> hot_y;
     if (c -> xor_mask_bpp != 1 && c -> and_mask_bpp != 1) {
-      uint32_t i;
+      uint32_t i = 0;
       uint32_t pixels = ((c -> width) * (c -> height));
       for (i = 0; i < pixels; i++) {
         qc -> data[i] = ((c -> xor_mask[i]) + (c -> and_mask[i]));
