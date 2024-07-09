@@ -107,6 +107,7 @@ struct vmsvga_state_s {
   uint32_t devcap_val;
   uint32_t gmrdesc;
   uint32_t gmrid;
+  uint32_t gmrpage;
   uint32_t tracez;
   uint32_t cmd_low;
   uint32_t cmd_high;
@@ -906,6 +907,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
     #endif
     s -> irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
   }
+  #ifndef VERBOSE
   struct pci_vmsvga_state_s * pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
   if (((s -> irq_mask & s -> irq_status)) && ((s -> pcisetirq0 > s -> pcisetirq1)) && ((s -> pcisetirq == 0))) {
     #ifdef VERBOSE
@@ -922,6 +924,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
     s -> pcisetirq0++;
     s -> pcisetirq = 0;
   }
+  #endif
   s -> syncing = 0;
   s -> sync2--;
 }
@@ -3243,7 +3246,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_GMRS_MAX_PAGES:
-    ret = s -> gmrdesc;
+    ret = s -> gmrpage;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_GMRS_MAX_PAGES register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3441,6 +3444,7 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
     break;
   case SVGA_REG_IRQMASK:
     s -> irq_mask = value;
+    #ifndef VERBOSE
     struct pci_vmsvga_state_s * pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
     PCIDevice * pci_dev = PCI_DEVICE(pci_vmsvga);
     if (((value & s -> irq_status)) && ((s -> pcisetirq0 > s -> pcisetirq1)) && ((s -> pcisetirq == 0))) {
@@ -3458,6 +3462,7 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
       s -> pcisetirq0++;
       s -> pcisetirq = 0;
     }
+    #endif
     #ifdef VERBOSE
     printf("%s: SVGA_REG_IRQMASK register %d with the value of %u\n", __func__, s -> index, value);
     #endif
@@ -4351,12 +4356,13 @@ static void vmsvga_irqstatus_write(void * opaque, uint32_t address, uint32_t dat
   printf("vmvga: vmsvga_irqstatus_write was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
-  struct pci_vmsvga_state_s * pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
-  PCIDevice * pci_dev = PCI_DEVICE(pci_vmsvga);
   s -> irq_status &= ~data;
   #ifdef VERBOSE
   printf("%s: vmsvga_irqstatus_write %d\n", __func__, data);
   #endif
+  #ifndef VERBOSE
+  struct pci_vmsvga_state_s * pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
+  PCIDevice * pci_dev = PCI_DEVICE(pci_vmsvga);
   if ((!(s -> irq_mask & s -> irq_status))) {
     #ifdef VERBOSE
     printf("Pci_set_irq=O\n");
@@ -4365,6 +4371,7 @@ static void vmsvga_irqstatus_write(void * opaque, uint32_t address, uint32_t dat
     s -> pcisetirq0++;
     s -> pcisetirq = 0;
   }
+  #endif
   s -> sync--;
 }
 static uint32_t vmsvga_bios_read(void * opaque, uint32_t address) {
@@ -4566,6 +4573,9 @@ static void vmsvga_init(DeviceState * dev, struct vmsvga_state_s * s,
   vmstate_register(NULL, 0, & vmstate_vga_common, & s -> vga);
   if (s -> thread <= 0) {
     s -> thread++;
+    s -> gmrid = 65536;
+    s -> gmrpage = 64;
+    s -> gmrdesc = 4096;
     s -> num_gd = 1;
     s -> new_width = 800;
     s -> new_height = 600;
