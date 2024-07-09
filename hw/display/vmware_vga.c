@@ -993,7 +993,9 @@ void * vmsvga_fifo_hack(void * arg) {
       s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
     };
     if (s -> fifo[SVGA_FIFO_3D_CAPS] == 8) {
+      #ifndef VERBOSE
       printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
+      #endif
       s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000008;
     };
     if (s -> fifo[SVGA_FIFO_3D_CAPS] == 9) {
@@ -2805,10 +2807,12 @@ void * vmsvga_fifo_hack(void * arg) {
     #endif
     s -> fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
     s -> fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
+    #ifndef VERBOSE
     #ifdef VERBOSE
     s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
     #else
     s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE;
+    #endif
     #endif
     s -> fifo[SVGA_FIFO_BUSY] = s -> syncing;
     s -> fifo[SVGA_FIFO_CAPABILITIES] =
@@ -3063,18 +3067,24 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #ifdef VERBOSE
     caps |= SVGA_CAP_SCREEN_OBJECT_2;
     #endif
+    #ifndef VERBOSE
     #ifdef VERBOSE
     caps |= SVGA_CAP_COMMAND_BUFFERS;
     #endif
+    #endif
     caps |= SVGA_CAP_DEAD1;
+    #ifndef VERBOSE
     #ifdef VERBOSE
     caps |= SVGA_CAP_CMD_BUFFERS_2;
+    #endif
     #endif
     #ifdef VERBOSE
     caps |= SVGA_CAP_GBOBJECTS;
     #endif
+    #ifndef VERBOSE
     #ifdef VERBOSE
     caps |= SVGA_CAP_CMD_BUFFERS_3;
+    #endif
     #endif
     caps |= SVGA_CAP_DX;
     caps |= SVGA_CAP_HP_CMD_QUEUE;
