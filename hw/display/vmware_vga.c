@@ -907,7 +907,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
     #endif
     s -> irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
   }
-  #ifndef VERBOSE
   struct pci_vmsvga_state_s * pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
   if (((s -> irq_mask & s -> irq_status)) && ((s -> pcisetirq0 > s -> pcisetirq1)) && ((s -> pcisetirq == 0))) {
     #ifdef VERBOSE
@@ -924,7 +923,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
     s -> pcisetirq0++;
     s -> pcisetirq = 0;
   }
-  #endif
   s -> syncing = 0;
   s -> sync2--;
 }
@@ -993,9 +991,7 @@ void * vmsvga_fifo_hack(void * arg) {
       s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
     };
     if (s -> fifo[SVGA_FIFO_3D_CAPS] == 8) {
-      #ifndef VERBOSE
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      #endif
+      //printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
       s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000008;
     };
     if (s -> fifo[SVGA_FIFO_3D_CAPS] == 9) {
@@ -2805,16 +2801,15 @@ void * vmsvga_fifo_hack(void * arg) {
       s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
     };
     #endif
+    s -> fifo[SVGA_FIFO_PITCHLOCK] = ((((s -> new_depth) * (s -> new_width)) / (8)) * (s -> num_gd));
     s -> fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
     s -> fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
-    #ifndef VERBOSE
     #ifdef VERBOSE
-    s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
+    s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE; //SVGA_FIFO_FLAG_ACCELFRONT;
     #else
     s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE;
     #endif
-    #endif
-    s -> fifo[SVGA_FIFO_BUSY] = s -> syncing;
+    s -> fifo[SVGA_FIFO_BUSY] = 0;
     s -> fifo[SVGA_FIFO_CAPABILITIES] =
       SVGA_FIFO_CAP_NONE |
       SVGA_FIFO_CAP_FENCE |
@@ -2825,15 +2820,16 @@ void * vmsvga_fifo_hack(void * arg) {
       SVGA_FIFO_CAP_ESCAPE |
       SVGA_FIFO_CAP_RESERVE |
       #ifdef VERBOSE
-    SVGA_FIFO_CAP_SCREEN_OBJECT |
+      //SVGA_FIFO_CAP_SCREEN_OBJECT |
       #endif
-    #ifdef VERBOSE
-    SVGA_FIFO_CAP_GMR2 |
+      #ifdef VERBOSE
+      //SVGA_FIFO_CAP_GMR2 |
       #endif
-    #ifdef VERBOSE
-    SVGA_FIFO_CAP_SCREEN_OBJECT_2 |
+      #ifdef VERBOSE
+      //SVGA_FIFO_CAP_SCREEN_OBJECT_2 |
       #endif
-    SVGA_FIFO_CAP_DEAD;
+      SVGA_FIFO_CAP_DEAD // |
+      ;
     if (s -> enable != 0 && s -> config != 0) {
       vmsvga_update_rect(s, cx, cy, s -> new_width, s -> new_height);
     };
@@ -3067,24 +3063,18 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #ifdef VERBOSE
     caps |= SVGA_CAP_SCREEN_OBJECT_2;
     #endif
-    #ifndef VERBOSE
     #ifdef VERBOSE
     caps |= SVGA_CAP_COMMAND_BUFFERS;
     #endif
-    #endif
     caps |= SVGA_CAP_DEAD1;
-    #ifndef VERBOSE
     #ifdef VERBOSE
-    caps |= SVGA_CAP_CMD_BUFFERS_2;
-    #endif
+    //caps |= SVGA_CAP_CMD_BUFFERS_2;
     #endif
     #ifdef VERBOSE
     caps |= SVGA_CAP_GBOBJECTS;
     #endif
-    #ifndef VERBOSE
     #ifdef VERBOSE
     caps |= SVGA_CAP_CMD_BUFFERS_3;
-    #endif
     #endif
     caps |= SVGA_CAP_DX;
     caps |= SVGA_CAP_HP_CMD_QUEUE;
@@ -3147,7 +3137,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_BUSY:
-    ret = s -> syncing;
+    ret = 0;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_BUSY register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3202,7 +3192,6 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   case SVGA_REG_PITCHLOCK:
     ret = ((((s -> new_depth) * (s -> new_width)) / (8)) * (s -> num_gd));
-    s -> fifo[SVGA_FIFO_PITCHLOCK] = ((((s -> new_depth) * (s -> new_width)) / (8)) * (s -> num_gd));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_PITCHLOCK register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3454,7 +3443,6 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
     break;
   case SVGA_REG_IRQMASK:
     s -> irq_mask = value;
-    #ifndef VERBOSE
     struct pci_vmsvga_state_s * pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
     PCIDevice * pci_dev = PCI_DEVICE(pci_vmsvga);
     if (((value & s -> irq_status)) && ((s -> pcisetirq0 > s -> pcisetirq1)) && ((s -> pcisetirq == 0))) {
@@ -3472,7 +3460,6 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
       s -> pcisetirq0++;
       s -> pcisetirq = 0;
     }
-    #endif
     #ifdef VERBOSE
     printf("%s: SVGA_REG_IRQMASK register %d with the value of %u\n", __func__, s -> index, value);
     #endif
@@ -4370,7 +4357,6 @@ static void vmsvga_irqstatus_write(void * opaque, uint32_t address, uint32_t dat
   #ifdef VERBOSE
   printf("%s: vmsvga_irqstatus_write %d\n", __func__, data);
   #endif
-  #ifndef VERBOSE
   struct pci_vmsvga_state_s * pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
   PCIDevice * pci_dev = PCI_DEVICE(pci_vmsvga);
   if ((!(s -> irq_mask & s -> irq_status))) {
@@ -4381,7 +4367,6 @@ static void vmsvga_irqstatus_write(void * opaque, uint32_t address, uint32_t dat
     s -> pcisetirq0++;
     s -> pcisetirq = 0;
   }
-  #endif
   s -> sync--;
 }
 static uint32_t vmsvga_bios_read(void * opaque, uint32_t address) {
