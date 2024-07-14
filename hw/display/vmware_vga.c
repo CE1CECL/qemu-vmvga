@@ -918,14 +918,14 @@ static void vmsvga_index_write(void * opaque, uint32_t address, uint32_t index) 
   #endif
   s -> index = index;
 }
-void * vmsvga_fifo_hack(void * arg);
-void * vmsvga_fifo_hack(void * arg) {
+void * vmsvga_loop(void * arg);
+void * vmsvga_loop(void * arg) {
   #ifdef VERBOSE
-  //	printf("vmsvga: vmsvga_fifo_hack was just executed\n");
+  //	printf("vmsvga: vmsvga_loop was just executed\n");
   #endif
   struct vmsvga_state_s * s = (struct vmsvga_state_s * ) arg;
-  int cx = 0;
-  int cy = 0;
+  uint32_t cx = 0;
+  uint32_t cy = 0;
   while (true) {
     #ifdef VERBOSE
     if (s -> fifo[SVGA_FIFO_3D_CAPS] == 0) {
@@ -2800,7 +2800,7 @@ void * vmsvga_fifo_hack(void * arg) {
       #endif
       SVGA_FIFO_CAP_DEAD // |
       ;
-    if (s -> enable != 0 && s -> config != 0) {
+    if (s -> enable != 0 && s -> config != 0 && s -> new_width != 0 && s -> new_height != 0) {
       vmsvga_update_rect(s, cx, cy, s -> new_width, s -> new_height);
     };
   };
@@ -4518,7 +4518,7 @@ static void vmsvga_init(DeviceState * dev, struct vmsvga_state_s * s,
     s -> new_height = 600;
     s -> new_depth = 32;
     pthread_t threads[1];
-    pthread_create(threads, NULL, vmsvga_fifo_hack, (void * ) s);
+    pthread_create(threads, NULL, vmsvga_loop, (void * ) s);
   };
 }
 static uint64_t vmsvga_io_read(void * opaque, hwaddr addr, unsigned size) {
