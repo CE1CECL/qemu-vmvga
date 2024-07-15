@@ -2815,7 +2815,8 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
   #endif
   switch (s -> index) {
   case SVGA_REG_FENCE_GOAL:
-    ret = 0;
+    //ret = 0;
+    ret = s -> fg;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_FENCE_GOAL register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -2958,8 +2959,8 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_FB_START: {
-    struct pci_vmsvga_state_s * pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
     //ret = -268435456;
+    struct pci_vmsvga_state_s * pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
     ret = pci_get_bar_addr(PCI_DEVICE(pci_vmsvga), 1);
     #ifdef VERBOSE
     printf("%s: SVGA_REG_FB_START register %d with the return of %u\n", __func__, s -> index, ret);
@@ -2993,13 +2994,15 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_MOB_MAX_SIZE:
-    ret = 1073741824;
+    //ret = 1073741824;
+    ret = s -> vga.vram_size;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MOB_MAX_SIZE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_GBOBJECT_MEM_SIZE_KB:
-    ret = 8388608;
+    //ret = 8388608;
+    ret = ((s -> vga.vram_size) / (1024));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_GBOBJECT_MEM_SIZE_KB register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3012,13 +3015,15 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_MSHINT:
-    ret = 0;
+    //ret = 0;
+    ret = 1;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MSHINT register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_MAX_PRIMARY_MEM:
-    ret = 134217728;
+    //ret = 134217728;
+    ret = s -> vga.vram_size;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MAX_PRIMARY_MEM register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3106,7 +3111,8 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   }
   case SVGA_REG_MEM_SIZE:
-    ret = 262144;
+    //ret = 262144;
+    ret = s -> fifo_size;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MEM_SIZE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3130,7 +3136,8 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_GUEST_ID:
-    ret = 0;
+    //ret = 0;
+    ret = s -> guest;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_GUEST_ID register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3164,7 +3171,8 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_SCRATCH_SIZE:
-    ret = 64;
+    //ret = 64;
+    ret = s -> scratch_size;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_SCRATCH_SIZE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3204,26 +3212,29 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_DISPLAY_ID:
-    ret = 0;
+    //ret = 0;
+    ret = s -> display_id;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_DISPLAY_ID register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_DISPLAY_IS_PRIMARY:
     //ret = 0;
-    ret = 1;
+    ret = s -> disp_prim;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_DISPLAY_IS_PRIMARY register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_DISPLAY_POSITION_X:
-    ret = 0;
+    //ret = 0;
+    ret = s -> disp_x;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_DISPLAY_POSITION_X register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_DISPLAY_POSITION_Y:
-    ret = 0;
+    //ret = 0;
+    ret = s -> disp_y;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_DISPLAY_POSITION_Y register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3249,15 +3260,10 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_GMR_ID:
-    ret = 0;
+    //ret = 0;
+    ret = s -> gmrid;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_GMR_ID register %d with the return of %u\n", __func__, s -> index, ret);
-    #endif
-    break;
-  case SVGA_REG_GMR_DESCRIPTOR:
-    ret = 0;
-    #ifdef VERBOSE
-    printf("%s: SVGA_REG_GMR_DESCRIPTOR register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_GMR_MAX_IDS:
@@ -3301,7 +3307,8 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_MEMORY_SIZE:
-    ret = 1073741824;
+    //ret = 1073741824;
+    ret = s -> vga.vram_size;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MEMORY_SIZE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
