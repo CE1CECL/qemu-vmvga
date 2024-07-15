@@ -2776,7 +2776,7 @@ void * vmsvga_loop(void * arg) {
     #else
     s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE;
     #endif
-    s -> fifo[SVGA_FIFO_BUSY] = 0;
+    s -> fifo[SVGA_FIFO_BUSY] = s -> sync;
     s -> fifo[SVGA_FIFO_CAPABILITIES] =
       SVGA_FIFO_CAP_NONE |
       SVGA_FIFO_CAP_FENCE |
@@ -2809,7 +2809,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
   uint32_t caps;
   uint32_t cap2;
   struct vmsvga_state_s * s = opaque;
-  int ret;
+  uint32_t ret;
   #ifdef VERBOSE
   printf("%s: Unknown register %d\n", __func__, s -> index);
   #endif
@@ -2822,13 +2822,15 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_ID:
-    ret = -1879048190;
+    //ret = -1879048190;
+    ret = s -> svgaid;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_ID register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_ENABLE:
-    ret = 1;
+    //ret = 1;
+    ret = s -> enable;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_ENABLE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3118,19 +3120,22 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_CONFIG_DONE:
-    ret = 0;
+    //ret = 0;
+    ret = s -> config;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CONFIG_DONE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_SYNC:
-    ret = 0;
+    //ret = 0;
+    ret = s -> sync;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_SYNC register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_BUSY:
-    ret = 0;
+    //ret = 0;
+    ret = s -> sync;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_BUSY register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
