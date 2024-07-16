@@ -4579,8 +4579,8 @@ static void vmsvga_init(DeviceState * dev, struct vmsvga_state_s * s,
   vmstate_register(NULL, 0, & vmstate_vga_common, & s -> vga);
   if (s -> thread <= 0) {
     s -> thread++;
-    s -> new_width = 1024;
-    s -> new_height = 768;
+    s -> new_width = 800;
+    s -> new_height = 600;
     s -> new_depth = 32;
     pthread_t threads[1];
     pthread_create(threads, NULL, vmsvga_loop, (void * ) s);
