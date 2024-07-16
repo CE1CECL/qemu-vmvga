@@ -2768,7 +2768,11 @@ void * vmsvga_loop(void * arg) {
       s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
     };
     #endif
-    s -> fifo[SVGA_FIFO_PITCHLOCK] = (((s -> new_depth) * (s -> new_width)) / (8));
+    if (s -> pitchlock != 0) {
+        s -> fifo[SVGA_FIFO_PITCHLOCK] = s -> pitchlock;
+    } else {
+        s -> fifo[SVGA_FIFO_PITCHLOCK] = (((s -> new_depth) * (s -> new_width)) / (8));
+    }
     s -> fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
     s -> fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
     #ifdef VERBOSE
@@ -2955,7 +2959,11 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   case SVGA_REG_BYTES_PER_LINE:
     //ret = 4096;
-    ret = (((s -> new_depth) * (s -> new_width)) / (8));
+    if (s -> pitchlock != 0) {
+        ret = s -> pitchlock;
+    } else {
+        ret = (((s -> new_depth) * (s -> new_width)) / (8));
+    }
     #ifdef VERBOSE
     printf("%s: SVGA_REG_BYTES_PER_LINE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -2990,7 +2998,11 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   case SVGA_REG_FB_SIZE:
     //ret = 3145728;
-    ret = ((s -> new_height) * ((((s -> new_depth) * (s -> new_width)) / (8))));
+    if (s -> pitchlock != 0) {
+        ret = ((s -> new_height) * (s -> pitchlock));
+    } else {
+        ret = ((s -> new_height) * ((((s -> new_depth) * (s -> new_width)) / (8))));
+    }
     #ifdef VERBOSE
     printf("%s: SVGA_REG_FB_SIZE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3011,7 +3023,11 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   case SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB:
     //ret = 3145728;
-    ret = ((s -> new_height) * ((((s -> new_depth) * (s -> new_width)) / (8))));
+    if (s -> pitchlock != 0) {
+        ret = ((s -> new_height) * (s -> pitchlock));
+    } else {
+        ret = ((s -> new_height) * ((((s -> new_depth) * (s -> new_width)) / (8))));
+    }
     #ifdef VERBOSE
     printf("%s: SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3197,7 +3213,11 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   case SVGA_REG_PITCHLOCK:
     //ret = 0;
-    ret = (((s -> new_depth) * (s -> new_width)) / (8));
+    if (s -> pitchlock != 0) {
+        ret = s -> pitchlock;
+    } else {
+        ret = (((s -> new_depth) * (s -> new_width)) / (8));
+    }
     #ifdef VERBOSE
     printf("%s: SVGA_REG_PITCHLOCK register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -3446,6 +3466,12 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
     dpy_mouse_set(s -> vga.con, s -> cursor.x, s -> cursor.y, s -> cursor.on);
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CURSOR_ON register %d with the value of %u\n", __func__, s -> index, value);
+    #endif
+    break;
+  case SVGA_REG_BYTES_PER_LINE:
+    s -> pitchlock = value;
+    #ifdef VERBOSE
+    printf("%s: SVGA_REG_BYTES_PER_LINE register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_REG_PITCHLOCK:
@@ -4435,7 +4461,11 @@ static inline void vmsvga_check_size(struct vmsvga_state_s * s) {
     #endif
     return;
   };
-  new_stride = (((s -> new_depth) * (s -> new_width)) / (8));
+  if (s -> pitchlock != 0) {
+    new_stride = s -> pitchlock;
+  } else {
+    new_stride = (((s -> new_depth) * (s -> new_width)) / (8));
+  }
   if (s -> new_width != surface_width(surface) || s -> new_height != surface_height(surface) || (new_stride != surface_stride(surface)) || s -> new_depth != surface_bits_per_pixel(surface)) {
     pixman_format_code_t format = qemu_default_pixman_format(s -> new_depth, true);
     surface = qemu_create_displaysurface_from(s -> new_width, s -> new_height, format, new_stride, s -> vga.vram_ptr);
