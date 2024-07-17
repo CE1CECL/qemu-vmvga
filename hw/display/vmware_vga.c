@@ -3041,7 +3041,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   case SVGA_REG_MAX_PRIMARY_MEM:
     //ret = 134217728;
-    ret = s -> vga.vram_size;
+    ret = ((s -> vga.vram_size) - (s -> fifo_size));
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MAX_PRIMARY_MEM register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
