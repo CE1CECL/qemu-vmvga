@@ -138,13 +138,11 @@ struct pci_vmsvga_state_s {
   MemoryRegion io_bar;
 };
 static void cursor_update_from_fifo(struct vmsvga_state_s * s) {
-  #ifdef VERBOSE
-  printf("vmsvga: cursor_update_from_fifo was just executed\n");
-  #endif
-  uint32_t fifo_cursor_count;
-  if (s -> config != 1 || s -> enable != 1) {
-    return;
-  }
+ #ifdef VERBOSE
+ printf("vmsvga: cursor_update_from_fifo was just executed\n");
+ #endif
+ uint32_t fifo_cursor_count;
+ if (s -> enable != 0 && s -> config != 0 && s -> new_width != 0 && s -> new_height != 0 && s -> new_depth != 0) {
   fifo_cursor_count = s -> fifo[SVGA_FIFO_CURSOR_COUNT];
   if (fifo_cursor_count == s -> last_fifo_cursor_count) {
     return;
@@ -158,7 +156,11 @@ static void cursor_update_from_fifo(struct vmsvga_state_s * s) {
   s -> cursor.x = s -> fifo[SVGA_FIFO_CURSOR_X];
   s -> cursor.y = s -> fifo[SVGA_FIFO_CURSOR_Y];
   dpy_mouse_set(s -> vga.con, s -> cursor.x, s -> cursor.y, s -> cursor.on);
+ } else {
+  return;
+ }
 }
+
 static inline bool vmsvga_verify_rect(DisplaySurface * surface,
   const char * name,
     int x, int y, int w, int h) {
@@ -365,13 +367,11 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s * s,
   }
 }
 static inline int vmsvga_fifo_length(struct vmsvga_state_s * s) {
-  #ifdef VERBOSE
-  printf("vmsvga: vmsvga_fifo_length was just executed\n");
-  #endif
-  int num;
-  if (s -> config != 1 || s -> enable != 1) {
-    return 0;
-  }
+ #ifdef VERBOSE
+ printf("vmsvga: vmsvga_fifo_length was just executed\n");
+ #endif
+ int num;
+ if (s -> enable != 0 && s -> config != 0 && s -> new_width != 0 && s -> new_height != 0 && s -> new_depth != 0) {
   s -> fifo_min = le32_to_cpu(s -> fifo[SVGA_FIFO_MIN]);
   s -> fifo_max = le32_to_cpu(s -> fifo[SVGA_FIFO_MAX]);
   s -> fifo_next = le32_to_cpu(s -> fifo[SVGA_FIFO_NEXT_CMD]);
@@ -393,6 +393,9 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s * s) {
     num += s -> fifo_max - s -> fifo_min;
   }
   return num >> 2;
+ } else {
+  return 0;
+ }
 }
 static inline uint32_t vmsvga_fifo_read_raw(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
@@ -2801,7 +2804,7 @@ void * vmsvga_loop(void * arg) {
       #endif
       SVGA_FIFO_CAP_DEAD // |
       ;
-    if (s -> enable != 0 && s -> config != 0 && s -> new_width != 0 && s -> new_height != 0) {
+    if (s -> enable != 0 && s -> config != 0 && s -> new_width != 0 && s -> new_height != 0 && s -> new_depth != 0) {
       vmsvga_update_rect(s, cx, cy, s -> new_width, s -> new_height);
     };
   };
@@ -4477,13 +4480,15 @@ static void vmsvga_update_display(void * opaque) {
   //	printf("vmsvga: vmsvga_update_display was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
-  if (s -> enable == 0 && s -> config == 0) {
+  if (s -> enable != 0 && s -> config != 0 && s -> new_width != 0 && s -> new_height != 0 && s -> new_depth != 0) {
+    vmsvga_check_size(s);
+    vmsvga_fifo_run(s);
+    cursor_update_from_fifo(s);
+    return;
+  } else {
     s -> vga.hw_ops -> gfx_update( & s -> vga);
     return;
   }
-  vmsvga_check_size(s);
-  vmsvga_fifo_run(s);
-  cursor_update_from_fifo(s);
 }
 static void vmsvga_reset(DeviceState * dev) {
   #ifdef VERBOSE
