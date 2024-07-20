@@ -3009,7 +3009,9 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
   case SVGA_REG_CAPABILITIES:
     //ret = -33569822;
     caps = SVGA_CAP_NONE;
+    #ifdef VERBOSE
     caps |= SVGA_CAP_RECT_COPY;
+    #endif
     caps |= SVGA_CAP_CURSOR;
     caps |= SVGA_CAP_CURSOR_BYPASS;
     caps |= SVGA_CAP_CURSOR_BYPASS_2;
