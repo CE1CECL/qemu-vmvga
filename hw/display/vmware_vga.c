@@ -142,7 +142,7 @@ static void cursor_update_from_fifo(struct vmsvga_state_s * s) {
   printf("vmsvga: cursor_update_from_fifo was just executed\n");
   #endif
   uint32_t fifo_cursor_count;
-  if (s -> config != 0 && s -> enable != 0 && s -> new_width == 0 && s -> new_height == 0 && s -> new_depth == 0) {
+  if (s -> enable == 0 || s -> config == 0 || s -> new_width == 0 || s -> new_height == 0 || s -> new_depth == 0) {
     return;
   }
   fifo_cursor_count = s -> fifo[SVGA_FIFO_CURSOR_COUNT];
@@ -329,7 +329,7 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s * s) {
   printf("vmsvga: vmsvga_fifo_length was just executed\n");
   #endif
   int num;
-  if (s -> config != 0 && s -> enable != 0 && s -> new_width == 0 && s -> new_height == 0 && s -> new_depth == 0) {
+  if (s -> enable == 0 || s -> config == 0 || s -> new_width == 0 || s -> new_height == 0 || s -> new_depth == 0) {
     return 0;
   }
   s -> fifo_min = le32_to_cpu(s -> fifo[SVGA_FIFO_MIN]);
@@ -2761,7 +2761,7 @@ void * vmsvga_loop(void * arg) {
       #endif
       SVGA_FIFO_CAP_DEAD // |
       ;
-    if (s -> config != 0 && s -> enable != 0 && s -> new_width == 0 && s -> new_height == 0 && s -> new_depth == 0) {
+    if (s -> enable != 0 && s -> config != 0 && s -> new_width != 0 && s -> new_height != 0 && s -> new_depth != 0) {
       vmsvga_update_rect(s, cx, cy, s -> new_width, s -> new_height);
     };
   };
@@ -4439,7 +4439,7 @@ static void vmsvga_update_display(void * opaque) {
   //	printf("vmsvga: vmsvga_update_display was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
-  if (s -> config == 0 || s -> enable == 0 || s -> new_width == 0 || s -> new_height == 0 || s -> new_depth == 0) {
+  if (s -> enable == 0 || s -> config == 0 || s -> new_width == 0 || s -> new_height == 0 || s -> new_depth == 0) {
     s -> vga.hw_ops -> gfx_update( & s -> vga);
     return;
   }
