@@ -156,106 +156,6 @@ static void cursor_update_from_fifo(struct vmsvga_state_s * s) {
   s -> cursor.y = s -> fifo[SVGA_FIFO_CURSOR_Y];
   dpy_mouse_set(s -> vga.con, s -> cursor.x, s -> cursor.y, s -> cursor.on);
 }
-static inline bool vmsvga_verify_rect(DisplaySurface * surface,
-  const char * name,
-    int x, int y, int w, int h) {
-  #ifdef VERBOSE
-  //	printf("vmsvga: vmsvga_verify_rect was just executed\n");
-  #endif
-  if (x < 1) {
-    return false;
-  }
-  if (x > 8192) {
-    return false;
-  }
-  if (w < 1) {
-    return false;
-  }
-  if (w > 8192) {
-    return false;
-  }
-  if (x + w > surface_width(surface)) {
-    return false;
-  }
-  if (y < 1) {
-    return false;
-  }
-  if (y > 8192) {
-    return false;
-  }
-  if (h < 1) {
-    return false;
-  }
-  if (h > 8192) {
-    return false;
-  }
-  if (y + h > surface_height(surface)) {
-    return false;
-  }
-  return true;
-}
-static inline void vmsvga_update_rect(struct vmsvga_state_s * s,
-  int x, int y, int w, int h) {
-  #ifdef VERBOSE
-  //	printf("vmsvga: vmsvga_update_rect was just executed\n");
-  #endif
-  DisplaySurface * surface = qemu_console_surface(s -> vga.con);
-  int line;
-  int bypl;
-  int width;
-  int start;
-  uint8_t * src;
-  uint8_t * dst;
-  if (!vmsvga_verify_rect(surface, __func__, x, y, w, h)) {
-    x = 0;
-    y = 0;
-    w = s -> new_width;
-    h = s -> new_height;
-  }
-  bypl = surface_stride(surface);
-  width = surface_bytes_per_pixel(surface) * w;
-  start = surface_bytes_per_pixel(surface) * x + bypl * y;
-  src = s -> vga.vram_ptr + start;
-  dst = surface_data(surface) + start;
-  for (line = h; line > 0; line--, src += bypl, dst += bypl) {
-    memcpy(dst, src, width);
-  }
-  dpy_gfx_update(s -> vga.con, x, y, w, h);
-}
-static inline int vmsvga_copy_rect(struct vmsvga_state_s * s,
-  int x0, int y0, int x1, int y1, int w, int h) {
-  #ifdef VERBOSE
-  printf("vmsvga: vmsvga_copy_rect was just executed\n");
-  #endif
-  DisplaySurface * surface = qemu_console_surface(s -> vga.con);
-  uint8_t * vram = s -> vga.vram_ptr;
-  int bypl = surface_stride(surface);
-  int bypp = surface_bytes_per_pixel(surface);
-  int width = bypp * w;
-  int line = h;
-  uint8_t * ptr[2];
-  if (!vmsvga_verify_rect(surface, "vmsvga_copy_rect/src", x0, y0, w, h)) {
-    return 1;
-  }
-  if (!vmsvga_verify_rect(surface, "vmsvga_copy_rect/dst", x1, y1, w, h)) {
-    return 1;
-  }
-  if (y1 > y0) {
-    ptr[0] = vram + bypp * x0 + bypl * (y0 + h - 1);
-    ptr[1] = vram + bypp * x1 + bypl * (y1 + h - 1);
-    for (; line > 0; line--, ptr[0] -= bypl, ptr[1] -= bypl) {
-      memmove(ptr[1], ptr[0], width);
-    }
-  } else {
-    ptr[0] = vram + bypp * x0 + bypl * y0;
-    ptr[1] = vram + bypp * x1 + bypl * y1;
-    for (; line > 0; line--, ptr[0] += bypl, ptr[1] += bypl) {
-      memmove(ptr[1], ptr[0], width);
-    }
-  }
-  vmsvga_update_rect(s, x1, y1, w, h);
-  return 0;
-}
 struct vmsvga_cursor_definition_s {
   uint32_t width;
   uint32_t height;
@@ -427,11 +327,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
   int UnknownCommandBB;
   int UnknownCommandBC;
   int UnknownCommandBD;
-  int z, gmrIdCMD, offsetPages;
+  int dx, dy, z, gmrIdCMD, offsetPages;
   #endif
   uint32_t cmd;
   int args, len, maxloop = 1024;
-  int i, x, y, dx, dy, width, height;
+  int i, x, y, width, height;
   struct vmsvga_cursor_definition_s cursor;
   uint32_t cmd_start;
   uint32_t fence_arg;
@@ -452,7 +352,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       y = vmsvga_fifo_read(s);
       width = vmsvga_fifo_read(s);
       height = vmsvga_fifo_read(s);
-      vmsvga_update_rect(s, x, y, width, height);
+      dpy_gfx_update(s -> vga.con, x, y, width, height);
       args = 1;
       #ifdef VERBOSE
       printf("%s: SVGA_CMD_UPDATE command in SVGA command FIFO %d %d %d %d \n", __func__, x, y, width, height);
@@ -472,7 +372,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       #else
       vmsvga_fifo_read(s);
       #endif
-      vmsvga_update_rect(s, x, y, width, height);
+      dpy_gfx_update(s -> vga.con, x, y, width, height);
       args = 1;
       #ifdef VERBOSE
       printf("%s: SVGA_CMD_UPDATE_VERBOSE command in SVGA command FIFO %d %d %d %d %d\n", __func__, x, y, width, height, z);
@@ -499,12 +399,15 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       }
       x = vmsvga_fifo_read(s);
       y = vmsvga_fifo_read(s);
+      #ifdef VERBOSE
       dx = vmsvga_fifo_read(s);
       dy = vmsvga_fifo_read(s);
+      #else
+      vmsvga_fifo_read(s);
+      vmsvga_fifo_read(s);
+      #endif
       width = vmsvga_fifo_read(s);
       height = vmsvga_fifo_read(s);
-      vmsvga_copy_rect(s, x, y, dx, dy, width, height);
-      args = 1;
       #ifdef VERBOSE
       printf("%s: SVGA_CMD_RECT_COPY command in SVGA command FIFO %d %d %d %d %d %d \n", __func__, x, y, dx, dy, width, height);
       #endif
