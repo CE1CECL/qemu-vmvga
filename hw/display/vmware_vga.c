@@ -425,7 +425,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       cursor.and_mask_bpp = vmsvga_fifo_read(s);
       cursor.xor_mask_bpp = vmsvga_fifo_read(s);
       args = (SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.and_mask_bpp) + SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.xor_mask_bpp));
-      if (cursor.width < 1 || cursor.height < 1 || cursor.width > s -> new_width || cursor.height > s -> new_height || cursor.and_mask_bpp < 1 || cursor.xor_mask_bpp < 1 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32) {
+      if (cursor.width < 1 || cursor.height < 1 || cursor.and_mask_bpp < 1 || cursor.xor_mask_bpp < 1 || cursor.width > s -> new_width || cursor.height > s -> new_height || cursor.and_mask_bpp > s -> new_depth || cursor.xor_mask_bpp > s -> new_depth) {
         #ifdef VERBOSE
         printf("%s: SVGA_CMD_DEFINE_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
         #endif
@@ -465,7 +465,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       cursor.and_mask_bpp = 32;
       cursor.xor_mask_bpp = 32;
       args = ((cursor.width) * (cursor.height));
-      if (cursor.width < 1 || cursor.height < 1 || cursor.width > s -> new_width || cursor.height > s -> new_height || cursor.and_mask_bpp < 1 || cursor.xor_mask_bpp < 1 || cursor.and_mask_bpp > 32 || cursor.xor_mask_bpp > 32) {
+      if (cursor.width < 1 || cursor.height < 1 || cursor.and_mask_bpp < 1 || cursor.xor_mask_bpp < 1 || cursor.width > s -> new_width || cursor.height > s -> new_height || cursor.and_mask_bpp > s -> new_depth || cursor.xor_mask_bpp > s -> new_depth) {
         #ifdef VERBOSE
         printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
         #endif
@@ -2658,7 +2658,7 @@ void * vmsvga_loop(void * arg) {
       #endif
       SVGA_FIFO_CAP_DEAD // |
       ;
-    if (s -> enable != 0 && s -> config != 0 && s -> new_width != 0 && s -> new_height != 0 && s -> new_depth != 0) {
+    if ((s -> enable >= 1 || s -> config >= 1) && (s -> new_width >= 1 && s -> new_height >= 1 && s -> new_depth >= 1)) {
       dpy_gfx_update(s -> vga.con, cx, cy, s -> new_width, s -> new_height);
     };
   };
@@ -4284,42 +4284,6 @@ static inline void vmsvga_check_size(struct vmsvga_state_s * s) {
   #endif
   DisplaySurface * surface = qemu_console_surface(s -> vga.con);
   uint32_t new_stride;
-  if (s -> new_width < 1) {
-    #ifdef VERBOSE
-    printf("s->new_width < 1\n");
-    #endif
-    return;
-  };
-  if (s -> new_height < 1) {
-    #ifdef VERBOSE
-    printf("s->new_height < 1\n");
-    #endif
-    return;
-  };
-  if (s -> new_depth < 1) {
-    #ifdef VERBOSE
-    printf("s->new_depth < 1\n");
-    #endif
-    return;
-  };
-  if (s -> new_width > 8192) {
-    #ifdef VERBOSE
-    printf("s->new_width > 8192\n");
-    #endif
-    return;
-  };
-  if (s -> new_height > 8192) {
-    #ifdef VERBOSE
-    printf("s->new_height > 8192\n");
-    #endif
-    return;
-  };
-  if (s -> new_depth > 32) {
-    #ifdef VERBOSE
-    printf("s->new_depth > 32\n");
-    #endif
-    return;
-  };
   if (s -> pitchlock != 0) {
     new_stride = s -> pitchlock;
   } else {
@@ -4336,7 +4300,7 @@ static void vmsvga_update_display(void * opaque) {
   //	printf("vmsvga: vmsvga_update_display was just executed\n");
   #endif
   struct vmsvga_state_s * s = opaque;
-  if (s -> enable != 0 || s -> config != 0) {
+  if ((s -> enable >= 1 || s -> config >= 1) && (s -> new_width >= 1 && s -> new_height >= 1 && s -> new_depth >= 1)) {
     vmsvga_check_size(s);
     vmsvga_fifo_run(s);
     cursor_update_from_fifo(s);
@@ -4347,9 +4311,6 @@ static void vmsvga_update_display(void * opaque) {
     cursor_update_from_fifo(s);
     return;
   }
-  s -> vga.hw_ops -> gfx_update( & s -> vga);
-  vmsvga_fifo_run(s);
-  cursor_update_from_fifo(s);
   return;
 }
 static void vmsvga_reset(DeviceState * dev) {
