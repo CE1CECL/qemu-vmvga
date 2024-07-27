@@ -781,1849 +781,269 @@ void * vmsvga_loop(void * arg) {
   uint32_t cx = 0;
   uint32_t cy = 0;
   while (true) {
+    s -> fifo[32] = 0x00000001;
+    s -> fifo[33] = 0x00000008;
+    s -> fifo[34] = 0x00000008;
+    s -> fifo[35] = 0x00000008;
+    s -> fifo[36] = 0x00000007;
+    s -> fifo[37] = 0x00000001;
+    s -> fifo[38] = 0x0000000d;
+    s -> fifo[39] = 0x00000001;
+    s -> fifo[40] = 0x00000008;
+    s -> fifo[41] = 0x00000001;
+    s -> fifo[42] = 0x00000001;
+    s -> fifo[43] = 0x00000004;
+    s -> fifo[44] = 0x00000001;
+    s -> fifo[45] = 0x00000001;
+    s -> fifo[46] = 0x00000001;
+    s -> fifo[47] = 0x00000001;
+    s -> fifo[48] = 0x00000001;
+    s -> fifo[49] = 0x000000bd;
+    s -> fifo[50] = 0x00000014;
+    s -> fifo[51] = 0x00008000;
+    s -> fifo[52] = 0x00008000;
+    s -> fifo[53] = 0x00004000;
+    s -> fifo[54] = 0x00008000;
+    s -> fifo[55] = 0x00008000;
+    s -> fifo[56] = 0x00000010;
+    s -> fifo[57] = 0x001fffff;
+    s -> fifo[58] = 0x000fffff;
+    s -> fifo[59] = 0x0000ffff;
+    s -> fifo[60] = 0x0000ffff;
+    s -> fifo[61] = 0x00000020;
+    s -> fifo[62] = 0x00000020;
+    s -> fifo[63] = 0x03ffffff;
+    s -> fifo[64] = 0x0018ec1f;
+    s -> fifo[65] = 0x0018e11f;
+    s -> fifo[66] = 0x0008601f;
+    s -> fifo[67] = 0x0008601f;
+    s -> fifo[68] = 0x0008611f;
+    s -> fifo[69] = 0x0000611f;
+    s -> fifo[70] = 0x0018ec1f;
+    s -> fifo[71] = 0x0000601f;
+    s -> fifo[72] = 0x00006007;
+    s -> fifo[73] = 0x0000601f;
+    s -> fifo[74] = 0x0000601f;
+    s -> fifo[75] = 0x000040c5;
+    s -> fifo[76] = 0x000040c5;
+    s -> fifo[77] = 0x000040c5;
+    s -> fifo[78] = 0x0000e005;
+    s -> fifo[79] = 0x0000e005;
+    s -> fifo[80] = 0x0000e005;
+    s -> fifo[81] = 0x0000e005;
+    s -> fifo[82] = 0x0000e005;
+    s -> fifo[83] = 0x00014005;
+    s -> fifo[84] = 0x00014007;
+    s -> fifo[85] = 0x00014007;
+    s -> fifo[86] = 0x00014005;
+    s -> fifo[87] = 0x00014001;
+    s -> fifo[88] = 0x0080601f;
+    s -> fifo[89] = 0x0080601f;
+    s -> fifo[90] = 0x0080601f;
+    s -> fifo[91] = 0x0080601f;
+    s -> fifo[92] = 0x0080601f;
+    s -> fifo[93] = 0x0080601f;
+    s -> fifo[94] = 0x00000000;
+    s -> fifo[95] = 0x00000004;
+    s -> fifo[96] = 0x00000008;
+    s -> fifo[97] = 0x00014007;
+    s -> fifo[98] = 0x0000601f;
+    s -> fifo[99] = 0x0000601f;
+    s -> fifo[100] = 0x01246000;
+    s -> fifo[101] = 0x01246000;
+    s -> fifo[102] = 0x00000000;
+    s -> fifo[103] = 0x00000000;
+    s -> fifo[104] = 0x00000000;
+    s -> fifo[105] = 0x00000000;
+    s -> fifo[106] = 0x00000001;
+    s -> fifo[107] = 0x01246000;
+    s -> fifo[108] = 0x00000000;
+    s -> fifo[109] = 0x00000100;
+    s -> fifo[110] = 0x00008000;
+    s -> fifo[111] = 0x000040c5;
+    s -> fifo[112] = 0x000040c5;
+    s -> fifo[113] = 0x000040c5;
+    s -> fifo[114] = 0x00006005;
+    s -> fifo[115] = 0x00006005;
     #ifdef VERBOSE
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 0) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 1) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000008;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 2) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000008;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 3) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000008;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 4) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000007;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 5) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 6) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000000d;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 7) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 8) {
-      //printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000008;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 9) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 10) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 11) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000004;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 12) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 13) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 14) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 15) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 16) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 17) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000bd;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 18) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000014;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 19) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00008000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 20) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00008000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 21) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00004000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 22) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00008000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 23) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00008000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 24) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000010;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 25) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x001fffff;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 26) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000fffff;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 27) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000ffff;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 28) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000ffff;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 29) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000020;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 30) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000020;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 31) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x03ffffff;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 32) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0018ec1f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 33) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0018e11f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 34) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0008601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 35) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0008601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 36) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0008611f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 37) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000611f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 38) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0018ec1f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 39) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 40) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00006007;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 41) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 42) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 43) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000040c5;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 44) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000040c5;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 45) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000040c5;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 46) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000e005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 47) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000e005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 48) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000e005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 49) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000e005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 50) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000e005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 51) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00014005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 52) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00014007;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 53) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00014007;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 54) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00014005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 55) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00014001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 56) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0080601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 57) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0080601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 58) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0080601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 59) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0080601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 60) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0080601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 61) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0080601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 62) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 63) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000004;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 64) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000008;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 65) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00014007;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 66) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 67) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 68) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x01246000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 69) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x01246000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 70) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 71) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 72) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 73) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 74) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 75) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x01246000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 76) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 77) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000100;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 78) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00008000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 79) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000040c5;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 80) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000040c5;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 81) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000040c5;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 82) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00006005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 83) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00006005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 84) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 85) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 86) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 87) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 88) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 89) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000000a;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 90) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000000a;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 91) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x01246000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 92) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 93) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 94) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 95) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 96) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 97) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000010;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 98) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000000f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 99) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 100) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 101) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 102) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 103) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 104) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 105) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 106) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000009;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 107) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000026b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 108) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000026b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 109) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000000b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 110) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 111) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 112) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 113) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 114) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 115) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 116) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 117) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 118) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 119) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 120) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 121) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 122) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 123) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 124) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 125) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 126) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 127) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 128) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 129) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 130) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 131) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 132) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 133) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 134) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 135) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 136) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 137) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000026b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 138) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000001e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 139) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 140) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000001f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 141) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 142) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000041;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 143) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000041;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 144) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 145) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 146) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 147) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 148) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 149) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000001e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 150) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000001e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 151) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000001e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 152) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 153) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 154) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 155) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 156) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 157) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 158) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 159) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000261;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 160) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000269;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 161) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 162) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 163) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 164) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 165) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 166) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 167) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 168) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 169) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 170) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 171) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 172) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 173) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 174) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 175) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000269;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 176) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 177) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 178) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000261;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 179) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000269;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 180) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 181) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 182) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 183) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 184) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 185) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 186) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 187) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 188) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 189) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 190) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 191) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 192) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 193) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 194) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 195) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 196) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 197) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 198) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 199) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 200) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 201) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 202) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 203) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 204) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 205) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 206) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 207) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 208) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 209) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 210) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 211) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 212) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000045;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 213) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 214) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 215) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 216) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 217) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000006b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 218) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000006b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 219) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000006b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 220) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 221) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 222) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 223) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 224) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 225) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 226) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 227) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 228) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 229) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 230) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 231) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 232) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 233) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000269;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 234) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 235) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 236) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 237) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 238) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 239) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 240) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 241) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 242) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 243) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 244) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 245) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 246) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 247) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 248) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 249) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 250) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 251) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 252) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 253) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 254) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 255) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 256) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 257) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 258) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 259) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 260) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000010;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 261) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] >= 262) {
-      printf("s->fifo[SVGA_FIFO_3D_CAPS]==%d\n", s -> fifo[SVGA_FIFO_3D_CAPS]);
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    #else
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 0) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 1) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000008;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 2) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000008;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 3) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000008;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 4) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000007;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 5) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 6) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000000d;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 7) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 8) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000008;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 9) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 10) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 11) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000004;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 12) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 13) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 14) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 15) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 16) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 17) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000bd;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 18) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000014;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 19) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00008000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 20) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00008000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 21) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00004000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 22) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00008000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 23) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00008000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 24) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000010;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 25) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x001fffff;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 26) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000fffff;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 27) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000ffff;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 28) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000ffff;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 29) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000020;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 30) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000020;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 31) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x03ffffff;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 32) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0018ec1f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 33) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0018e11f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 34) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0008601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 35) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0008601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 36) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0008611f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 37) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000611f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 38) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0018ec1f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 39) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 40) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00006007;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 41) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 42) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 43) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000040c5;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 44) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000040c5;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 45) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000040c5;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 46) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000e005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 47) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000e005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 48) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000e005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 49) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000e005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 50) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000e005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 51) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00014005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 52) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00014007;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 53) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00014007;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 54) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00014005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 55) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00014001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 56) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0080601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 57) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0080601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 58) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0080601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 59) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0080601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 60) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0080601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 61) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0080601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 62) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 63) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000004;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 64) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000008;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 65) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00014007;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 66) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 67) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000601f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 68) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x01246000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 69) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x01246000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 70) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 71) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 72) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 73) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 74) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 75) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x01246000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 76) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 77) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000100;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 78) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00008000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 79) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000040c5;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 80) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000040c5;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 81) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000040c5;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 82) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00006005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 83) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00006005;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 84) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 85) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 86) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 87) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 88) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 89) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000000a;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 90) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000000a;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 91) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x01246000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 92) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 93) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 94) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 95) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 96) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 97) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000010;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 98) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000000f;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 99) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 100) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 101) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 102) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 103) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 104) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 105) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 106) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000009;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 107) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000026b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 108) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000026b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 109) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000000b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 110) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 111) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 112) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 113) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 114) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 115) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 116) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 117) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 118) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 119) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 120) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 121) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 122) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 123) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 124) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 125) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 126) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 127) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 128) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 129) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 130) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 131) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 132) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 133) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 134) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 135) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 136) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 137) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000026b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 138) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000001e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 139) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 140) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000001f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 141) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 142) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000041;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 143) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000041;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 144) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 145) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 146) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 147) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 148) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 149) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000001e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 150) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000001e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 151) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000001e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 152) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 153) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 154) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 155) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 156) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 157) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 158) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 159) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000261;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 160) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000269;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 161) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 162) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 163) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 164) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 165) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 166) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 167) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 168) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 169) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 170) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 171) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 172) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 173) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 174) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 175) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000269;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 176) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 177) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 178) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000261;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 179) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000269;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 180) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 181) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 182) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 183) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 184) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 185) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 186) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 187) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 188) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 189) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 190) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 191) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 192) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 193) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 194) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 195) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003e7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 196) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 197) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 198) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 199) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 200) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 201) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 202) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 203) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 204) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 205) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 206) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 207) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 208) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 209) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 210) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000063;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 211) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 212) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000045;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 213) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 214) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 215) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 216) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 217) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000006b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 218) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000006b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 219) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x0000006b;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 220) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 221) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 222) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 223) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 224) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 225) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 226) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 227) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 228) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 229) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 230) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 231) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 232) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 233) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000269;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 234) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 235) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 236) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 237) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 238) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 239) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000002f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 240) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 241) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000003f7;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 242) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 243) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 244) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 245) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 246) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 247) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 248) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 249) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 250) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 251) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 252) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 253) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 254) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e1;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 255) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 256) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x000000e3;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 257) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 258) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 259) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 260) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000010;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] == 261) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000001;
-    };
-    if (s -> fifo[SVGA_FIFO_3D_CAPS] >= 262) {
-      s -> fifo[SVGA_FIFO_3D_CAPS] = 0x00000000;
-    };
+    s -> fifo[116] = 0x00000000;
+    s -> fifo[117] = 0x00000000;
+    s -> fifo[118] = 0x00000000;
+    s -> fifo[119] = 0x00000001;
+    s -> fifo[120] = 0x00000001;
+    s -> fifo[121] = 0x0000000a;
+    s -> fifo[122] = 0x0000000a;
+    s -> fifo[123] = 0x01246000;
+    s -> fifo[124] = 0x00000000;
+    s -> fifo[125] = 0x00000001;
+    s -> fifo[126] = 0x00000000;
+    s -> fifo[127] = 0x00000001;
+    s -> fifo[128] = 0x00000000;
+    s -> fifo[129] = 0x00000010;
+    s -> fifo[130] = 0x0000000f;
+    s -> fifo[131] = 0x00000001;
+    s -> fifo[132] = 0x000002f7;
+    s -> fifo[133] = 0x000003f7;
+    s -> fifo[134] = 0x000002f7;
+    s -> fifo[135] = 0x000000f7;
+    s -> fifo[136] = 0x000000f7;
+    s -> fifo[137] = 0x000000f7;
+    s -> fifo[138] = 0x00000009;
+    s -> fifo[139] = 0x0000026b;
+    s -> fifo[140] = 0x0000026b;
+    s -> fifo[141] = 0x0000000b;
+    s -> fifo[142] = 0x000000f7;
+    s -> fifo[143] = 0x000000e3;
+    s -> fifo[144] = 0x000000f7;
+    s -> fifo[145] = 0x000000e3;
+    s -> fifo[146] = 0x00000063;
+    s -> fifo[147] = 0x00000063;
+    s -> fifo[148] = 0x00000063;
+    s -> fifo[149] = 0x00000063;
+    s -> fifo[150] = 0x00000063;
+    s -> fifo[151] = 0x000000e3;
+    s -> fifo[152] = 0x00000000;
+    s -> fifo[153] = 0x00000063;
+    s -> fifo[154] = 0x00000000;
+    s -> fifo[155] = 0x000003f7;
+    s -> fifo[156] = 0x000003f7;
+    s -> fifo[157] = 0x000003f7;
+    s -> fifo[158] = 0x000000e3;
+    s -> fifo[159] = 0x00000063;
+    s -> fifo[160] = 0x00000063;
+    s -> fifo[161] = 0x000000e3;
+    s -> fifo[162] = 0x000000e3;
+    s -> fifo[163] = 0x000000f7;
+    s -> fifo[164] = 0x000003f7;
+    s -> fifo[165] = 0x000003f7;
+    s -> fifo[166] = 0x000003f7;
+    s -> fifo[167] = 0x000003f7;
+    s -> fifo[168] = 0x00000001;
+    s -> fifo[169] = 0x0000026b;
+    s -> fifo[170] = 0x000001e3;
+    s -> fifo[171] = 0x000003f7;
+    s -> fifo[172] = 0x000001f7;
+    s -> fifo[173] = 0x00000001;
+    s -> fifo[174] = 0x00000041;
+    s -> fifo[175] = 0x00000041;
+    s -> fifo[176] = 0x00000000;
+    s -> fifo[177] = 0x000002e1;
+    s -> fifo[178] = 0x000003e7;
+    s -> fifo[179] = 0x000003e7;
+    s -> fifo[180] = 0x000000e1;
+    s -> fifo[181] = 0x000001e3;
+    s -> fifo[182] = 0x000001e3;
+    s -> fifo[183] = 0x000001e3;
+    s -> fifo[184] = 0x000002e1;
+    s -> fifo[185] = 0x000003e7;
+    s -> fifo[186] = 0x000003f7;
+    s -> fifo[187] = 0x000003e7;
+    s -> fifo[188] = 0x000002e1;
+    s -> fifo[189] = 0x000003e7;
+    s -> fifo[190] = 0x000003e7;
+    s -> fifo[191] = 0x00000261;
+    s -> fifo[192] = 0x00000269;
+    s -> fifo[193] = 0x00000063;
+    s -> fifo[194] = 0x00000063;
+    s -> fifo[195] = 0x000002e1;
+    s -> fifo[196] = 0x000003e7;
+    s -> fifo[197] = 0x000003f7;
+    s -> fifo[198] = 0x000002e1;
+    s -> fifo[199] = 0x000003f7;
+    s -> fifo[200] = 0x000002f7;
+    s -> fifo[201] = 0x000003e7;
+    s -> fifo[202] = 0x000003e7;
+    s -> fifo[203] = 0x000002e1;
+    s -> fifo[204] = 0x000003e7;
+    s -> fifo[205] = 0x000003e7;
+    s -> fifo[206] = 0x000002e1;
+    s -> fifo[207] = 0x00000269;
+    s -> fifo[208] = 0x000003e7;
+    s -> fifo[209] = 0x000003e7;
+    s -> fifo[210] = 0x00000261;
+    s -> fifo[211] = 0x00000269;
+    s -> fifo[212] = 0x00000063;
+    s -> fifo[213] = 0x00000063;
+    s -> fifo[214] = 0x000002e1;
+    s -> fifo[215] = 0x000003f7;
+    s -> fifo[216] = 0x000003e7;
+    s -> fifo[217] = 0x000003e7;
+    s -> fifo[218] = 0x000002e1;
+    s -> fifo[219] = 0x000003f7;
+    s -> fifo[220] = 0x000003e7;
+    s -> fifo[221] = 0x000003f7;
+    s -> fifo[222] = 0x000003e7;
+    s -> fifo[223] = 0x000002e1;
+    s -> fifo[224] = 0x000003f7;
+    s -> fifo[225] = 0x000003e7;
+    s -> fifo[226] = 0x000003f7;
+    s -> fifo[227] = 0x000003e7;
+    s -> fifo[228] = 0x00000001;
+    s -> fifo[229] = 0x000000e3;
+    s -> fifo[230] = 0x000000e3;
+    s -> fifo[231] = 0x000000e3;
+    s -> fifo[232] = 0x000000e1;
+    s -> fifo[233] = 0x000000e3;
+    s -> fifo[234] = 0x000000e1;
+    s -> fifo[235] = 0x000000e3;
+    s -> fifo[236] = 0x000000e1;
+    s -> fifo[237] = 0x000000e3;
+    s -> fifo[238] = 0x000000e1;
+    s -> fifo[239] = 0x00000063;
+    s -> fifo[240] = 0x000000e3;
+    s -> fifo[241] = 0x000000e1;
+    s -> fifo[242] = 0x00000063;
+    s -> fifo[243] = 0x000000e3;
+    s -> fifo[244] = 0x00000045;
+    s -> fifo[245] = 0x000002e1;
+    s -> fifo[246] = 0x000002f7;
+    s -> fifo[247] = 0x000002e1;
+    s -> fifo[248] = 0x000002f7;
+    s -> fifo[249] = 0x0000006b;
+    s -> fifo[250] = 0x0000006b;
+    s -> fifo[251] = 0x0000006b;
+    s -> fifo[252] = 0x00000001;
+    s -> fifo[253] = 0x000003f7;
+    s -> fifo[254] = 0x000003f7;
+    s -> fifo[255] = 0x000003f7;
+    s -> fifo[256] = 0x000003f7;
+    s -> fifo[257] = 0x000003f7;
+    s -> fifo[258] = 0x000003f7;
+    s -> fifo[259] = 0x000003f7;
+    s -> fifo[260] = 0x000003f7;
+    s -> fifo[261] = 0x000003f7;
+    s -> fifo[262] = 0x000003f7;
+    s -> fifo[263] = 0x000003f7;
+    s -> fifo[264] = 0x000003f7;
+    s -> fifo[265] = 0x00000269;
+    s -> fifo[266] = 0x000002f7;
+    s -> fifo[267] = 0x000000e3;
+    s -> fifo[268] = 0x000000e3;
+    s -> fifo[269] = 0x000000e3;
+    s -> fifo[270] = 0x000002f7;
+    s -> fifo[271] = 0x000002f7;
+    s -> fifo[272] = 0x000003f7;
+    s -> fifo[273] = 0x000003f7;
+    s -> fifo[274] = 0x000000e3;
+    s -> fifo[275] = 0x000000e3;
+    s -> fifo[276] = 0x00000001;
+    s -> fifo[277] = 0x00000001;
+    s -> fifo[278] = 0x00000001;
+    s -> fifo[279] = 0x00000001;
+    s -> fifo[280] = 0x00000001;
+    s -> fifo[281] = 0x00000001;
+    s -> fifo[282] = 0x00000000;
+    s -> fifo[283] = 0x000000e1;
+    s -> fifo[284] = 0x000000e3;
+    s -> fifo[285] = 0x000000e3;
+    s -> fifo[286] = 0x000000e1;
+    s -> fifo[287] = 0x000000e3;
+    s -> fifo[288] = 0x000000e3;
+    s -> fifo[289] = 0x00000000;
+    s -> fifo[290] = 0x00000001;
+    s -> fifo[291] = 0x00000001;
+    s -> fifo[292] = 0x00000010;
+    s -> fifo[293] = 0x00000001;
     #endif
     if (s -> pitchlock != 0) {
         s -> fifo[SVGA_FIFO_PITCHLOCK] = s -> pitchlock;
