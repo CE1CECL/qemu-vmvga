@@ -2727,8 +2727,6 @@ static void vmsvga_update_display(void * opaque) {
     return;
   } else {
     s -> vga.hw_ops -> gfx_update( & s -> vga);
-    vmsvga_fifo_run(s);
-    cursor_update_from_fifo(s);
     return;
   }
   return;
