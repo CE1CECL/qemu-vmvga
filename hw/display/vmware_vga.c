@@ -147,7 +147,7 @@ static void cursor_update_from_fifo(struct vmsvga_state_s * s) {
     return;
   }
   s -> last_fifo_cursor_count = fifo_cursor_count;
-  if (s -> fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_HIDE) {
+  if ((s -> fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_HIDE) || (s -> fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_REMOVE_FROM_FB)) {
     s -> cursor.on = SVGA_CURSOR_ON_HIDE;
   } else {
     s -> cursor.on = SVGA_CURSOR_ON_SHOW;
@@ -1737,7 +1737,7 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
     #endif
     break;
   case SVGA_REG_CURSOR_ON:
-    if (value == SVGA_CURSOR_ON_HIDE) {
+    if ((value == SVGA_CURSOR_ON_HIDE) || (value == SVGA_CURSOR_ON_REMOVE_FROM_FB)) {
         s -> cursor.on = SVGA_CURSOR_ON_HIDE;
     } else {
         s -> cursor.on = SVGA_CURSOR_ON_SHOW;
