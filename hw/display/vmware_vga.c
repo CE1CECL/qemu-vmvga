@@ -120,8 +120,8 @@ struct vmsvga_state_s {
   uint32_t svgabasea;
   uint32_t svgabaseb;
   uint32_t last_fifo_cursor_count;
-  uint32_t * fifo;
-  uint32_t * scratch;
+  uint32_t *fifo;
+  uint32_t *scratch;
   VGACommonState vga;
   MemoryRegion fifo_ram;
   struct {
@@ -2758,6 +2758,9 @@ static int vmsvga_post_load(void * opaque, int version_id) {
   #ifdef VERBOSE
   printf("vmsvga: vmsvga_post_load was just executed\n");
   #endif
+  struct vmsvga_state_s *s = opaque;
+  s -> enable = 1;
+  s -> config = 1;
   return 0;
 }
 static
@@ -2767,28 +2770,48 @@ const VMStateDescription vmstate_vmware_vga_internal = {
   .minimum_version_id = 0,
   .post_load = vmsvga_post_load,
   .fields = (VMStateField[]) {
+    VMSTATE_UINT32(enable, struct vmsvga_state_s),
+    VMSTATE_UINT32(config, struct vmsvga_state_s),
+    VMSTATE_UINT32(index, struct vmsvga_state_s),
+    VMSTATE_UINT32(scratch_size, struct vmsvga_state_s),
+    VMSTATE_UINT32(new_width, struct vmsvga_state_s),
+    VMSTATE_UINT32(new_height, struct vmsvga_state_s),
     VMSTATE_UINT32(new_depth, struct vmsvga_state_s),
-      VMSTATE_UINT32(enable, struct vmsvga_state_s),
-      VMSTATE_UINT32(config, struct vmsvga_state_s),
-      VMSTATE_UINT32(cursor.id, struct vmsvga_state_s),
-      VMSTATE_UINT32(cursor.x, struct vmsvga_state_s),
-      VMSTATE_UINT32(cursor.y, struct vmsvga_state_s),
-      VMSTATE_UINT32(cursor.on, struct vmsvga_state_s),
-      VMSTATE_UINT32(index, struct vmsvga_state_s),
-      VMSTATE_VARRAY_UINT32(scratch, struct vmsvga_state_s,
-        scratch_size, 0, vmstate_info_uint32, uint32_t),
-      VMSTATE_UINT32(new_width, struct vmsvga_state_s),
-      VMSTATE_UINT32(new_height, struct vmsvga_state_s),
-      VMSTATE_UINT32(guest, struct vmsvga_state_s),
-      VMSTATE_UINT32(svgaid, struct vmsvga_state_s),
-      VMSTATE_UINT32(syncing, struct vmsvga_state_s),
-      VMSTATE_UNUSED(4),
-      VMSTATE_UINT32(irq_mask, struct vmsvga_state_s),
-      VMSTATE_UINT32(irq_status, struct vmsvga_state_s),
-      VMSTATE_UINT32(last_fifo_cursor_count, struct vmsvga_state_s),
-      VMSTATE_UINT32(display_id, struct vmsvga_state_s),
-      VMSTATE_UINT32(pitchlock, struct vmsvga_state_s),
-      VMSTATE_END_OF_LIST()
+    VMSTATE_UINT32(num_gd, struct vmsvga_state_s),
+    VMSTATE_UINT32(disp_prim, struct vmsvga_state_s),
+    VMSTATE_UINT32(disp_x, struct vmsvga_state_s),
+    VMSTATE_UINT32(disp_y, struct vmsvga_state_s),
+    VMSTATE_UINT32(devcap_val, struct vmsvga_state_s),
+    VMSTATE_UINT32(gmrdesc, struct vmsvga_state_s),
+    VMSTATE_UINT32(gmrid, struct vmsvga_state_s),
+    VMSTATE_UINT32(gmrpage, struct vmsvga_state_s),
+    VMSTATE_UINT32(tracez, struct vmsvga_state_s),
+    VMSTATE_UINT32(cmd_low, struct vmsvga_state_s),
+    VMSTATE_UINT32(cmd_high, struct vmsvga_state_s),
+    VMSTATE_UINT32(guest, struct vmsvga_state_s),
+    VMSTATE_UINT32(svgaid, struct vmsvga_state_s),
+    VMSTATE_UINT32(thread, struct vmsvga_state_s),
+    VMSTATE_UINT32(fg, struct vmsvga_state_s),
+    VMSTATE_UINT32(sync, struct vmsvga_state_s),
+    VMSTATE_UINT32(bios, struct vmsvga_state_s),
+    VMSTATE_UINT32(syncing, struct vmsvga_state_s),
+    VMSTATE_UINT32(fifo_size, struct vmsvga_state_s),
+    VMSTATE_UINT32(fifo_min, struct vmsvga_state_s),
+    VMSTATE_UINT32(fifo_max, struct vmsvga_state_s),
+    VMSTATE_UINT32(fifo_next, struct vmsvga_state_s),
+    VMSTATE_UINT32(fifo_stop, struct vmsvga_state_s),
+    VMSTATE_UINT32(irq_mask, struct vmsvga_state_s),
+    VMSTATE_UINT32(irq_status, struct vmsvga_state_s),
+    VMSTATE_UINT32(display_id, struct vmsvga_state_s),
+    VMSTATE_UINT32(pitchlock, struct vmsvga_state_s),
+    VMSTATE_UINT32(svgabasea, struct vmsvga_state_s),
+    VMSTATE_UINT32(svgabaseb, struct vmsvga_state_s),
+    VMSTATE_UINT32(last_fifo_cursor_count, struct vmsvga_state_s),
+    VMSTATE_UINT32(cursor.id, struct vmsvga_state_s),
+    VMSTATE_UINT32(cursor.x, struct vmsvga_state_s),
+    VMSTATE_UINT32(cursor.y, struct vmsvga_state_s),
+    VMSTATE_UINT32(cursor.on, struct vmsvga_state_s),
+    VMSTATE_END_OF_LIST()
   }
 };
 static
@@ -2798,9 +2821,8 @@ const VMStateDescription vmstate_vmware_vga = {
   .minimum_version_id = 0,
   .fields = (VMStateField[]) {
     VMSTATE_PCI_DEVICE(parent_obj, struct pci_vmsvga_state_s),
-      VMSTATE_STRUCT(chip, struct pci_vmsvga_state_s, 0,
-        vmstate_vmware_vga_internal, struct vmsvga_state_s),
-      VMSTATE_END_OF_LIST()
+    VMSTATE_STRUCT(chip, struct pci_vmsvga_state_s, 0, vmstate_vmware_vga_internal, struct vmsvga_state_s),
+    VMSTATE_END_OF_LIST()
   }
 };
 static
