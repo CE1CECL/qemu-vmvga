@@ -327,11 +327,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
   int UnknownCommandBB;
   int UnknownCommandBC;
   int UnknownCommandBD;
-  int dx, dy, z, gmrIdCMD, offsetPages;
+  int dx, dy, z, gmrIdCMD, offsetPages, x, y, width, height;
   #endif
   uint32_t cmd;
   int args, len, maxloop = 1024;
-  int i, x, y, width, height;
+  int i;
   struct vmsvga_cursor_definition_s cursor;
   uint32_t cmd_start;
   uint32_t fence_arg;
@@ -347,13 +347,18 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       len -= 5;
       if (len < 0) {
         goto rewind;
-      }
+      };
+      #ifdef VERBOSE
       x = vmsvga_fifo_read(s);
       y = vmsvga_fifo_read(s);
       width = vmsvga_fifo_read(s);
       height = vmsvga_fifo_read(s);
-      dpy_gfx_update(s -> vga.con, x, y, width, height);
-      args = 1;
+      #else
+      vmsvga_fifo_read(s);
+      vmsvga_fifo_read(s);
+      vmsvga_fifo_read(s);
+      vmsvga_fifo_read(s);
+      #endif
       #ifdef VERBOSE
       printf("%s: SVGA_CMD_UPDATE command in SVGA command FIFO %d %d %d %d \n", __func__, x, y, width, height);
       #endif
@@ -363,17 +368,19 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       if (len < 0) {
         goto rewind;
       }
+      #ifdef VERBOSE
       x = vmsvga_fifo_read(s);
       y = vmsvga_fifo_read(s);
       width = vmsvga_fifo_read(s);
       height = vmsvga_fifo_read(s);
-      #ifdef VERBOSE
       z = vmsvga_fifo_read(s);
       #else
       vmsvga_fifo_read(s);
+      vmsvga_fifo_read(s);
+      vmsvga_fifo_read(s);
+      vmsvga_fifo_read(s);
+      vmsvga_fifo_read(s);
       #endif
-      dpy_gfx_update(s -> vga.con, x, y, width, height);
-      args = 1;
       #ifdef VERBOSE
       printf("%s: SVGA_CMD_UPDATE_VERBOSE command in SVGA command FIFO %d %d %d %d %d\n", __func__, x, y, width, height, z);
       #endif
@@ -397,17 +404,21 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       if (len < 0) {
         goto rewind;
       }
+      #ifdef VERBOSE
       x = vmsvga_fifo_read(s);
       y = vmsvga_fifo_read(s);
-      #ifdef VERBOSE
       dx = vmsvga_fifo_read(s);
       dy = vmsvga_fifo_read(s);
+      width = vmsvga_fifo_read(s);
+      height = vmsvga_fifo_read(s);
       #else
       vmsvga_fifo_read(s);
       vmsvga_fifo_read(s);
+      vmsvga_fifo_read(s);
+      vmsvga_fifo_read(s);
+      vmsvga_fifo_read(s);
+      vmsvga_fifo_read(s);
       #endif
-      width = vmsvga_fifo_read(s);
-      height = vmsvga_fifo_read(s);
       #ifdef VERBOSE
       printf("%s: SVGA_CMD_RECT_COPY command in SVGA command FIFO %d %d %d %d %d %d \n", __func__, x, y, dx, dy, width, height);
       #endif
