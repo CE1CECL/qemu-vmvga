@@ -1875,10 +1875,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
   len = vmsvga_fifo_length(s);
   while (len > 0 && --maxloop > 0) {
     cmd_start = s -> fifo_stop;
+    cmd = vmsvga_fifo_read(s);
     #ifdef VERBOSE
-    printf("%s: Unknown command in SVGA command FIFO\n", __func__);
+    printf("%s: Unknown command %u in SVGA command FIFO\n", __func__, cmd);
     #endif
-    switch (cmd = vmsvga_fifo_read(s)) {
+    switch (cmd) {
     case SVGA_CMD_UPDATE:
       len -= 5;
       if (len < 0) {
@@ -1896,7 +1897,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       vmsvga_fifo_read(s);
       #endif
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_UPDATE command in SVGA command FIFO %d %d %d %d \n", __func__, x, y, width, height);
+      printf("%s: SVGA_CMD_UPDATE command %u in SVGA command FIFO %d %d %d %d \n", __func__, cmd, x, y, width, height);
       #endif
       break;
     case SVGA_CMD_UPDATE_VERBOSE:
@@ -1918,7 +1919,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       vmsvga_fifo_read(s);
       #endif
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_UPDATE_VERBOSE command in SVGA command FIFO %d %d %d %d %d\n", __func__, x, y, width, height, z);
+      printf("%s: SVGA_CMD_UPDATE_VERBOSE command %u in SVGA command FIFO %d %d %d %d %d\n", __func__, cmd, x, y, width, height, z);
       #endif
       break;
     case SVGA_CMD_RECT_FILL:
@@ -1932,7 +1933,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       UnknownCommandAS = vmsvga_fifo_read(s);
       UnknownCommandAT = vmsvga_fifo_read(s);
       UnknownCommandAU = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_RECT_FILL command in SVGA command FIFO %d %d %d %d %d \n", __func__, UnknownCommandAQ, UnknownCommandAR, UnknownCommandAS, UnknownCommandAT, UnknownCommandAU);
+      printf("%s: SVGA_CMD_RECT_FILL command %u in SVGA command FIFO %d %d %d %d %d \n", __func__, cmd, UnknownCommandAQ, UnknownCommandAR, UnknownCommandAS, UnknownCommandAT, UnknownCommandAU);
       #endif
       break;
     case SVGA_CMD_RECT_COPY:
@@ -1956,7 +1957,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       vmsvga_fifo_read(s);
       #endif
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_RECT_COPY command in SVGA command FIFO %d %d %d %d %d %d \n", __func__, x, y, dx, dy, width, height);
+      printf("%s: SVGA_CMD_RECT_COPY command %u in SVGA command FIFO %d %d %d %d %d %d \n", __func__, cmd, x, y, dx, dy, width, height);
       #endif
       break;
     case SVGA_CMD_DEFINE_CURSOR:
@@ -1974,7 +1975,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       args = (SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.and_mask_bpp) + SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.xor_mask_bpp));
       if (cursor.width < 1 || cursor.height < 1 || cursor.and_mask_bpp < 1 || cursor.xor_mask_bpp < 1 || cursor.width > s -> new_width || cursor.height > s -> new_height || cursor.and_mask_bpp > s -> new_depth || cursor.xor_mask_bpp > s -> new_depth) {
         #ifdef VERBOSE
-        printf("%s: SVGA_CMD_DEFINE_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
+        printf("%s: SVGA_CMD_DEFINE_CURSOR command %u in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cmd, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
         #endif
         break;
       }
@@ -1996,7 +1997,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       }
       vmsvga_cursor_define(s, & cursor);
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_DEFINE_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
+      printf("%s: SVGA_CMD_DEFINE_CURSOR command %u in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cmd, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
       #endif
       break;
     case SVGA_CMD_DEFINE_ALPHA_CURSOR:
@@ -2014,7 +2015,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       args = ((cursor.width) * (cursor.height));
       if (cursor.width < 1 || cursor.height < 1 || cursor.and_mask_bpp < 1 || cursor.xor_mask_bpp < 1 || cursor.width > s -> new_width || cursor.height > s -> new_height || cursor.and_mask_bpp > s -> new_depth || cursor.xor_mask_bpp > s -> new_depth) {
         #ifdef VERBOSE
-        printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
+        printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command %u in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cmd, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
         #endif
         break;
       }
@@ -2032,7 +2033,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       }
       vmsvga_rgba_cursor_define(s, & cursor);
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
+      printf("%s: SVGA_CMD_DEFINE_ALPHA_CURSOR command %u in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cmd, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width, cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
       #endif
       break;
     case SVGA_CMD_FENCE:
@@ -2055,7 +2056,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
         s -> irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
       }
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_FENCE command in SVGA command FIFO %d %d %d %d \n", __func__, fence_arg, s -> irq_mask, s -> irq_status, cpu_to_le32(fence_arg));
+      printf("%s: SVGA_CMD_FENCE command %u in SVGA command FIFO %d %d %d %d \n", __func__, cmd, fence_arg, s -> irq_mask, s -> irq_status, cpu_to_le32(fence_arg));
       #endif
       break;
     case SVGA_CMD_DEFINE_GMR2:
@@ -2066,7 +2067,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       #ifdef VERBOSE
       UnknownCommandAW = vmsvga_fifo_read(s);
       UnknownCommandAX = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_DEFINE_GMR2 command in SVGA command FIFO %d %d \n", __func__, UnknownCommandAW, UnknownCommandAX);
+      printf("%s: SVGA_CMD_DEFINE_GMR2 command %u in SVGA command FIFO %d %d \n", __func__, cmd, UnknownCommandAW, UnknownCommandAX);
       #endif
       break;
     case SVGA_CMD_REMAP_GMR2:
@@ -2094,7 +2095,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
           args *= 2;
       }
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_REMAP_GMR2 command in SVGA command FIFO %d %d %d %d \n", __func__, gmrIdCMD, flags, offsetPages, num_pages);
+      printf("%s: SVGA_CMD_REMAP_GMR2 command %u in SVGA command FIFO %d %d %d %d \n", __func__, cmd, gmrIdCMD, flags, offsetPages, num_pages);
       #endif
       break;
     case SVGA_CMD_RECT_ROP_COPY:
@@ -2110,7 +2111,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       UnknownCommandBC = vmsvga_fifo_read(s);
       UnknownCommandBD = vmsvga_fifo_read(s);
       UnknownCommandM = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_RECT_ROP_COPY command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, UnknownCommandAY, UnknownCommandAZ, UnknownCommandBA, UnknownCommandBB, UnknownCommandBC, UnknownCommandBD, UnknownCommandM);
+      printf("%s: SVGA_CMD_RECT_ROP_COPY command %u in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cmd, UnknownCommandAY, UnknownCommandAZ, UnknownCommandBA, UnknownCommandBB, UnknownCommandBC, UnknownCommandBD, UnknownCommandM);
       #endif
       break;
     case SVGA_CMD_ESCAPE:
@@ -2119,7 +2120,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       UnknownCommandA = vmsvga_fifo_read(s);
       UnknownCommandB = vmsvga_fifo_read(s);
       UnknownCommandAV = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_ESCAPE command in SVGA command FIFO %d %d %d \n", __func__, UnknownCommandA, UnknownCommandB, UnknownCommandAV);
+      printf("%s: SVGA_CMD_ESCAPE command %u in SVGA command FIFO %d %d %d \n", __func__, cmd, UnknownCommandA, UnknownCommandB, UnknownCommandAV);
       #endif
       break;
     case SVGA_CMD_DEFINE_SCREEN:
@@ -2134,7 +2135,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       UnknownCommandJ = vmsvga_fifo_read(s);
       UnknownCommandK = vmsvga_fifo_read(s);
       UnknownCommandL = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_DEFINE_SCREEN command in SVGA command FIFO %d %d %d %d %d %d %d %d %d \n", __func__, UnknownCommandD, UnknownCommandE, UnknownCommandF, UnknownCommandG, UnknownCommandH, UnknownCommandI, UnknownCommandJ, UnknownCommandK, UnknownCommandL);
+      printf("%s: SVGA_CMD_DEFINE_SCREEN command %u in SVGA command FIFO %d %d %d %d %d %d %d %d %d \n", __func__, cmd, UnknownCommandD, UnknownCommandE, UnknownCommandF, UnknownCommandG, UnknownCommandH, UnknownCommandI, UnknownCommandJ, UnknownCommandK, UnknownCommandL);
       #endif
       break;
     case SVGA_CMD_DISPLAY_CURSOR:
@@ -2142,14 +2143,14 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       #ifdef VERBOSE
       UnknownCommandC = vmsvga_fifo_read(s);
       UnknownCommandN = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_DISPLAY_CURSOR command in SVGA command FIFO %d %d \n", __func__, UnknownCommandC, UnknownCommandN);
+      printf("%s: SVGA_CMD_DISPLAY_CURSOR command %u in SVGA command FIFO %d %d \n", __func__, cmd, UnknownCommandC, UnknownCommandN);
       #endif
       break;
     case SVGA_CMD_DESTROY_SCREEN:
       len -= 2;
       #ifdef VERBOSE
       UnknownCommandO = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_DESTROY_SCREEN command in SVGA command FIFO %d \n", __func__, UnknownCommandO);
+      printf("%s: SVGA_CMD_DESTROY_SCREEN command %u in SVGA command FIFO %d \n", __func__, cmd, UnknownCommandO);
       #endif
       break;
     case SVGA_CMD_DEFINE_GMRFB:
@@ -2160,7 +2161,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       UnknownCommandR = vmsvga_fifo_read(s);
       UnknownCommandS = vmsvga_fifo_read(s);
       UnknownCommandT = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_DEFINE_GMRFB command in SVGA command FIFO %d %d %d %d %d \n", __func__, UnknownCommandP, UnknownCommandQ, UnknownCommandR, UnknownCommandS, UnknownCommandT);
+      printf("%s: SVGA_CMD_DEFINE_GMRFB command %u in SVGA command FIFO %d %d %d %d %d \n", __func__, cmd, UnknownCommandP, UnknownCommandQ, UnknownCommandR, UnknownCommandS, UnknownCommandT);
       #endif
       break;
     case SVGA_CMD_BLIT_GMRFB_TO_SCREEN:
@@ -2173,7 +2174,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       UnknownCommandY = vmsvga_fifo_read(s);
       UnknownCommandZ = vmsvga_fifo_read(s);
       UnknownCommandAA = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_BLIT_GMRFB_TO_SCREEN command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, UnknownCommandU, UnknownCommandV, UnknownCommandW, UnknownCommandX, UnknownCommandY, UnknownCommandZ, UnknownCommandAA);
+      printf("%s: SVGA_CMD_BLIT_GMRFB_TO_SCREEN command %u in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cmd, UnknownCommandU, UnknownCommandV, UnknownCommandW, UnknownCommandX, UnknownCommandY, UnknownCommandZ, UnknownCommandAA);
       #endif
       break;
     case SVGA_CMD_BLIT_SCREEN_TO_GMRFB:
@@ -2186,7 +2187,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       UnknownCommandAF = vmsvga_fifo_read(s);
       UnknownCommandAG = vmsvga_fifo_read(s);
       UnknownCommandAH = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_BLIT_SCREEN_TO_GMRFB command in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, UnknownCommandAB, UnknownCommandAC, UnknownCommandAD, UnknownCommandAE, UnknownCommandAF, UnknownCommandAG, UnknownCommandAH);
+      printf("%s: SVGA_CMD_BLIT_SCREEN_TO_GMRFB command %u in SVGA command FIFO %d %d %d %d %d %d %d \n", __func__, cmd, UnknownCommandAB, UnknownCommandAC, UnknownCommandAD, UnknownCommandAE, UnknownCommandAF, UnknownCommandAG, UnknownCommandAH);
       #endif
       break;
     case SVGA_CMD_ANNOTATION_FILL:
@@ -2195,7 +2196,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       UnknownCommandAI = vmsvga_fifo_read(s);
       UnknownCommandAJ = vmsvga_fifo_read(s);
       UnknownCommandAK = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_ANNOTATION_FILL command in SVGA command FIFO %d %d %d \n", __func__, UnknownCommandAI, UnknownCommandAJ, UnknownCommandAK);
+      printf("%s: SVGA_CMD_ANNOTATION_FILL command %u in SVGA command FIFO %d %d %d \n", __func__, cmd, UnknownCommandAI, UnknownCommandAJ, UnknownCommandAK);
       #endif
       break;
     case SVGA_CMD_ANNOTATION_COPY:
@@ -2204,7 +2205,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       UnknownCommandAL = vmsvga_fifo_read(s);
       UnknownCommandAM = vmsvga_fifo_read(s);
       UnknownCommandAN = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_ANNOTATION_COPY command in SVGA command FIFO %d %d %d \n", __func__, UnknownCommandAL, UnknownCommandAM, UnknownCommandAN);
+      printf("%s: SVGA_CMD_ANNOTATION_COPY command %u in SVGA command FIFO %d %d %d \n", __func__, cmd, UnknownCommandAL, UnknownCommandAM, UnknownCommandAN);
       #endif
       break;
     case SVGA_CMD_MOVE_CURSOR:
@@ -2212,49 +2213,1423 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       #ifdef VERBOSE
       UnknownCommandAO = vmsvga_fifo_read(s);
       UnknownCommandAP = vmsvga_fifo_read(s);
-      printf("%s: SVGA_CMD_MOVE_CURSOR command in SVGA command FIFO %d %d \n", __func__, UnknownCommandAO, UnknownCommandAP);
+      printf("%s: SVGA_CMD_MOVE_CURSOR command %u in SVGA command FIFO %d %d \n", __func__, cmd, UnknownCommandAO, UnknownCommandAP);
       #endif
       break;
     case SVGA_CMD_INVALID_CMD:
       len -= 1;
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_INVALID_CMD command in SVGA command FIFO \n", __func__);
+      printf("%s: SVGA_CMD_INVALID_CMD command %u in SVGA command FIFO \n", __func__, cmd);
       #endif
       break;
     case SVGA_CMD_FRONT_ROP_FILL:
       len -= 1;
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_FRONT_ROP_FILL command in SVGA command FIFO \n", __func__);
+      printf("%s: SVGA_CMD_FRONT_ROP_FILL command %u in SVGA command FIFO \n", __func__, cmd);
       #endif
       break;
     case SVGA_CMD_DEAD:
       len -= 1;
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_DEAD command in SVGA command FIFO \n", __func__);
+      printf("%s: SVGA_CMD_DEAD command %u in SVGA command FIFO \n", __func__, cmd);
       #endif
       break;
     case SVGA_CMD_DEAD_2:
       len -= 1;
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_DEAD_2 command in SVGA command FIFO \n", __func__);
+      printf("%s: SVGA_CMD_DEAD_2 command %u in SVGA command FIFO \n", __func__, cmd);
       #endif
       break;
     case SVGA_CMD_NOP:
       len -= 1;
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_NOP command in SVGA command FIFO \n", __func__);
+      printf("%s: SVGA_CMD_NOP command %u in SVGA command FIFO \n", __func__, cmd);
       #endif
       break;
     case SVGA_CMD_NOP_ERROR:
       len -= 1;
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_NOP_ERROR command in SVGA command FIFO \n", __func__);
+      printf("%s: SVGA_CMD_NOP_ERROR command %u in SVGA command FIFO \n", __func__, cmd);
       #endif
       break;
     case SVGA_CMD_MAX:
       len -= 1;
       #ifdef VERBOSE
-      printf("%s: SVGA_CMD_MAX command in SVGA command FIFO \n", __func__);
+      printf("%s: SVGA_CMD_MAX command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_LEGACY_BASE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_LEGACY_BASE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SURFACE_DEFINE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SURFACE_DEFINE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SURFACE_DESTROY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SURFACE_DESTROY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SURFACE_COPY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SURFACE_COPY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SURFACE_STRETCHBLT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SURFACE_STRETCHBLT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SURFACE_DMA:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SURFACE_DMA command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_CONTEXT_DEFINE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_CONTEXT_DEFINE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_CONTEXT_DESTROY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_CONTEXT_DESTROY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SETTRANSFORM:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SETTRANSFORM command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SETZRANGE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SETZRANGE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SETRENDERSTATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SETRENDERSTATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SETRENDERTARGET:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SETRENDERTARGET command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SETTEXTURESTATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SETTEXTURESTATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SETMATERIAL:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SETMATERIAL command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SETLIGHTDATA:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SETLIGHTDATA command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SETLIGHTENABLED:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SETLIGHTENABLED command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SETVIEWPORT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SETVIEWPORT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SETCLIPPLANE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SETCLIPPLANE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_CLEAR:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_CLEAR command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_PRESENT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_PRESENT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SHADER_DEFINE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SHADER_DEFINE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SHADER_DESTROY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SHADER_DESTROY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SET_SHADER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SET_SHADER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SET_SHADER_CONST:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SET_SHADER_CONST command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DRAW_PRIMITIVES:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DRAW_PRIMITIVES command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SETSCISSORRECT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SETSCISSORRECT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_BEGIN_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_BEGIN_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_END_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_END_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_WAIT_FOR_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_WAIT_FOR_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_PRESENT_READBACK:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_PRESENT_READBACK command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SURFACE_DEFINE_V2:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SURFACE_DEFINE_V2 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_GENERATE_MIPMAPS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_GENERATE_MIPMAPS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD4:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD4 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD5:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD5 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD6:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD6 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD7:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD7 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD8:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD8 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD9:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD9 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD10:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD10 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD11:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD11 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_ACTIVATE_SURFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_ACTIVATE_SURFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEACTIVATE_SURFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEACTIVATE_SURFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SCREEN_DMA:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SCREEN_DMA command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD1:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_VB_DX_CLEAR_RENDERTARGET_VIEW_REGION command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD2:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD2 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD12:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD12 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD13:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD13 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD14:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD14 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD15:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD15 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD16:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD16 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD17:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD17 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SET_OTABLE_BASE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SET_OTABLE_BASE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_READBACK_OTABLE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_READBACK_OTABLE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEFINE_GB_MOB:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEFINE_GB_MOB command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DESTROY_GB_MOB:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DESTROY_GB_MOB command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEAD3:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEAD3 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_UPDATE_GB_MOB_MAPPING:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_UPDATE_GB_MOB_MAPPING command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEFINE_GB_SURFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEFINE_GB_SURFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DESTROY_GB_SURFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DESTROY_GB_SURFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_BIND_GB_SURFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_BIND_GB_SURFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_COND_BIND_GB_SURFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_COND_BIND_GB_SURFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_UPDATE_GB_IMAGE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_UPDATE_GB_IMAGE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_UPDATE_GB_SURFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_UPDATE_GB_SURFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_READBACK_GB_IMAGE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_READBACK_GB_IMAGE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_READBACK_GB_SURFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_READBACK_GB_SURFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_INVALIDATE_GB_IMAGE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_INVALIDATE_GB_IMAGE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_INVALIDATE_GB_SURFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_INVALIDATE_GB_SURFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEFINE_GB_CONTEXT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEFINE_GB_CONTEXT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DESTROY_GB_CONTEXT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DESTROY_GB_CONTEXT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_BIND_GB_CONTEXT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_BIND_GB_CONTEXT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_READBACK_GB_CONTEXT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_READBACK_GB_CONTEXT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_INVALIDATE_GB_CONTEXT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_INVALIDATE_GB_CONTEXT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEFINE_GB_SHADER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEFINE_GB_SHADER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DESTROY_GB_SHADER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DESTROY_GB_SHADER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_BIND_GB_SHADER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_BIND_GB_SHADER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SET_OTABLE_BASE64:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SET_OTABLE_BASE64 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_BEGIN_GB_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_BEGIN_GB_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_END_GB_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_END_GB_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_WAIT_FOR_GB_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_WAIT_FOR_GB_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_NOP:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_NOP command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_ENABLE_GART:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_ENABLE_GART command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DISABLE_GART:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DISABLE_GART command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_MAP_MOB_INTO_GART:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_MAP_MOB_INTO_GART command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_UNMAP_GART_RANGE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_UNMAP_GART_RANGE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEFINE_GB_SCREENTARGET:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEFINE_GB_SCREENTARGET command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DESTROY_GB_SCREENTARGET:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DESTROY_GB_SCREENTARGET command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_BIND_GB_SCREENTARGET:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_BIND_GB_SCREENTARGET command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_UPDATE_GB_SCREENTARGET:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_UPDATE_GB_SCREENTARGET command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_READBACK_GB_IMAGE_PARTIAL:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_READBACK_GB_IMAGE_PARTIAL command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_INVALIDATE_GB_IMAGE_PARTIAL:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_INVALIDATE_GB_IMAGE_PARTIAL command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SET_GB_SHADERCONSTS_INLINE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SET_GB_SHADERCONSTS_INLINE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_GB_SCREEN_DMA:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_GB_SCREEN_DMA command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_BIND_GB_SURFACE_WITH_PITCH:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_BIND_GB_SURFACE_WITH_PITCH command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_GB_MOB_FENCE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_GB_MOB_FENCE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEFINE_GB_SURFACE_V2:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEFINE_GB_SURFACE_V2 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEFINE_GB_MOB64:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEFINE_GB_MOB64 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_REDEFINE_GB_MOB64:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_REDEFINE_GB_MOB64 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_NOP_ERROR:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_NOP_ERROR command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SET_VERTEX_STREAMS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SET_VERTEX_STREAMS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SET_VERTEX_DECLS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SET_VERTEX_DECLS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SET_VERTEX_DIVISORS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SET_VERTEX_DIVISORS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DRAW:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DRAW command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DRAW_INDEXED:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DRAW_INDEXED command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_CONTEXT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_CONTEXT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_CONTEXT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_CONTEXT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_BIND_CONTEXT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_BIND_CONTEXT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_READBACK_CONTEXT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_READBACK_CONTEXT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_INVALIDATE_CONTEXT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_INVALIDATE_CONTEXT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_SINGLE_CONSTANT_BUFFER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_SINGLE_CONSTANT_BUFFER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_SHADER_RESOURCES:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_SHADER_RESOURCES command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_SHADER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_SHADER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_SAMPLERS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_SAMPLERS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DRAW:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DRAW command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DRAW_INDEXED:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DRAW_INDEXED command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DRAW_INSTANCED:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DRAW_INSTANCED command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DRAW_AUTO:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DRAW_AUTO command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_INPUT_LAYOUT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_INPUT_LAYOUT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_VERTEX_BUFFERS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_VERTEX_BUFFERS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_INDEX_BUFFER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_INDEX_BUFFER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_TOPOLOGY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_TOPOLOGY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_RENDERTARGETS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_RENDERTARGETS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_BLEND_STATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_BLEND_STATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_DEPTHSTENCIL_STATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_DEPTHSTENCIL_STATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_RASTERIZER_STATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_RASTERIZER_STATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_BIND_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_BIND_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_QUERY_OFFSET:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_QUERY_OFFSET command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_BEGIN_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_BEGIN_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_END_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_END_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_READBACK_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_READBACK_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_PREDICATION:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_PREDICATION command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_SOTARGETS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_SOTARGETS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_VIEWPORTS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_VIEWPORTS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_SCISSORRECTS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_SCISSORRECTS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_CLEAR_RENDERTARGET_VIEW:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_CLEAR_RENDERTARGET_VIEW command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_CLEAR_DEPTHSTENCIL_VIEW:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_CLEAR_DEPTHSTENCIL_VIEW command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_PRED_COPY_REGION:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_PRED_COPY_REGION command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_PRED_COPY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_PRED_COPY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_PRESENTBLT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_PRESENTBLT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_GENMIPS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_GENMIPS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_UPDATE_SUBRESOURCE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_UPDATE_SUBRESOURCE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_READBACK_SUBRESOURCE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_READBACK_SUBRESOURCE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_INVALIDATE_SUBRESOURCE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_INVALIDATE_SUBRESOURCE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_SHADERRESOURCE_VIEW:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_SHADERRESOURCE_VIEW command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_SHADERRESOURCE_VIEW:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_SHADERRESOURCE_VIEW command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_RENDERTARGET_VIEW:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_RENDERTARGET_VIEW command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_RENDERTARGET_VIEW:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_RENDERTARGET_VIEW command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_VIEW:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_VIEW command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_ELEMENTLAYOUT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_ELEMENTLAYOUT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_ELEMENTLAYOUT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_ELEMENTLAYOUT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_BLEND_STATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_BLEND_STATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_BLEND_STATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_BLEND_STATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_STATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_STATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_STATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_STATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_RASTERIZER_STATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_RASTERIZER_STATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_RASTERIZER_STATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_RASTERIZER_STATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_SAMPLER_STATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_SAMPLER_STATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_SAMPLER_STATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_SAMPLER_STATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_SHADER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_SHADER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_SHADER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_SHADER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_BIND_SHADER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_BIND_SHADER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_STREAMOUTPUT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_STREAMOUTPUT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_STREAMOUTPUT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_STREAMOUTPUT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_COTABLE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_COTABLE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_READBACK_COTABLE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_READBACK_COTABLE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_BUFFER_COPY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_BUFFER_COPY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_TRANSFER_FROM_BUFFER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_TRANSFER_FROM_BUFFER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SURFACE_COPY_AND_READBACK:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SURFACE_COPY_AND_READBACK command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_MOVE_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_MOVE_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_BIND_ALL_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_BIND_ALL_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_READBACK_ALL_QUERY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_READBACK_ALL_QUERY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_PRED_TRANSFER_FROM_BUFFER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_PRED_TRANSFER_FROM_BUFFER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_MOB_FENCE_64:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_MOB_FENCE_64 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_BIND_ALL_SHADER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_BIND_ALL_SHADER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_HINT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_HINT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_BUFFER_UPDATE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_BUFFER_UPDATE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_VS_CONSTANT_BUFFER_OFFSET:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_VS_CONSTANT_BUFFER_OFFSET command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_PS_CONSTANT_BUFFER_OFFSET:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_PS_CONSTANT_BUFFER_OFFSET command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_GS_CONSTANT_BUFFER_OFFSET:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_GS_CONSTANT_BUFFER_OFFSET command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_HS_CONSTANT_BUFFER_OFFSET:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_HS_CONSTANT_BUFFER_OFFSET command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_DS_CONSTANT_BUFFER_OFFSET:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_DS_CONSTANT_BUFFER_OFFSET command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_CS_CONSTANT_BUFFER_OFFSET:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_CS_CONSTANT_BUFFER_OFFSET command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_COND_BIND_ALL_SHADER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_COND_BIND_ALL_SHADER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SCREEN_COPY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SCREEN_COPY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_GROW_OTABLE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_GROW_OTABLE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_GROW_COTABLE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_GROW_COTABLE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_INTRA_SURFACE_COPY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_INTRA_SURFACE_COPY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEFINE_GB_SURFACE_V3:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEFINE_GB_SURFACE_V3 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_RESOLVE_COPY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_RESOLVE_COPY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_PRED_RESOLVE_COPY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_PRED_RESOLVE_COPY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_PRED_CONVERT_REGION:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_PRED_CONVERT_REGION command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_PRED_CONVERT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_PRED_CONVERT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_WHOLE_SURFACE_COPY:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_WHOLE_SURFACE_COPY command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_UA_VIEW:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_UA_VIEW command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DESTROY_UA_VIEW:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DESTROY_UA_VIEW command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_CLEAR_UA_VIEW_UINT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_CLEAR_UA_VIEW_UINT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_CLEAR_UA_VIEW_FLOAT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_CLEAR_UA_VIEW_FLOAT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_COPY_STRUCTURE_COUNT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_COPY_STRUCTURE_COUNT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_UA_VIEWS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_UA_VIEWS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED_INDIRECT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED_INDIRECT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DRAW_INSTANCED_INDIRECT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DRAW_INSTANCED_INDIRECT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DISPATCH:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DISPATCH command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DISPATCH_INDIRECT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DISPATCH_INDIRECT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_WRITE_ZERO_SURFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_WRITE_ZERO_SURFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_HINT_ZERO_SURFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_HINT_ZERO_SURFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_TRANSFER_TO_BUFFER:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_TRANSFER_TO_BUFFER command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_STRUCTURE_COUNT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_STRUCTURE_COUNT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_LOGICOPS_BITBLT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_LOGICOPS_BITBLT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_LOGICOPS_TRANSBLT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_LOGICOPS_TRANSBLT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_LOGICOPS_STRETCHBLT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_LOGICOPS_STRETCHBLT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_LOGICOPS_COLORFILL:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_LOGICOPS_COLORFILL command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_LOGICOPS_ALPHABLEND:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_LOGICOPS_ALPHABLEND command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_LOGICOPS_CLEARTYPEBLEND:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_LOGICOPS_CLEARTYPEBLEND command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DEFINE_GB_SURFACE_V4:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DEFINE_GB_SURFACE_V4 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_CS_UA_VIEWS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_CS_UA_VIEWS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_MIN_LOD:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_MIN_LOD command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW_V2:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW_V2 command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT_WITH_MOB:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT_WITH_MOB command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_SET_SHADER_IFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_SET_SHADER_IFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_BIND_STREAMOUTPUT:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_BIND_STREAMOUTPUT command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_SURFACE_STRETCHBLT_NON_MS_TO_MS:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_SURFACE_STRETCHBLT_NON_MS_TO_MS command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_DX_BIND_SHADER_IFACE:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_DX_BIND_SHADER_IFACE command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_MAX:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_MAX command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
+    case SVGA_3D_CMD_FUTURE_MAX:
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_3D_CMD_FUTURE_MAX command %u in SVGA command FIFO \n", __func__, cmd);
       #endif
       break;
     default:
@@ -2266,7 +3641,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
         vmsvga_fifo_read(s);
       }
       #ifdef VERBOSE
-      printf("%s: default command in SVGA command FIFO\n", __func__);
+      printf("%s: default command %u in SVGA command FIFO\n", __func__, cmd);
       #endif
       break;
       rewind:
