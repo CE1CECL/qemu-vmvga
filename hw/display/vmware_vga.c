@@ -2598,7 +2598,7 @@ void * vmsvga_loop(void * arg) {
     s -> fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
     s -> fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
     #ifdef VERBOSE
-    s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE; //SVGA_FIFO_FLAG_ACCELFRONT;
+    s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
     #else
     s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE;
     #endif
@@ -2910,7 +2910,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     caps |= SVGA_CAP_CMD_BUFFERS_2;
     #endif
     #ifdef VERBOSE
-//    caps |= SVGA_CAP_GBOBJECTS;
+    caps |= SVGA_CAP_GBOBJECTS;
     #endif
     #ifdef VERBOSE
     caps |= SVGA_CAP_CMD_BUFFERS_3;
