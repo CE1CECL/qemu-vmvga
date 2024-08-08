@@ -598,8 +598,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       UnknownCommandJ = vmsvga_fifo_read(s);
       UnknownCommandK = vmsvga_fifo_read(s);
       UnknownCommandL = vmsvga_fifo_read(s);
-      s -> new_width = UnknownCommandG;
-      s -> new_height = UnknownCommandH;
       printf("%s: SVGA_CMD_DEFINE_SCREEN command in SVGA command FIFO %d %d %d %d %d %d %d %d %d \n", __func__, UnknownCommandD, UnknownCommandE, UnknownCommandF, UnknownCommandG, UnknownCommandH, UnknownCommandI, UnknownCommandJ, UnknownCommandK, UnknownCommandL);
       #endif
       break;
