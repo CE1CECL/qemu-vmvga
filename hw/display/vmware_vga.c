@@ -2598,7 +2598,7 @@ void * vmsvga_loop(void * arg) {
     s -> fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
     s -> fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
     #ifdef VERBOSE
-    s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
+    s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE; //SVGA_FIFO_FLAG_ACCELFRONT;
     #else
     s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE;
     #endif
@@ -2910,7 +2910,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     caps |= SVGA_CAP_CMD_BUFFERS_2;
     #endif
     #ifdef VERBOSE
-    caps |= SVGA_CAP_GBOBJECTS;
+//    caps |= SVGA_CAP_GBOBJECTS;
     #endif
     #ifdef VERBOSE
     caps |= SVGA_CAP_CMD_BUFFERS_3;
@@ -7993,4615 +7993,4615 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
   case SVGA_PALETTE_BASE_0:
     s -> svgapalettebase0 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_0 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_0 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_1:
     s -> svgapalettebase1 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_1 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_1 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_2:
     s -> svgapalettebase2 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_2 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_2 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_3:
     s -> svgapalettebase3 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_3 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_3 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_4:
     s -> svgapalettebase4 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_4 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_4 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_5:
     s -> svgapalettebase5 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_5 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_5 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_6:
     s -> svgapalettebase6 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_6 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_6 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_7:
     s -> svgapalettebase7 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_7 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_7 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_8:
     s -> svgapalettebase8 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_8 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_8 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_9:
     s -> svgapalettebase9 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_9 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_9 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_10:
     s -> svgapalettebase10 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_10 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_10 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_11:
     s -> svgapalettebase11 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_11 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_11 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_12:
     s -> svgapalettebase12 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_12 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_12 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_13:
     s -> svgapalettebase13 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_13 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_13 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_14:
     s -> svgapalettebase14 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_14 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_14 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_15:
     s -> svgapalettebase15 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_15 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_15 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_16:
     s -> svgapalettebase16 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_16 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_16 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_17:
     s -> svgapalettebase17 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_17 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_17 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_18:
     s -> svgapalettebase18 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_18 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_18 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_19:
     s -> svgapalettebase19 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_19 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_19 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_20:
     s -> svgapalettebase20 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_20 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_20 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_21:
     s -> svgapalettebase21 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_21 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_21 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_22:
     s -> svgapalettebase22 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_22 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_22 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_23:
     s -> svgapalettebase23 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_23 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_23 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_24:
     s -> svgapalettebase24 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_24 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_24 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_25:
     s -> svgapalettebase25 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_25 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_25 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_26:
     s -> svgapalettebase26 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_26 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_26 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_27:
     s -> svgapalettebase27 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_27 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_27 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_28:
     s -> svgapalettebase28 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_28 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_28 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_29:
     s -> svgapalettebase29 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_29 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_29 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_30:
     s -> svgapalettebase30 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_30 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_30 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_31:
     s -> svgapalettebase31 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_31 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_31 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_32:
     s -> svgapalettebase32 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_32 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_32 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_33:
     s -> svgapalettebase33 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_33 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_33 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_34:
     s -> svgapalettebase34 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_34 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_34 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_35:
     s -> svgapalettebase35 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_35 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_35 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_36:
     s -> svgapalettebase36 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_36 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_36 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_37:
     s -> svgapalettebase37 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_37 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_37 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_38:
     s -> svgapalettebase38 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_38 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_38 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_39:
     s -> svgapalettebase39 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_39 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_39 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_40:
     s -> svgapalettebase40 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_40 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_40 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_41:
     s -> svgapalettebase41 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_41 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_41 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_42:
     s -> svgapalettebase42 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_42 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_42 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_43:
     s -> svgapalettebase43 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_43 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_43 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_44:
     s -> svgapalettebase44 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_44 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_44 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_45:
     s -> svgapalettebase45 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_45 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_45 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_46:
     s -> svgapalettebase46 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_46 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_46 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_47:
     s -> svgapalettebase47 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_47 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_47 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_48:
     s -> svgapalettebase48 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_48 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_48 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_49:
     s -> svgapalettebase49 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_49 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_49 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_50:
     s -> svgapalettebase50 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_50 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_50 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_51:
     s -> svgapalettebase51 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_51 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_51 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_52:
     s -> svgapalettebase52 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_52 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_52 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_53:
     s -> svgapalettebase53 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_53 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_53 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_54:
     s -> svgapalettebase54 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_54 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_54 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_55:
     s -> svgapalettebase55 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_55 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_55 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_56:
     s -> svgapalettebase56 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_56 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_56 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_57:
     s -> svgapalettebase57 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_57 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_57 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_58:
     s -> svgapalettebase58 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_58 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_58 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_59:
     s -> svgapalettebase59 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_59 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_59 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_60:
     s -> svgapalettebase60 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_60 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_60 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_61:
     s -> svgapalettebase61 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_61 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_61 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_62:
     s -> svgapalettebase62 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_62 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_62 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_63:
     s -> svgapalettebase63 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_63 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_63 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_64:
     s -> svgapalettebase64 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_64 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_64 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_65:
     s -> svgapalettebase65 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_65 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_65 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_66:
     s -> svgapalettebase66 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_66 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_66 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_67:
     s -> svgapalettebase67 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_67 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_67 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_68:
     s -> svgapalettebase68 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_68 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_68 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_69:
     s -> svgapalettebase69 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_69 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_69 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_70:
     s -> svgapalettebase70 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_70 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_70 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_71:
     s -> svgapalettebase71 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_71 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_71 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_72:
     s -> svgapalettebase72 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_72 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_72 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_73:
     s -> svgapalettebase73 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_73 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_73 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_74:
     s -> svgapalettebase74 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_74 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_74 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_75:
     s -> svgapalettebase75 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_75 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_75 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_76:
     s -> svgapalettebase76 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_76 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_76 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_77:
     s -> svgapalettebase77 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_77 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_77 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_78:
     s -> svgapalettebase78 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_78 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_78 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_79:
     s -> svgapalettebase79 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_79 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_79 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_80:
     s -> svgapalettebase80 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_80 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_80 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_81:
     s -> svgapalettebase81 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_81 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_81 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_82:
     s -> svgapalettebase82 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_82 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_82 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_83:
     s -> svgapalettebase83 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_83 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_83 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_84:
     s -> svgapalettebase84 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_84 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_84 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_85:
     s -> svgapalettebase85 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_85 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_85 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_86:
     s -> svgapalettebase86 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_86 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_86 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_87:
     s -> svgapalettebase87 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_87 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_87 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_88:
     s -> svgapalettebase88 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_88 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_88 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_89:
     s -> svgapalettebase89 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_89 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_89 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_90:
     s -> svgapalettebase90 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_90 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_90 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_91:
     s -> svgapalettebase91 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_91 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_91 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_92:
     s -> svgapalettebase92 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_92 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_92 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_93:
     s -> svgapalettebase93 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_93 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_93 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_94:
     s -> svgapalettebase94 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_94 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_94 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_95:
     s -> svgapalettebase95 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_95 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_95 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_96:
     s -> svgapalettebase96 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_96 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_96 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_97:
     s -> svgapalettebase97 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_97 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_97 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_98:
     s -> svgapalettebase98 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_98 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_98 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_99:
     s -> svgapalettebase99 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_99 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_99 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_100:
     s -> svgapalettebase100 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_100 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_100 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_101:
     s -> svgapalettebase101 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_101 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_101 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_102:
     s -> svgapalettebase102 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_102 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_102 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_103:
     s -> svgapalettebase103 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_103 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_103 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_104:
     s -> svgapalettebase104 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_104 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_104 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_105:
     s -> svgapalettebase105 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_105 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_105 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_106:
     s -> svgapalettebase106 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_106 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_106 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_107:
     s -> svgapalettebase107 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_107 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_107 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_108:
     s -> svgapalettebase108 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_108 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_108 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_109:
     s -> svgapalettebase109 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_109 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_109 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_110:
     s -> svgapalettebase110 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_110 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_110 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_111:
     s -> svgapalettebase111 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_111 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_111 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_112:
     s -> svgapalettebase112 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_112 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_112 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_113:
     s -> svgapalettebase113 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_113 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_113 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_114:
     s -> svgapalettebase114 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_114 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_114 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_115:
     s -> svgapalettebase115 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_115 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_115 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_116:
     s -> svgapalettebase116 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_116 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_116 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_117:
     s -> svgapalettebase117 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_117 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_117 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_118:
     s -> svgapalettebase118 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_118 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_118 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_119:
     s -> svgapalettebase119 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_119 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_119 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_120:
     s -> svgapalettebase120 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_120 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_120 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_121:
     s -> svgapalettebase121 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_121 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_121 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_122:
     s -> svgapalettebase122 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_122 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_122 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_123:
     s -> svgapalettebase123 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_123 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_123 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_124:
     s -> svgapalettebase124 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_124 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_124 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_125:
     s -> svgapalettebase125 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_125 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_125 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_126:
     s -> svgapalettebase126 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_126 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_126 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_127:
     s -> svgapalettebase127 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_127 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_127 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_128:
     s -> svgapalettebase128 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_128 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_128 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_129:
     s -> svgapalettebase129 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_129 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_129 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_130:
     s -> svgapalettebase130 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_130 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_130 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_131:
     s -> svgapalettebase131 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_131 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_131 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_132:
     s -> svgapalettebase132 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_132 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_132 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_133:
     s -> svgapalettebase133 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_133 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_133 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_134:
     s -> svgapalettebase134 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_134 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_134 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_135:
     s -> svgapalettebase135 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_135 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_135 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_136:
     s -> svgapalettebase136 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_136 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_136 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_137:
     s -> svgapalettebase137 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_137 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_137 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_138:
     s -> svgapalettebase138 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_138 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_138 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_139:
     s -> svgapalettebase139 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_139 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_139 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_140:
     s -> svgapalettebase140 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_140 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_140 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_141:
     s -> svgapalettebase141 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_141 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_141 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_142:
     s -> svgapalettebase142 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_142 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_142 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_143:
     s -> svgapalettebase143 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_143 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_143 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_144:
     s -> svgapalettebase144 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_144 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_144 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_145:
     s -> svgapalettebase145 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_145 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_145 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_146:
     s -> svgapalettebase146 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_146 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_146 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_147:
     s -> svgapalettebase147 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_147 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_147 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_148:
     s -> svgapalettebase148 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_148 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_148 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_149:
     s -> svgapalettebase149 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_149 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_149 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_150:
     s -> svgapalettebase150 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_150 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_150 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_151:
     s -> svgapalettebase151 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_151 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_151 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_152:
     s -> svgapalettebase152 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_152 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_152 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_153:
     s -> svgapalettebase153 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_153 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_153 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_154:
     s -> svgapalettebase154 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_154 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_154 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_155:
     s -> svgapalettebase155 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_155 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_155 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_156:
     s -> svgapalettebase156 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_156 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_156 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_157:
     s -> svgapalettebase157 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_157 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_157 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_158:
     s -> svgapalettebase158 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_158 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_158 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_159:
     s -> svgapalettebase159 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_159 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_159 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_160:
     s -> svgapalettebase160 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_160 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_160 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_161:
     s -> svgapalettebase161 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_161 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_161 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_162:
     s -> svgapalettebase162 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_162 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_162 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_163:
     s -> svgapalettebase163 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_163 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_163 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_164:
     s -> svgapalettebase164 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_164 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_164 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_165:
     s -> svgapalettebase165 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_165 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_165 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_166:
     s -> svgapalettebase166 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_166 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_166 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_167:
     s -> svgapalettebase167 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_167 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_167 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_168:
     s -> svgapalettebase168 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_168 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_168 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_169:
     s -> svgapalettebase169 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_169 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_169 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_170:
     s -> svgapalettebase170 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_170 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_170 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_171:
     s -> svgapalettebase171 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_171 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_171 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_172:
     s -> svgapalettebase172 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_172 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_172 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_173:
     s -> svgapalettebase173 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_173 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_173 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_174:
     s -> svgapalettebase174 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_174 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_174 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_175:
     s -> svgapalettebase175 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_175 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_175 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_176:
     s -> svgapalettebase176 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_176 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_176 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_177:
     s -> svgapalettebase177 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_177 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_177 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_178:
     s -> svgapalettebase178 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_178 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_178 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_179:
     s -> svgapalettebase179 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_179 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_179 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_180:
     s -> svgapalettebase180 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_180 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_180 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_181:
     s -> svgapalettebase181 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_181 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_181 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_182:
     s -> svgapalettebase182 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_182 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_182 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_183:
     s -> svgapalettebase183 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_183 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_183 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_184:
     s -> svgapalettebase184 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_184 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_184 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_185:
     s -> svgapalettebase185 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_185 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_185 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_186:
     s -> svgapalettebase186 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_186 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_186 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_187:
     s -> svgapalettebase187 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_187 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_187 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_188:
     s -> svgapalettebase188 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_188 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_188 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_189:
     s -> svgapalettebase189 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_189 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_189 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_190:
     s -> svgapalettebase190 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_190 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_190 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_191:
     s -> svgapalettebase191 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_191 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_191 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_192:
     s -> svgapalettebase192 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_192 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_192 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_193:
     s -> svgapalettebase193 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_193 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_193 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_194:
     s -> svgapalettebase194 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_194 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_194 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_195:
     s -> svgapalettebase195 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_195 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_195 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_196:
     s -> svgapalettebase196 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_196 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_196 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_197:
     s -> svgapalettebase197 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_197 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_197 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_198:
     s -> svgapalettebase198 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_198 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_198 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_199:
     s -> svgapalettebase199 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_199 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_199 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_200:
     s -> svgapalettebase200 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_200 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_200 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_201:
     s -> svgapalettebase201 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_201 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_201 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_202:
     s -> svgapalettebase202 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_202 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_202 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_203:
     s -> svgapalettebase203 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_203 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_203 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_204:
     s -> svgapalettebase204 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_204 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_204 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_205:
     s -> svgapalettebase205 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_205 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_205 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_206:
     s -> svgapalettebase206 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_206 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_206 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_207:
     s -> svgapalettebase207 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_207 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_207 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_208:
     s -> svgapalettebase208 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_208 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_208 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_209:
     s -> svgapalettebase209 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_209 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_209 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_210:
     s -> svgapalettebase210 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_210 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_210 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_211:
     s -> svgapalettebase211 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_211 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_211 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_212:
     s -> svgapalettebase212 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_212 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_212 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_213:
     s -> svgapalettebase213 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_213 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_213 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_214:
     s -> svgapalettebase214 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_214 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_214 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_215:
     s -> svgapalettebase215 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_215 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_215 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_216:
     s -> svgapalettebase216 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_216 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_216 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_217:
     s -> svgapalettebase217 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_217 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_217 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_218:
     s -> svgapalettebase218 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_218 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_218 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_219:
     s -> svgapalettebase219 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_219 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_219 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_220:
     s -> svgapalettebase220 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_220 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_220 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_221:
     s -> svgapalettebase221 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_221 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_221 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_222:
     s -> svgapalettebase222 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_222 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_222 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_223:
     s -> svgapalettebase223 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_223 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_223 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_224:
     s -> svgapalettebase224 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_224 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_224 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_225:
     s -> svgapalettebase225 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_225 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_225 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_226:
     s -> svgapalettebase226 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_226 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_226 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_227:
     s -> svgapalettebase227 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_227 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_227 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_228:
     s -> svgapalettebase228 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_228 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_228 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_229:
     s -> svgapalettebase229 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_229 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_229 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_230:
     s -> svgapalettebase230 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_230 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_230 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_231:
     s -> svgapalettebase231 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_231 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_231 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_232:
     s -> svgapalettebase232 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_232 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_232 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_233:
     s -> svgapalettebase233 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_233 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_233 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_234:
     s -> svgapalettebase234 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_234 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_234 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_235:
     s -> svgapalettebase235 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_235 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_235 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_236:
     s -> svgapalettebase236 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_236 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_236 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_237:
     s -> svgapalettebase237 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_237 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_237 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_238:
     s -> svgapalettebase238 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_238 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_238 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_239:
     s -> svgapalettebase239 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_239 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_239 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_240:
     s -> svgapalettebase240 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_240 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_240 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_241:
     s -> svgapalettebase241 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_241 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_241 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_242:
     s -> svgapalettebase242 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_242 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_242 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_243:
     s -> svgapalettebase243 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_243 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_243 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_244:
     s -> svgapalettebase244 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_244 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_244 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_245:
     s -> svgapalettebase245 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_245 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_245 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_246:
     s -> svgapalettebase246 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_246 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_246 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_247:
     s -> svgapalettebase247 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_247 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_247 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_248:
     s -> svgapalettebase248 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_248 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_248 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_249:
     s -> svgapalettebase249 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_249 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_249 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_250:
     s -> svgapalettebase250 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_250 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_250 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_251:
     s -> svgapalettebase251 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_251 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_251 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_252:
     s -> svgapalettebase252 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_252 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_252 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_253:
     s -> svgapalettebase253 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_253 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_253 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_254:
     s -> svgapalettebase254 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_254 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_254 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_255:
     s -> svgapalettebase255 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_255 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_255 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_256:
     s -> svgapalettebase256 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_256 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_256 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_257:
     s -> svgapalettebase257 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_257 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_257 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_258:
     s -> svgapalettebase258 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_258 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_258 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_259:
     s -> svgapalettebase259 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_259 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_259 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_260:
     s -> svgapalettebase260 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_260 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_260 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_261:
     s -> svgapalettebase261 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_261 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_261 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_262:
     s -> svgapalettebase262 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_262 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_262 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_263:
     s -> svgapalettebase263 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_263 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_263 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_264:
     s -> svgapalettebase264 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_264 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_264 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_265:
     s -> svgapalettebase265 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_265 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_265 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_266:
     s -> svgapalettebase266 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_266 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_266 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_267:
     s -> svgapalettebase267 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_267 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_267 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_268:
     s -> svgapalettebase268 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_268 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_268 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_269:
     s -> svgapalettebase269 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_269 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_269 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_270:
     s -> svgapalettebase270 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_270 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_270 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_271:
     s -> svgapalettebase271 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_271 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_271 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_272:
     s -> svgapalettebase272 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_272 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_272 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_273:
     s -> svgapalettebase273 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_273 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_273 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_274:
     s -> svgapalettebase274 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_274 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_274 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_275:
     s -> svgapalettebase275 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_275 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_275 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_276:
     s -> svgapalettebase276 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_276 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_276 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_277:
     s -> svgapalettebase277 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_277 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_277 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_278:
     s -> svgapalettebase278 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_278 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_278 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_279:
     s -> svgapalettebase279 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_279 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_279 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_280:
     s -> svgapalettebase280 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_280 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_280 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_281:
     s -> svgapalettebase281 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_281 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_281 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_282:
     s -> svgapalettebase282 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_282 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_282 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_283:
     s -> svgapalettebase283 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_283 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_283 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_284:
     s -> svgapalettebase284 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_284 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_284 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_285:
     s -> svgapalettebase285 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_285 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_285 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_286:
     s -> svgapalettebase286 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_286 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_286 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_287:
     s -> svgapalettebase287 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_287 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_287 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_288:
     s -> svgapalettebase288 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_288 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_288 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_289:
     s -> svgapalettebase289 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_289 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_289 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_290:
     s -> svgapalettebase290 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_290 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_290 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_291:
     s -> svgapalettebase291 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_291 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_291 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_292:
     s -> svgapalettebase292 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_292 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_292 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_293:
     s -> svgapalettebase293 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_293 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_293 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_294:
     s -> svgapalettebase294 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_294 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_294 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_295:
     s -> svgapalettebase295 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_295 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_295 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_296:
     s -> svgapalettebase296 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_296 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_296 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_297:
     s -> svgapalettebase297 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_297 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_297 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_298:
     s -> svgapalettebase298 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_298 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_298 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_299:
     s -> svgapalettebase299 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_299 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_299 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_300:
     s -> svgapalettebase300 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_300 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_300 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_301:
     s -> svgapalettebase301 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_301 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_301 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_302:
     s -> svgapalettebase302 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_302 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_302 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_303:
     s -> svgapalettebase303 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_303 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_303 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_304:
     s -> svgapalettebase304 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_304 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_304 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_305:
     s -> svgapalettebase305 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_305 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_305 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_306:
     s -> svgapalettebase306 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_306 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_306 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_307:
     s -> svgapalettebase307 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_307 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_307 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_308:
     s -> svgapalettebase308 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_308 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_308 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_309:
     s -> svgapalettebase309 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_309 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_309 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_310:
     s -> svgapalettebase310 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_310 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_310 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_311:
     s -> svgapalettebase311 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_311 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_311 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_312:
     s -> svgapalettebase312 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_312 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_312 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_313:
     s -> svgapalettebase313 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_313 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_313 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_314:
     s -> svgapalettebase314 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_314 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_314 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_315:
     s -> svgapalettebase315 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_315 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_315 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_316:
     s -> svgapalettebase316 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_316 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_316 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_317:
     s -> svgapalettebase317 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_317 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_317 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_318:
     s -> svgapalettebase318 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_318 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_318 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_319:
     s -> svgapalettebase319 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_319 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_319 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_320:
     s -> svgapalettebase320 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_320 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_320 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_321:
     s -> svgapalettebase321 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_321 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_321 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_322:
     s -> svgapalettebase322 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_322 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_322 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_323:
     s -> svgapalettebase323 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_323 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_323 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_324:
     s -> svgapalettebase324 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_324 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_324 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_325:
     s -> svgapalettebase325 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_325 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_325 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_326:
     s -> svgapalettebase326 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_326 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_326 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_327:
     s -> svgapalettebase327 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_327 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_327 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_328:
     s -> svgapalettebase328 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_328 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_328 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_329:
     s -> svgapalettebase329 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_329 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_329 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_330:
     s -> svgapalettebase330 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_330 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_330 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_331:
     s -> svgapalettebase331 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_331 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_331 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_332:
     s -> svgapalettebase332 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_332 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_332 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_333:
     s -> svgapalettebase333 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_333 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_333 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_334:
     s -> svgapalettebase334 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_334 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_334 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_335:
     s -> svgapalettebase335 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_335 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_335 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_336:
     s -> svgapalettebase336 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_336 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_336 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_337:
     s -> svgapalettebase337 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_337 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_337 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_338:
     s -> svgapalettebase338 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_338 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_338 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_339:
     s -> svgapalettebase339 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_339 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_339 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_340:
     s -> svgapalettebase340 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_340 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_340 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_341:
     s -> svgapalettebase341 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_341 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_341 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_342:
     s -> svgapalettebase342 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_342 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_342 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_343:
     s -> svgapalettebase343 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_343 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_343 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_344:
     s -> svgapalettebase344 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_344 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_344 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_345:
     s -> svgapalettebase345 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_345 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_345 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_346:
     s -> svgapalettebase346 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_346 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_346 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_347:
     s -> svgapalettebase347 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_347 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_347 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_348:
     s -> svgapalettebase348 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_348 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_348 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_349:
     s -> svgapalettebase349 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_349 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_349 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_350:
     s -> svgapalettebase350 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_350 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_350 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_351:
     s -> svgapalettebase351 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_351 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_351 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_352:
     s -> svgapalettebase352 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_352 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_352 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_353:
     s -> svgapalettebase353 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_353 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_353 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_354:
     s -> svgapalettebase354 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_354 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_354 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_355:
     s -> svgapalettebase355 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_355 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_355 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_356:
     s -> svgapalettebase356 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_356 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_356 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_357:
     s -> svgapalettebase357 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_357 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_357 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_358:
     s -> svgapalettebase358 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_358 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_358 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_359:
     s -> svgapalettebase359 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_359 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_359 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_360:
     s -> svgapalettebase360 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_360 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_360 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_361:
     s -> svgapalettebase361 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_361 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_361 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_362:
     s -> svgapalettebase362 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_362 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_362 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_363:
     s -> svgapalettebase363 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_363 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_363 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_364:
     s -> svgapalettebase364 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_364 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_364 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_365:
     s -> svgapalettebase365 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_365 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_365 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_366:
     s -> svgapalettebase366 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_366 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_366 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_367:
     s -> svgapalettebase367 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_367 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_367 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_368:
     s -> svgapalettebase368 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_368 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_368 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_369:
     s -> svgapalettebase369 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_369 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_369 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_370:
     s -> svgapalettebase370 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_370 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_370 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_371:
     s -> svgapalettebase371 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_371 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_371 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_372:
     s -> svgapalettebase372 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_372 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_372 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_373:
     s -> svgapalettebase373 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_373 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_373 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_374:
     s -> svgapalettebase374 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_374 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_374 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_375:
     s -> svgapalettebase375 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_375 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_375 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_376:
     s -> svgapalettebase376 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_376 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_376 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_377:
     s -> svgapalettebase377 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_377 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_377 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_378:
     s -> svgapalettebase378 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_378 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_378 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_379:
     s -> svgapalettebase379 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_379 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_379 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_380:
     s -> svgapalettebase380 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_380 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_380 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_381:
     s -> svgapalettebase381 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_381 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_381 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_382:
     s -> svgapalettebase382 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_382 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_382 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_383:
     s -> svgapalettebase383 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_383 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_383 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_384:
     s -> svgapalettebase384 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_384 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_384 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_385:
     s -> svgapalettebase385 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_385 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_385 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_386:
     s -> svgapalettebase386 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_386 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_386 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_387:
     s -> svgapalettebase387 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_387 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_387 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_388:
     s -> svgapalettebase388 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_388 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_388 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_389:
     s -> svgapalettebase389 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_389 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_389 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_390:
     s -> svgapalettebase390 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_390 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_390 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_391:
     s -> svgapalettebase391 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_391 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_391 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_392:
     s -> svgapalettebase392 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_392 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_392 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_393:
     s -> svgapalettebase393 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_393 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_393 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_394:
     s -> svgapalettebase394 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_394 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_394 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_395:
     s -> svgapalettebase395 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_395 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_395 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_396:
     s -> svgapalettebase396 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_396 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_396 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_397:
     s -> svgapalettebase397 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_397 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_397 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_398:
     s -> svgapalettebase398 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_398 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_398 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_399:
     s -> svgapalettebase399 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_399 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_399 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_400:
     s -> svgapalettebase400 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_400 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_400 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_401:
     s -> svgapalettebase401 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_401 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_401 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_402:
     s -> svgapalettebase402 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_402 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_402 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_403:
     s -> svgapalettebase403 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_403 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_403 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_404:
     s -> svgapalettebase404 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_404 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_404 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_405:
     s -> svgapalettebase405 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_405 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_405 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_406:
     s -> svgapalettebase406 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_406 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_406 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_407:
     s -> svgapalettebase407 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_407 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_407 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_408:
     s -> svgapalettebase408 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_408 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_408 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_409:
     s -> svgapalettebase409 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_409 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_409 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_410:
     s -> svgapalettebase410 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_410 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_410 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_411:
     s -> svgapalettebase411 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_411 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_411 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_412:
     s -> svgapalettebase412 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_412 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_412 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_413:
     s -> svgapalettebase413 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_413 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_413 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_414:
     s -> svgapalettebase414 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_414 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_414 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_415:
     s -> svgapalettebase415 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_415 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_415 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_416:
     s -> svgapalettebase416 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_416 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_416 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_417:
     s -> svgapalettebase417 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_417 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_417 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_418:
     s -> svgapalettebase418 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_418 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_418 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_419:
     s -> svgapalettebase419 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_419 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_419 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_420:
     s -> svgapalettebase420 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_420 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_420 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_421:
     s -> svgapalettebase421 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_421 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_421 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_422:
     s -> svgapalettebase422 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_422 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_422 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_423:
     s -> svgapalettebase423 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_423 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_423 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_424:
     s -> svgapalettebase424 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_424 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_424 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_425:
     s -> svgapalettebase425 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_425 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_425 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_426:
     s -> svgapalettebase426 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_426 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_426 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_427:
     s -> svgapalettebase427 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_427 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_427 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_428:
     s -> svgapalettebase428 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_428 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_428 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_429:
     s -> svgapalettebase429 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_429 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_429 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_430:
     s -> svgapalettebase430 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_430 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_430 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_431:
     s -> svgapalettebase431 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_431 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_431 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_432:
     s -> svgapalettebase432 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_432 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_432 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_433:
     s -> svgapalettebase433 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_433 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_433 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_434:
     s -> svgapalettebase434 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_434 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_434 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_435:
     s -> svgapalettebase435 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_435 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_435 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_436:
     s -> svgapalettebase436 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_436 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_436 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_437:
     s -> svgapalettebase437 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_437 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_437 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_438:
     s -> svgapalettebase438 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_438 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_438 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_439:
     s -> svgapalettebase439 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_439 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_439 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_440:
     s -> svgapalettebase440 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_440 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_440 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_441:
     s -> svgapalettebase441 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_441 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_441 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_442:
     s -> svgapalettebase442 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_442 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_442 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_443:
     s -> svgapalettebase443 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_443 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_443 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_444:
     s -> svgapalettebase444 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_444 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_444 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_445:
     s -> svgapalettebase445 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_445 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_445 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_446:
     s -> svgapalettebase446 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_446 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_446 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_447:
     s -> svgapalettebase447 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_447 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_447 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_448:
     s -> svgapalettebase448 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_448 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_448 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_449:
     s -> svgapalettebase449 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_449 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_449 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_450:
     s -> svgapalettebase450 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_450 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_450 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_451:
     s -> svgapalettebase451 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_451 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_451 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_452:
     s -> svgapalettebase452 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_452 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_452 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_453:
     s -> svgapalettebase453 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_453 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_453 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_454:
     s -> svgapalettebase454 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_454 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_454 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_455:
     s -> svgapalettebase455 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_455 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_455 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_456:
     s -> svgapalettebase456 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_456 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_456 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_457:
     s -> svgapalettebase457 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_457 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_457 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_458:
     s -> svgapalettebase458 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_458 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_458 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_459:
     s -> svgapalettebase459 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_459 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_459 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_460:
     s -> svgapalettebase460 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_460 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_460 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_461:
     s -> svgapalettebase461 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_461 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_461 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_462:
     s -> svgapalettebase462 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_462 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_462 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_463:
     s -> svgapalettebase463 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_463 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_463 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_464:
     s -> svgapalettebase464 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_464 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_464 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_465:
     s -> svgapalettebase465 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_465 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_465 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_466:
     s -> svgapalettebase466 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_466 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_466 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_467:
     s -> svgapalettebase467 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_467 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_467 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_468:
     s -> svgapalettebase468 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_468 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_468 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_469:
     s -> svgapalettebase469 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_469 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_469 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_470:
     s -> svgapalettebase470 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_470 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_470 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_471:
     s -> svgapalettebase471 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_471 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_471 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_472:
     s -> svgapalettebase472 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_472 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_472 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_473:
     s -> svgapalettebase473 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_473 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_473 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_474:
     s -> svgapalettebase474 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_474 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_474 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_475:
     s -> svgapalettebase475 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_475 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_475 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_476:
     s -> svgapalettebase476 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_476 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_476 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_477:
     s -> svgapalettebase477 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_477 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_477 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_478:
     s -> svgapalettebase478 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_478 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_478 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_479:
     s -> svgapalettebase479 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_479 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_479 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_480:
     s -> svgapalettebase480 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_480 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_480 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_481:
     s -> svgapalettebase481 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_481 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_481 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_482:
     s -> svgapalettebase482 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_482 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_482 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_483:
     s -> svgapalettebase483 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_483 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_483 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_484:
     s -> svgapalettebase484 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_484 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_484 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_485:
     s -> svgapalettebase485 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_485 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_485 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_486:
     s -> svgapalettebase486 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_486 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_486 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_487:
     s -> svgapalettebase487 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_487 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_487 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_488:
     s -> svgapalettebase488 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_488 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_488 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_489:
     s -> svgapalettebase489 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_489 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_489 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_490:
     s -> svgapalettebase490 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_490 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_490 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_491:
     s -> svgapalettebase491 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_491 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_491 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_492:
     s -> svgapalettebase492 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_492 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_492 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_493:
     s -> svgapalettebase493 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_493 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_493 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_494:
     s -> svgapalettebase494 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_494 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_494 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_495:
     s -> svgapalettebase495 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_495 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_495 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_496:
     s -> svgapalettebase496 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_496 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_496 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_497:
     s -> svgapalettebase497 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_497 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_497 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_498:
     s -> svgapalettebase498 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_498 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_498 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_499:
     s -> svgapalettebase499 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_499 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_499 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_500:
     s -> svgapalettebase500 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_500 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_500 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_501:
     s -> svgapalettebase501 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_501 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_501 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_502:
     s -> svgapalettebase502 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_502 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_502 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_503:
     s -> svgapalettebase503 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_503 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_503 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_504:
     s -> svgapalettebase504 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_504 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_504 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_505:
     s -> svgapalettebase505 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_505 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_505 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_506:
     s -> svgapalettebase506 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_506 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_506 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_507:
     s -> svgapalettebase507 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_507 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_507 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_508:
     s -> svgapalettebase508 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_508 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_508 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_509:
     s -> svgapalettebase509 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_509 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_509 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_510:
     s -> svgapalettebase510 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_510 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_510 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_511:
     s -> svgapalettebase511 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_511 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_511 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_512:
     s -> svgapalettebase512 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_512 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_512 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_513:
     s -> svgapalettebase513 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_513 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_513 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_514:
     s -> svgapalettebase514 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_514 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_514 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_515:
     s -> svgapalettebase515 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_515 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_515 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_516:
     s -> svgapalettebase516 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_516 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_516 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_517:
     s -> svgapalettebase517 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_517 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_517 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_518:
     s -> svgapalettebase518 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_518 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_518 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_519:
     s -> svgapalettebase519 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_519 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_519 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_520:
     s -> svgapalettebase520 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_520 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_520 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_521:
     s -> svgapalettebase521 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_521 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_521 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_522:
     s -> svgapalettebase522 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_522 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_522 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_523:
     s -> svgapalettebase523 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_523 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_523 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_524:
     s -> svgapalettebase524 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_524 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_524 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_525:
     s -> svgapalettebase525 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_525 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_525 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_526:
     s -> svgapalettebase526 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_526 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_526 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_527:
     s -> svgapalettebase527 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_527 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_527 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_528:
     s -> svgapalettebase528 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_528 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_528 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_529:
     s -> svgapalettebase529 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_529 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_529 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_530:
     s -> svgapalettebase530 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_530 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_530 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_531:
     s -> svgapalettebase531 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_531 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_531 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_532:
     s -> svgapalettebase532 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_532 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_532 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_533:
     s -> svgapalettebase533 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_533 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_533 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_534:
     s -> svgapalettebase534 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_534 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_534 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_535:
     s -> svgapalettebase535 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_535 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_535 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_536:
     s -> svgapalettebase536 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_536 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_536 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_537:
     s -> svgapalettebase537 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_537 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_537 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_538:
     s -> svgapalettebase538 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_538 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_538 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_539:
     s -> svgapalettebase539 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_539 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_539 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_540:
     s -> svgapalettebase540 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_540 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_540 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_541:
     s -> svgapalettebase541 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_541 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_541 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_542:
     s -> svgapalettebase542 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_542 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_542 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_543:
     s -> svgapalettebase543 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_543 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_543 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_544:
     s -> svgapalettebase544 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_544 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_544 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_545:
     s -> svgapalettebase545 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_545 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_545 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_546:
     s -> svgapalettebase546 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_546 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_546 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_547:
     s -> svgapalettebase547 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_547 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_547 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_548:
     s -> svgapalettebase548 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_548 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_548 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_549:
     s -> svgapalettebase549 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_549 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_549 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_550:
     s -> svgapalettebase550 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_550 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_550 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_551:
     s -> svgapalettebase551 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_551 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_551 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_552:
     s -> svgapalettebase552 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_552 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_552 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_553:
     s -> svgapalettebase553 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_553 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_553 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_554:
     s -> svgapalettebase554 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_554 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_554 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_555:
     s -> svgapalettebase555 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_555 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_555 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_556:
     s -> svgapalettebase556 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_556 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_556 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_557:
     s -> svgapalettebase557 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_557 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_557 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_558:
     s -> svgapalettebase558 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_558 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_558 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_559:
     s -> svgapalettebase559 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_559 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_559 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_560:
     s -> svgapalettebase560 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_560 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_560 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_561:
     s -> svgapalettebase561 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_561 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_561 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_562:
     s -> svgapalettebase562 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_562 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_562 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_563:
     s -> svgapalettebase563 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_563 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_563 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_564:
     s -> svgapalettebase564 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_564 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_564 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_565:
     s -> svgapalettebase565 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_565 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_565 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_566:
     s -> svgapalettebase566 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_566 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_566 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_567:
     s -> svgapalettebase567 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_567 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_567 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_568:
     s -> svgapalettebase568 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_568 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_568 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_569:
     s -> svgapalettebase569 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_569 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_569 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_570:
     s -> svgapalettebase570 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_570 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_570 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_571:
     s -> svgapalettebase571 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_571 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_571 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_572:
     s -> svgapalettebase572 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_572 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_572 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_573:
     s -> svgapalettebase573 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_573 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_573 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_574:
     s -> svgapalettebase574 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_574 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_574 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_575:
     s -> svgapalettebase575 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_575 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_575 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_576:
     s -> svgapalettebase576 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_576 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_576 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_577:
     s -> svgapalettebase577 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_577 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_577 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_578:
     s -> svgapalettebase578 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_578 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_578 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_579:
     s -> svgapalettebase579 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_579 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_579 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_580:
     s -> svgapalettebase580 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_580 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_580 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_581:
     s -> svgapalettebase581 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_581 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_581 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_582:
     s -> svgapalettebase582 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_582 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_582 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_583:
     s -> svgapalettebase583 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_583 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_583 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_584:
     s -> svgapalettebase584 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_584 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_584 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_585:
     s -> svgapalettebase585 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_585 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_585 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_586:
     s -> svgapalettebase586 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_586 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_586 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_587:
     s -> svgapalettebase587 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_587 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_587 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_588:
     s -> svgapalettebase588 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_588 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_588 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_589:
     s -> svgapalettebase589 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_589 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_589 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_590:
     s -> svgapalettebase590 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_590 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_590 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_591:
     s -> svgapalettebase591 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_591 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_591 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_592:
     s -> svgapalettebase592 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_592 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_592 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_593:
     s -> svgapalettebase593 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_593 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_593 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_594:
     s -> svgapalettebase594 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_594 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_594 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_595:
     s -> svgapalettebase595 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_595 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_595 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_596:
     s -> svgapalettebase596 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_596 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_596 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_597:
     s -> svgapalettebase597 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_597 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_597 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_598:
     s -> svgapalettebase598 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_598 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_598 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_599:
     s -> svgapalettebase599 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_599 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_599 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_600:
     s -> svgapalettebase600 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_600 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_600 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_601:
     s -> svgapalettebase601 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_601 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_601 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_602:
     s -> svgapalettebase602 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_602 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_602 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_603:
     s -> svgapalettebase603 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_603 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_603 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_604:
     s -> svgapalettebase604 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_604 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_604 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_605:
     s -> svgapalettebase605 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_605 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_605 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_606:
     s -> svgapalettebase606 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_606 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_606 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_607:
     s -> svgapalettebase607 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_607 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_607 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_608:
     s -> svgapalettebase608 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_608 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_608 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_609:
     s -> svgapalettebase609 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_609 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_609 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_610:
     s -> svgapalettebase610 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_610 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_610 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_611:
     s -> svgapalettebase611 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_611 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_611 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_612:
     s -> svgapalettebase612 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_612 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_612 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_613:
     s -> svgapalettebase613 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_613 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_613 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_614:
     s -> svgapalettebase614 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_614 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_614 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_615:
     s -> svgapalettebase615 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_615 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_615 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_616:
     s -> svgapalettebase616 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_616 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_616 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_617:
     s -> svgapalettebase617 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_617 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_617 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_618:
     s -> svgapalettebase618 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_618 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_618 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_619:
     s -> svgapalettebase619 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_619 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_619 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_620:
     s -> svgapalettebase620 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_620 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_620 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_621:
     s -> svgapalettebase621 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_621 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_621 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_622:
     s -> svgapalettebase622 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_622 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_622 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_623:
     s -> svgapalettebase623 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_623 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_623 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_624:
     s -> svgapalettebase624 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_624 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_624 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_625:
     s -> svgapalettebase625 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_625 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_625 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_626:
     s -> svgapalettebase626 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_626 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_626 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_627:
     s -> svgapalettebase627 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_627 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_627 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_628:
     s -> svgapalettebase628 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_628 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_628 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_629:
     s -> svgapalettebase629 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_629 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_629 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_630:
     s -> svgapalettebase630 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_630 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_630 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_631:
     s -> svgapalettebase631 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_631 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_631 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_632:
     s -> svgapalettebase632 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_632 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_632 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_633:
     s -> svgapalettebase633 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_633 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_633 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_634:
     s -> svgapalettebase634 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_634 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_634 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_635:
     s -> svgapalettebase635 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_635 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_635 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_636:
     s -> svgapalettebase636 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_636 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_636 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_637:
     s -> svgapalettebase637 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_637 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_637 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_638:
     s -> svgapalettebase638 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_638 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_638 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_639:
     s -> svgapalettebase639 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_639 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_639 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_640:
     s -> svgapalettebase640 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_640 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_640 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_641:
     s -> svgapalettebase641 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_641 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_641 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_642:
     s -> svgapalettebase642 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_642 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_642 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_643:
     s -> svgapalettebase643 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_643 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_643 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_644:
     s -> svgapalettebase644 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_644 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_644 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_645:
     s -> svgapalettebase645 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_645 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_645 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_646:
     s -> svgapalettebase646 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_646 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_646 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_647:
     s -> svgapalettebase647 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_647 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_647 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_648:
     s -> svgapalettebase648 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_648 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_648 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_649:
     s -> svgapalettebase649 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_649 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_649 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_650:
     s -> svgapalettebase650 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_650 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_650 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_651:
     s -> svgapalettebase651 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_651 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_651 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_652:
     s -> svgapalettebase652 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_652 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_652 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_653:
     s -> svgapalettebase653 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_653 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_653 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_654:
     s -> svgapalettebase654 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_654 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_654 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_655:
     s -> svgapalettebase655 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_655 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_655 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_656:
     s -> svgapalettebase656 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_656 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_656 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_657:
     s -> svgapalettebase657 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_657 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_657 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_658:
     s -> svgapalettebase658 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_658 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_658 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_659:
     s -> svgapalettebase659 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_659 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_659 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_660:
     s -> svgapalettebase660 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_660 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_660 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_661:
     s -> svgapalettebase661 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_661 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_661 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_662:
     s -> svgapalettebase662 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_662 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_662 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_663:
     s -> svgapalettebase663 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_663 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_663 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_664:
     s -> svgapalettebase664 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_664 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_664 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_665:
     s -> svgapalettebase665 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_665 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_665 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_666:
     s -> svgapalettebase666 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_666 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_666 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_667:
     s -> svgapalettebase667 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_667 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_667 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_668:
     s -> svgapalettebase668 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_668 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_668 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_669:
     s -> svgapalettebase669 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_669 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_669 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_670:
     s -> svgapalettebase670 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_670 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_670 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_671:
     s -> svgapalettebase671 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_671 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_671 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_672:
     s -> svgapalettebase672 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_672 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_672 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_673:
     s -> svgapalettebase673 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_673 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_673 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_674:
     s -> svgapalettebase674 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_674 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_674 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_675:
     s -> svgapalettebase675 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_675 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_675 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_676:
     s -> svgapalettebase676 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_676 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_676 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_677:
     s -> svgapalettebase677 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_677 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_677 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_678:
     s -> svgapalettebase678 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_678 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_678 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_679:
     s -> svgapalettebase679 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_679 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_679 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_680:
     s -> svgapalettebase680 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_680 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_680 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_681:
     s -> svgapalettebase681 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_681 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_681 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_682:
     s -> svgapalettebase682 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_682 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_682 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_683:
     s -> svgapalettebase683 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_683 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_683 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_684:
     s -> svgapalettebase684 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_684 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_684 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_685:
     s -> svgapalettebase685 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_685 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_685 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_686:
     s -> svgapalettebase686 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_686 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_686 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_687:
     s -> svgapalettebase687 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_687 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_687 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_688:
     s -> svgapalettebase688 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_688 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_688 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_689:
     s -> svgapalettebase689 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_689 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_689 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_690:
     s -> svgapalettebase690 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_690 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_690 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_691:
     s -> svgapalettebase691 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_691 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_691 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_692:
     s -> svgapalettebase692 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_692 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_692 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_693:
     s -> svgapalettebase693 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_693 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_693 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_694:
     s -> svgapalettebase694 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_694 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_694 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_695:
     s -> svgapalettebase695 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_695 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_695 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_696:
     s -> svgapalettebase696 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_696 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_696 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_697:
     s -> svgapalettebase697 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_697 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_697 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_698:
     s -> svgapalettebase698 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_698 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_698 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_699:
     s -> svgapalettebase699 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_699 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_699 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_700:
     s -> svgapalettebase700 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_700 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_700 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_701:
     s -> svgapalettebase701 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_701 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_701 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_702:
     s -> svgapalettebase702 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_702 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_702 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_703:
     s -> svgapalettebase703 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_703 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_703 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_704:
     s -> svgapalettebase704 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_704 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_704 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_705:
     s -> svgapalettebase705 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_705 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_705 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_706:
     s -> svgapalettebase706 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_706 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_706 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_707:
     s -> svgapalettebase707 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_707 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_707 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_708:
     s -> svgapalettebase708 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_708 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_708 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_709:
     s -> svgapalettebase709 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_709 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_709 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_710:
     s -> svgapalettebase710 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_710 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_710 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_711:
     s -> svgapalettebase711 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_711 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_711 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_712:
     s -> svgapalettebase712 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_712 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_712 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_713:
     s -> svgapalettebase713 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_713 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_713 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_714:
     s -> svgapalettebase714 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_714 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_714 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_715:
     s -> svgapalettebase715 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_715 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_715 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_716:
     s -> svgapalettebase716 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_716 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_716 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_717:
     s -> svgapalettebase717 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_717 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_717 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_718:
     s -> svgapalettebase718 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_718 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_718 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_719:
     s -> svgapalettebase719 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_719 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_719 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_720:
     s -> svgapalettebase720 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_720 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_720 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_721:
     s -> svgapalettebase721 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_721 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_721 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_722:
     s -> svgapalettebase722 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_722 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_722 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_723:
     s -> svgapalettebase723 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_723 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_723 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_724:
     s -> svgapalettebase724 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_724 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_724 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_725:
     s -> svgapalettebase725 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_725 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_725 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_726:
     s -> svgapalettebase726 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_726 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_726 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_727:
     s -> svgapalettebase727 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_727 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_727 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_728:
     s -> svgapalettebase728 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_728 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_728 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_729:
     s -> svgapalettebase729 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_729 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_729 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_730:
     s -> svgapalettebase730 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_730 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_730 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_731:
     s -> svgapalettebase731 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_731 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_731 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_732:
     s -> svgapalettebase732 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_732 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_732 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_733:
     s -> svgapalettebase733 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_733 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_733 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_734:
     s -> svgapalettebase734 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_734 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_734 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_735:
     s -> svgapalettebase735 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_735 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_735 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_736:
     s -> svgapalettebase736 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_736 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_736 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_737:
     s -> svgapalettebase737 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_737 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_737 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_738:
     s -> svgapalettebase738 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_738 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_738 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_739:
     s -> svgapalettebase739 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_739 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_739 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_740:
     s -> svgapalettebase740 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_740 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_740 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_741:
     s -> svgapalettebase741 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_741 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_741 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_742:
     s -> svgapalettebase742 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_742 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_742 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_743:
     s -> svgapalettebase743 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_743 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_743 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_744:
     s -> svgapalettebase744 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_744 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_744 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_745:
     s -> svgapalettebase745 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_745 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_745 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_746:
     s -> svgapalettebase746 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_746 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_746 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_747:
     s -> svgapalettebase747 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_747 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_747 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_748:
     s -> svgapalettebase748 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_748 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_748 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_749:
     s -> svgapalettebase749 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_749 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_749 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_750:
     s -> svgapalettebase750 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_750 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_750 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_751:
     s -> svgapalettebase751 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_751 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_751 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_752:
     s -> svgapalettebase752 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_752 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_752 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_753:
     s -> svgapalettebase753 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_753 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_753 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_754:
     s -> svgapalettebase754 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_754 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_754 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_755:
     s -> svgapalettebase755 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_755 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_755 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_756:
     s -> svgapalettebase756 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_756 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_756 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_757:
     s -> svgapalettebase757 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_757 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_757 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_758:
     s -> svgapalettebase758 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_758 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_758 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_759:
     s -> svgapalettebase759 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_759 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_759 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_760:
     s -> svgapalettebase760 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_760 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_760 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_761:
     s -> svgapalettebase761 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_761 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_761 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_762:
     s -> svgapalettebase762 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_762 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_762 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_763:
     s -> svgapalettebase763 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_763 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_763 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_764:
     s -> svgapalettebase764 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_764 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_764 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_765:
     s -> svgapalettebase765 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_765 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_765 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_766:
     s -> svgapalettebase766 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_766 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_766 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_767:
     s -> svgapalettebase767 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_767 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_767 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_PALETTE_BASE_768:
     s -> svgapalettebase768 = value;
     #ifdef VERBOSE
-    printf("%s: SVGA_PALETTE_BASE_768 register 0 with the value of %u\n", __func__, s -> index, value);
+    printf("%s: SVGA_PALETTE_BASE_768 register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_REG_DEV_CAP:
