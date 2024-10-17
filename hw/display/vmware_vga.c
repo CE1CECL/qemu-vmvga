@@ -1679,9 +1679,6 @@ static void cursor_update_from_fifo(struct vmsvga_state_s * s) {
   #endif
   uint32_t fifo_cursor_count;
   fifo_cursor_count = s -> fifo[SVGA_FIFO_CURSOR_COUNT];
-  if (fifo_cursor_count == s -> last_fifo_cursor_count) {
-    return;
-  }
   s -> last_fifo_cursor_count = fifo_cursor_count;
   if ((s -> fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_SHOW) || (s -> fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_RESTORE_TO_FB)) {
     s -> cursor.on = SVGA_CURSOR_ON_SHOW;
@@ -1766,18 +1763,6 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s * s) {
   s -> fifo_max = le32_to_cpu(s -> fifo[SVGA_FIFO_MAX]);
   s -> fifo_next = le32_to_cpu(s -> fifo[SVGA_FIFO_NEXT_CMD]);
   s -> fifo_stop = le32_to_cpu(s -> fifo[SVGA_FIFO_STOP]);
-  if ((s -> fifo_min | s -> fifo_max | s -> fifo_next | s -> fifo_stop) & 3) {
-    return 0;
-  }
-  if (s -> fifo_min < sizeof(uint32_t) * 4) {
-    return 0;
-  }
-  if (s -> fifo_max > s -> fifo_size || s -> fifo_min >= s -> fifo_size || s -> fifo_stop >= s -> fifo_size || s -> fifo_next >= s -> fifo_size) {
-    return 0;
-  }
-  if (s -> fifo_max < s -> fifo_min + 10 * KiB) {
-    return 0;
-  }
   num = s -> fifo_next - s -> fifo_stop;
   if (num < 0) {
     num += s -> fifo_max - s -> fifo_min;
@@ -3978,7 +3963,7 @@ void * vmsvga_loop(void * arg) {
     s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE;
     #endif
     s -> fifo[SVGA_FIFO_BUSY] = s -> sync;
-    s -> fifo[SVGA_FIFO_CAPABILITIES] =
+    s -> fifo[SVGA_FIFO_CAPABILITIES] = // 1919;
       SVGA_FIFO_CAP_NONE |
       SVGA_FIFO_CAP_FENCE |
       SVGA_FIFO_CAP_ACCELFRONT |
@@ -4054,17 +4039,13 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_MAX_WIDTH:
-    //ret = 1176;
-    ret = 8192;
-    //ret = 2560;
+    ret = 256000;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MAX_WIDTH register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_MAX_HEIGHT:
-    //ret = 885;
-    ret = 8192;
-    //ret = 1600;
+    ret = 192000;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MAX_HEIGHT register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -4212,15 +4193,13 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_MOB_MAX_SIZE:
-    //ret = 1073741824;
-    ret = s -> vga.vram_size;
+    ret = 1073741824;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MOB_MAX_SIZE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_GBOBJECT_MEM_SIZE_KB:
-    //ret = 8388608;
-    ret = ((s -> vga.vram_size) / (1024));
+    ret = 8388608;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_GBOBJECT_MEM_SIZE_KB register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -4245,13 +4224,13 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   case SVGA_REG_MAX_PRIMARY_MEM:
     //ret = 134217728;
-    ret = ((s -> vga.vram_size) - (s -> fifo_size));
+    ret = s -> vga.vram_size;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MAX_PRIMARY_MEM register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_CAPABILITIES:
-    //ret = -33569822;
+    //ret = 4261397474;
     caps = SVGA_CAP_NONE;
     #ifdef VERBOSE
     caps |= SVGA_CAP_RECT_COPY;
@@ -15735,7 +15714,7 @@ static void vmsvga_init(DeviceState * dev, struct vmsvga_state_s * s,
   s -> scratch_size = 64;
   s -> scratch = g_malloc(s -> scratch_size * 4);
   s -> vga.con = graphic_console_init(dev, 0, & vmsvga_ops, s);
-  s -> fifo_size = 262144;
+  s -> fifo_size = 8388608;
   memory_region_init_ram( & s -> fifo_ram, NULL, "vmsvga.fifo", s -> fifo_size, & error_fatal);
   s -> fifo = (uint32_t * ) memory_region_get_ram_ptr( & s -> fifo_ram);
   vga_common_init( & s -> vga, OBJECT(dev), & error_fatal);
@@ -15757,14 +15736,29 @@ static uint64_t vmsvga_io_read(void * opaque, hwaddr addr, unsigned size) {
   struct vmsvga_state_s * s = opaque;
   switch (addr) {
   case 1 * SVGA_INDEX_PORT:
+    #ifdef VERBOSE
+    printf("vmsvga: vmsvga_io_read SVGA_INDEX_PORT\n");
+    #endif
     return vmsvga_index_read(s, addr);
   case 1 * SVGA_VALUE_PORT:
+    #ifdef VERBOSE
+    printf("vmsvga: vmsvga_io_read SVGA_VALUE_PORT\n");
+    #endif
     return vmsvga_value_read(s, addr);
   case 1 * SVGA_BIOS_PORT:
+    #ifdef VERBOSE
+    printf("vmsvga: vmsvga_io_read SVGA_BIOS_PORT\n");
+    #endif
     return vmsvga_bios_read(s, addr);
   case 1 * SVGA_IRQSTATUS_PORT:
+    #ifdef VERBOSE
+    printf("vmsvga: vmsvga_io_read SVGA_IRQSTATUS_PORT\n");
+    #endif
     return vmsvga_irqstatus_read(s, addr);
   default:
+    #ifdef VERBOSE
+    printf("vmsvga: vmsvga_io_read default\n");
+    #endif
     return 0;
   }
 }
@@ -15776,16 +15770,33 @@ static void vmsvga_io_write(void * opaque, hwaddr addr,
   struct vmsvga_state_s * s = opaque;
   switch (addr) {
   case 1 * SVGA_INDEX_PORT:
+    #ifdef VERBOSE
+    printf("vmsvga: vmsvga_io_write SVGA_INDEX_PORT\n");
+    #endif
     vmsvga_index_write(s, addr, data);
     break;
   case 1 * SVGA_VALUE_PORT:
+    #ifdef VERBOSE
+    printf("vmsvga: vmsvga_io_write SVGA_VALUE_PORT\n");
+    #endif
     vmsvga_value_write(s, addr, data);
     break;
   case 1 * SVGA_BIOS_PORT:
+    #ifdef VERBOSE
+    printf("vmsvga: vmsvga_io_write SVGA_BIOS_PORT\n");
+    #endif
     vmsvga_bios_write(s, addr, data);
     break;
   case 1 * SVGA_IRQSTATUS_PORT:
+    #ifdef VERBOSE
+    printf("vmsvga: vmsvga_io_write SVGA_IRQSTATUS_PORT\n");
+    #endif
     vmsvga_irqstatus_write(s, addr, data);
+    break;
+  default:
+    #ifdef VERBOSE
+    printf("vmsvga: vmsvga_io_write default\n");
+    #endif
     break;
   }
 }
