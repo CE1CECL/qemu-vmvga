@@ -2030,9 +2030,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       if (s -> irq_mask & (SVGA_IRQFLAG_ANY_FENCE)) {
         #ifdef VERBOSE
         printf("s->irq_status |= SVGA_IRQFLAG_ANY_FENCE\n");
-        #else
-        s -> irq_status |= SVGA_IRQFLAG_ANY_FENCE;
         #endif
+        s -> irq_status |= SVGA_IRQFLAG_ANY_FENCE;
       } else if ((s -> irq_mask & SVGA_IRQFLAG_FENCE_GOAL) && (s -> fifo[SVGA_FIFO_FENCE_GOAL] == fence_arg || s -> fg == fence_arg)) {
         #ifdef VERBOSE
         printf("s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
@@ -3684,6 +3683,7 @@ void * vmsvga_loop(void * arg) {
   struct vmsvga_state_s * s = (struct vmsvga_state_s * ) arg;
   uint32_t cx = 0;
   uint32_t cy = 0;
+  uint32_t fc = 0;
   while (true) {
     s -> fifo[32] = 0x00000001;
     s -> fifo[33] = 0x00000008;
@@ -3769,7 +3769,6 @@ void * vmsvga_loop(void * arg) {
     s -> fifo[113] = 0x000040c5;
     s -> fifo[114] = 0x00006005;
     s -> fifo[115] = 0x00006005;
-    #ifdef VERBOSE
     s -> fifo[116] = 0x00000000;
     s -> fifo[117] = 0x00000000;
     s -> fifo[118] = 0x00000000;
@@ -3948,7 +3947,6 @@ void * vmsvga_loop(void * arg) {
     s -> fifo[291] = 0x00000001;
     s -> fifo[292] = 0x00000010;
     s -> fifo[293] = 0x00000001;
-    #endif
     if (s -> pitchlock != 0) {
         s -> fifo[SVGA_FIFO_PITCHLOCK] = s -> pitchlock;
     } else {
@@ -3962,30 +3960,15 @@ void * vmsvga_loop(void * arg) {
     s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE;
     #endif
     s -> fifo[SVGA_FIFO_BUSY] = s -> sync;
+    //s -> fifo[SVGA_FIFO_CAPABILITIES] = 1919;
+    fc = 4294967295;
     #ifdef VERBOSE
-    s -> fifo[SVGA_FIFO_CAPABILITIES] = 4294967295;
     #else
-    s -> fifo[SVGA_FIFO_CAPABILITIES] = // 1919;
-      SVGA_FIFO_CAP_NONE |
-      SVGA_FIFO_CAP_FENCE |
-      SVGA_FIFO_CAP_ACCELFRONT |
-      SVGA_FIFO_CAP_PITCHLOCK |
-      SVGA_FIFO_CAP_VIDEO |
-      SVGA_FIFO_CAP_CURSOR_BYPASS_3 |
-      SVGA_FIFO_CAP_ESCAPE |
-      SVGA_FIFO_CAP_RESERVE |
-      #ifdef VERBOSE
-      SVGA_FIFO_CAP_SCREEN_OBJECT |
-      #endif
-      #ifdef VERBOSE
-      SVGA_FIFO_CAP_GMR2 |
-      #endif
-      #ifdef VERBOSE
-      SVGA_FIFO_CAP_SCREEN_OBJECT_2 |
-      #endif
-      SVGA_FIFO_CAP_DEAD // |
-      ;
+    fc -= SVGA_FIFO_CAP_SCREEN_OBJECT;
+    fc -= SVGA_FIFO_CAP_GMR2;
+    fc -= SVGA_FIFO_CAP_SCREEN_OBJECT_2;
     #endif
+    s -> fifo[SVGA_FIFO_CAPABILITIES] = fc;
     if ((s -> enable >= 1 || s -> config >= 1) && (s -> new_width >= 1 && s -> new_height >= 1 && s -> new_depth >= 1)) {
       if (s -> pitchlock != 0) {
             s -> new_width = (((s -> pitchlock) * (8)) / (s -> new_depth));
@@ -4178,8 +4161,11 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_VRAM_SIZE:
-    //ret = 4194304;
+    #ifdef VERBOSE
+    ret = 4194304;
+    #else
     ret = s -> vga.vram_size;
+    #endif
     #ifdef VERBOSE
     printf("%s: SVGA_REG_VRAM_SIZE register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -4232,83 +4218,30 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   case SVGA_REG_CAPABILITIES:
     //ret = 4261397474;
-    caps = SVGA_CAP_NONE;
+    caps = 4294967295;
     #ifdef VERBOSE
-    caps |= SVGA_CAP_RECT_COPY;
-    #endif
-    caps |= SVGA_CAP_CURSOR;
-    caps |= SVGA_CAP_CURSOR_BYPASS;
-    caps |= SVGA_CAP_CURSOR_BYPASS_2;
-    caps |= SVGA_CAP_8BIT_EMULATION;
-    caps |= SVGA_CAP_ALPHA_CURSOR;
-    caps |= SVGA_CAP_3D;
-    caps |= SVGA_CAP_EXTENDED_FIFO;
-    caps |= SVGA_CAP_MULTIMON;
-    caps |= SVGA_CAP_PITCHLOCK;
-    caps |= SVGA_CAP_IRQMASK;
-    caps |= SVGA_CAP_DISPLAY_TOPOLOGY;
-    #ifdef VERBOSE
-    caps |= SVGA_CAP_GMR;
-    #endif
-    caps |= SVGA_CAP_TRACES;
-    #ifdef VERBOSE
-    caps |= SVGA_CAP_GMR2;
-    #endif
-    #ifdef VERBOSE
-    caps |= SVGA_CAP_SCREEN_OBJECT_2;
-    #endif
-    #ifdef VERBOSE
-    caps |= SVGA_CAP_COMMAND_BUFFERS;
-    #endif
-    caps |= SVGA_CAP_DEAD1;
-    #ifdef VERBOSE
-    caps |= SVGA_CAP_CMD_BUFFERS_2;
-    #endif
-    #ifdef VERBOSE
-    caps |= SVGA_CAP_GBOBJECTS;
-    #endif
-    #ifdef VERBOSE
-    caps |= SVGA_CAP_CMD_BUFFERS_3;
-    #endif
-    caps |= SVGA_CAP_DX;
-    caps |= SVGA_CAP_HP_CMD_QUEUE;
-    caps |= SVGA_CAP_NO_BB_RESTRICTION;
-    caps |= SVGA_CAP_CAP2_REGISTER;
-    #ifdef VERBOSE
-    ret = 4294967295;
     #else
-    ret = caps;
+    caps -= SVGA_CAP_RECT_COPY;
+    caps -= SVGA_CAP_GMR;
+    caps -= SVGA_CAP_GMR2;
+    caps -= SVGA_CAP_SCREEN_OBJECT_2;
+    caps -= SVGA_CAP_COMMAND_BUFFERS;
+    caps -= SVGA_CAP_CMD_BUFFERS_2;
+    caps -= SVGA_CAP_GBOBJECTS;
+    caps -= SVGA_CAP_CMD_BUFFERS_3;
     #endif
+    ret = caps;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CAPABILITIES register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_CAP2:
     //ret = 389119;
-    cap2 = SVGA_CAP2_NONE;
-    cap2 |= SVGA_CAP2_GROW_OTABLE;
-    cap2 |= SVGA_CAP2_INTRA_SURFACE_COPY;
-    cap2 |= SVGA_CAP2_DX2;
-    cap2 |= SVGA_CAP2_GB_MEMSIZE_2;
-    cap2 |= SVGA_CAP2_SCREENDMA_REG;
-    cap2 |= SVGA_CAP2_OTABLE_PTDEPTH_2;
-    cap2 |= SVGA_CAP2_NON_MS_TO_MS_STRETCHBLT;
-    cap2 |= SVGA_CAP2_CURSOR_MOB;
-    cap2 |= SVGA_CAP2_MSHINT;
-    cap2 |= SVGA_CAP2_CB_MAX_SIZE_4MB;
-    cap2 |= SVGA_CAP2_DX3;
-    cap2 |= SVGA_CAP2_FRAME_TYPE;
-    cap2 |= SVGA_CAP2_COTABLE_COPY;
-    cap2 |= SVGA_CAP2_TRACE_FULL_FB;
-    cap2 |= SVGA_CAP2_EXTRA_REGS;
-    cap2 |= SVGA_CAP2_LO_STAGING;
-    cap2 |= SVGA_CAP2_VIDEO_BLT;
-    cap2 |= SVGA_CAP2_RESERVED;
+    cap2 = 4294967295;
     #ifdef VERBOSE
-    ret = 4294967295;
     #else
-    ret = cap2;
     #endif
+    ret = cap2;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CAP2 register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
