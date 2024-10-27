@@ -1641,7 +1641,6 @@ struct vmsvga_state_s {
   uint32_t guest;
   uint32_t svgaid;
   uint32_t thread;
-  uint32_t fg;
   uint32_t sync;
   uint32_t bios;
   uint32_t syncing;
@@ -2027,12 +2026,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       }
       fence_arg = vmsvga_fifo_read(s);
       s -> fifo[SVGA_FIFO_FENCE] = cpu_to_le32(fence_arg);
-      if (s -> irq_mask & (SVGA_IRQFLAG_ANY_FENCE)) {
+      if ((s -> irq_mask & (SVGA_IRQFLAG_ANY_FENCE) && (s -> fifo[SVGA_FIFO_FENCE] >= s -> fifo[SVGA_FIFO_FENCE_GOAL]))) {
         #ifdef VERBOSE
         printf("s->irq_status |= SVGA_IRQFLAG_ANY_FENCE\n");
         #endif
         s -> irq_status |= SVGA_IRQFLAG_ANY_FENCE;
-      } else if ((s -> irq_mask & SVGA_IRQFLAG_FENCE_GOAL) && (s -> fifo[SVGA_FIFO_FENCE_GOAL] == fence_arg || s -> fg == fence_arg)) {
+      } else if ((s -> irq_mask & SVGA_IRQFLAG_FENCE_GOAL) && (s -> fifo[SVGA_FIFO_FENCE] >= s -> fifo[SVGA_FIFO_FENCE_GOAL])) {
         #ifdef VERBOSE
         printf("s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
         #endif
@@ -3636,14 +3635,14 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       break;
     }
   }
-  if (s -> irq_mask & (SVGA_IRQFLAG_FIFO_PROGRESS)) {
+  if ((s -> irq_mask & (SVGA_IRQFLAG_FIFO_PROGRESS) && (s -> fifo[SVGA_FIFO_FENCE] >= s -> fifo[SVGA_FIFO_FENCE_GOAL]))) {
     #ifdef VERBOSE
     printf("s->irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS\n");
     #endif
     s -> irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
   }
   struct pci_vmsvga_state_s * pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
-  if (((s -> irq_mask & s -> irq_status))) {
+  if (((s -> irq_mask & s -> irq_status) && (s -> fifo[SVGA_FIFO_FENCE] >= s -> fifo[SVGA_FIFO_FENCE_GOAL]))) {
     #ifdef VERBOSE
     printf("Pci_set_irq=1\n");
     #endif
@@ -3991,7 +3990,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
   switch (s -> index) {
   case SVGA_REG_FENCE_GOAL:
     //ret = 0;
-    ret = s -> fg;
+    ret = s -> fifo[SVGA_FIFO_FENCE];
     #ifdef VERBOSE
     printf("%s: SVGA_REG_FENCE_GOAL register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -9099,7 +9098,7 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
     #endif
     break;
   case SVGA_REG_FENCE_GOAL:
-    s -> fg = value;
+    s -> fifo[SVGA_FIFO_FENCE] = value;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_FENCE_GOAL register %d with the value of %u\n", __func__, s -> index, value);
     #endif
@@ -9197,7 +9196,7 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
     s -> irq_mask = value;
     struct pci_vmsvga_state_s * pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
     PCIDevice * pci_dev = PCI_DEVICE(pci_vmsvga);
-    if (((value & s -> irq_status))) {
+    if (((value & s -> irq_status) && (s -> fifo[SVGA_FIFO_FENCE] >= s -> fifo[SVGA_FIFO_FENCE_GOAL]))) {
       #ifdef VERBOSE
       printf("pci_set_irq=1\n");
       #endif
@@ -14719,7 +14718,7 @@ static void vmsvga_irqstatus_write(void * opaque, uint32_t address, uint32_t dat
   #endif
   struct pci_vmsvga_state_s * pci_vmsvga = container_of(s, struct pci_vmsvga_state_s, chip);
   PCIDevice * pci_dev = PCI_DEVICE(pci_vmsvga);
-  if ((!(s -> irq_mask & s -> irq_status))) {
+  if (!((s -> irq_mask & s -> irq_status) && (s -> fifo[SVGA_FIFO_FENCE] >= s -> fifo[SVGA_FIFO_FENCE_GOAL]))) {
     #ifdef VERBOSE
     printf("Pci_set_irq=O\n");
     #endif
@@ -15608,7 +15607,6 @@ const VMStateDescription vmstate_vmware_vga_internal = {
     VMSTATE_UINT32(guest, struct vmsvga_state_s),
     VMSTATE_UINT32(svgaid, struct vmsvga_state_s),
     VMSTATE_UINT32(thread, struct vmsvga_state_s),
-    VMSTATE_UINT32(fg, struct vmsvga_state_s),
     VMSTATE_UINT32(sync, struct vmsvga_state_s),
     VMSTATE_UINT32(bios, struct vmsvga_state_s),
     VMSTATE_UINT32(syncing, struct vmsvga_state_s),
