@@ -1653,17 +1653,11 @@ struct vmsvga_state_s {
   uint32_t irq_status;
   uint32_t display_id;
   uint32_t pitchlock;
-  uint32_t last_fifo_cursor_count;
+  uint32_t cursor;
   uint32_t *fifo;
   uint32_t *scratch;
   VGACommonState vga;
   MemoryRegion fifo_ram;
-  struct {
-    uint32_t id;
-    uint32_t x;
-    uint32_t y;
-    uint32_t on;
-  } cursor;
 };
 DECLARE_INSTANCE_CHECKER(struct pci_vmsvga_state_s, VMWARE_SVGA, "vmware-svga")
 struct pci_vmsvga_state_s {
@@ -1675,17 +1669,7 @@ static void cursor_update_from_fifo(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
   printf("vmsvga: cursor_update_from_fifo was just executed\n");
   #endif
-  uint32_t fifo_cursor_count;
-  fifo_cursor_count = s -> fifo[SVGA_FIFO_CURSOR_COUNT];
-  s -> last_fifo_cursor_count = fifo_cursor_count;
-  if ((s -> fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_SHOW) || (s -> fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_RESTORE_TO_FB)) {
-    s -> cursor.on = SVGA_CURSOR_ON_SHOW;
-  } else {
-    s -> cursor.on = SVGA_CURSOR_ON_HIDE;
-  }
-  s -> cursor.x = s -> fifo[SVGA_FIFO_CURSOR_X];
-  s -> cursor.y = s -> fifo[SVGA_FIFO_CURSOR_Y];
-  dpy_mouse_set(s -> vga.con, s -> cursor.x, s -> cursor.y, s -> cursor.on);
+  dpy_mouse_set(s -> vga.con, s -> fifo[SVGA_FIFO_CURSOR_X], s -> fifo[SVGA_FIFO_CURSOR_Y], SVGA_CURSOR_ON_SHOW);
 }
 struct vmsvga_cursor_definition_s {
   uint32_t width;
@@ -3963,6 +3947,7 @@ void * vmsvga_loop(void * arg) {
     fc = 4294967295;
     #ifdef VERBOSE
     #else
+    fc -= SVGA_FIFO_CAP_ACCELFRONT;
     fc -= SVGA_FIFO_CAP_SCREEN_OBJECT;
     fc -= SVGA_FIFO_CAP_GMR2;
     fc -= SVGA_FIFO_CAP_SCREEN_OBJECT_2;
@@ -4291,28 +4276,28 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   case SVGA_REG_CURSOR_ID:
     //ret = 0;
-    ret = s -> cursor.id;
+    ret = s -> cursor;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CURSOR_ID register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_CURSOR_X:
     //ret = 0;
-    ret = s -> cursor.x;
+    ret = s -> fifo[SVGA_FIFO_CURSOR_X];
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CURSOR_X register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_CURSOR_Y:
     //ret = 0;
-    ret = s -> cursor.y;
+    ret = s -> fifo[SVGA_FIFO_CURSOR_Y];
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CURSOR_Y register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   case SVGA_REG_CURSOR_ON:
     //ret = 0;
-    ret = s -> cursor.on;
+    ret = SVGA_CURSOR_ON_SHOW;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CURSOR_ON register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -9152,30 +9137,24 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
     #endif
     break;
   case SVGA_REG_CURSOR_ID:
-    s -> cursor.id = value;
+    s -> cursor = value;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CURSOR_ID register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_REG_CURSOR_X:
-    s -> cursor.x = value;
+    s -> fifo[SVGA_FIFO_CURSOR_X] = value;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CURSOR_X register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_REG_CURSOR_Y:
-    s -> cursor.y = value;
+    s -> fifo[SVGA_FIFO_CURSOR_Y] = value;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CURSOR_Y register %d with the value of %u\n", __func__, s -> index, value);
     #endif
     break;
   case SVGA_REG_CURSOR_ON:
-    if ((value == SVGA_CURSOR_ON_SHOW) || (value == SVGA_CURSOR_ON_RESTORE_TO_FB)) {
-        s -> cursor.on = SVGA_CURSOR_ON_SHOW;
-    } else {
-        s -> cursor.on = SVGA_CURSOR_ON_HIDE;
-    }
-    dpy_mouse_set(s -> vga.con, s -> cursor.x, s -> cursor.y, s -> cursor.on);
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CURSOR_ON register %d with the value of %u\n", __func__, s -> index, value);
     #endif
@@ -15619,11 +15598,7 @@ const VMStateDescription vmstate_vmware_vga_internal = {
     VMSTATE_UINT32(irq_status, struct vmsvga_state_s),
     VMSTATE_UINT32(display_id, struct vmsvga_state_s),
     VMSTATE_UINT32(pitchlock, struct vmsvga_state_s),
-    VMSTATE_UINT32(last_fifo_cursor_count, struct vmsvga_state_s),
-    VMSTATE_UINT32(cursor.id, struct vmsvga_state_s),
-    VMSTATE_UINT32(cursor.x, struct vmsvga_state_s),
-    VMSTATE_UINT32(cursor.y, struct vmsvga_state_s),
-    VMSTATE_UINT32(cursor.on, struct vmsvga_state_s),
+    VMSTATE_UINT32(cursor, struct vmsvga_state_s),
     VMSTATE_END_OF_LIST()
   }
 };
