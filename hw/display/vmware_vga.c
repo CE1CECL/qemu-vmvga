@@ -1667,7 +1667,7 @@ struct pci_vmsvga_state_s {
 };
 static void cursor_update_from_fifo(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
-  printf("vmsvga: cursor_update_from_fifo was just executed\n");
+  //printf("vmsvga: cursor_update_from_fifo was just executed\n");
   #endif
   dpy_mouse_set(s -> vga.con, s -> fifo[SVGA_FIFO_CURSOR_X], s -> fifo[SVGA_FIFO_CURSOR_Y], SVGA_CURSOR_ON_SHOW);
 }
@@ -1738,7 +1738,7 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s * s,
 }
 static inline int vmsvga_fifo_length(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
-  printf("vmsvga: vmsvga_fifo_length was just executed\n");
+  //printf("vmsvga: vmsvga_fifo_length was just executed\n");
   #endif
   int num;
   s -> fifo_min = le32_to_cpu(s -> fifo[SVGA_FIFO_MIN]);
@@ -1771,7 +1771,7 @@ static inline uint32_t vmsvga_fifo_read(struct vmsvga_state_s * s) {
 }
 static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
-  printf("vmsvga: vmsvga_fifo_run was just executed\n");
+  //printf("vmsvga: vmsvga_fifo_run was just executed\n");
   #endif
   #ifdef VERBOSE
   int UnknownCommandA;
@@ -3633,7 +3633,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
     pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
   } else {
     #ifdef VERBOSE
-    printf("Pci_set_irq=0\n");
+    //printf("Pci_set_irq=0\n");
     #endif
     pci_set_irq(PCI_DEVICE(pci_vmsvga), 0);
   }
@@ -3947,7 +3947,6 @@ void * vmsvga_loop(void * arg) {
     fc = 4294967295;
     #ifdef VERBOSE
     #else
-    fc -= SVGA_FIFO_CAP_ACCELFRONT;
     fc -= SVGA_FIFO_CAP_SCREEN_OBJECT;
     fc -= SVGA_FIFO_CAP_GMR2;
     fc -= SVGA_FIFO_CAP_SCREEN_OBJECT_2;
@@ -14726,7 +14725,7 @@ static void vmsvga_bios_write(void * opaque, uint32_t address, uint32_t data) {
 }
 static inline void vmsvga_check_size(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
-  printf("vmsvga: vmsvga_check_size was just executed\n");
+  //printf("vmsvga: vmsvga_check_size was just executed\n");
   #endif
   DisplaySurface * surface = qemu_console_surface(s -> vga.con);
   uint32_t new_stride;
