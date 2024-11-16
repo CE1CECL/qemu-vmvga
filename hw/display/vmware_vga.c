@@ -1669,7 +1669,11 @@ static void cursor_update_from_fifo(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
   //printf("vmsvga: cursor_update_from_fifo was just executed\n");
   #endif
-  dpy_mouse_set(s -> vga.con, s -> fifo[SVGA_FIFO_CURSOR_X], s -> fifo[SVGA_FIFO_CURSOR_Y], SVGA_CURSOR_ON_SHOW);
+  if ((s -> fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_SHOW) || (s -> fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_RESTORE_TO_FB)) {
+    dpy_mouse_set(s -> vga.con, s -> fifo[SVGA_FIFO_CURSOR_X], s -> fifo[SVGA_FIFO_CURSOR_Y], SVGA_CURSOR_ON_SHOW);
+  } else {
+    dpy_mouse_set(s -> vga.con, s -> fifo[SVGA_FIFO_CURSOR_X], s -> fifo[SVGA_FIFO_CURSOR_Y], SVGA_CURSOR_ON_HIDE);
+  }
 }
 struct vmsvga_cursor_definition_s {
   uint32_t width;
@@ -4296,7 +4300,11 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   case SVGA_REG_CURSOR_ON:
     //ret = 0;
-    ret = SVGA_CURSOR_ON_SHOW;
+    if ((s -> fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_SHOW) || (s -> fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_RESTORE_TO_FB)) {
+        ret = SVGA_CURSOR_ON_SHOW;
+    } else {
+        ret = SVGA_CURSOR_ON_HIDE;
+    }
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CURSOR_ON register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -9154,6 +9162,7 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
     #endif
     break;
   case SVGA_REG_CURSOR_ON:
+    s -> fifo[SVGA_FIFO_CURSOR_ON] = value;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CURSOR_ON register %d with the value of %u\n", __func__, s -> index, value);
     #endif
