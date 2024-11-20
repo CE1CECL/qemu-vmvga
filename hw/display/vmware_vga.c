@@ -3978,7 +3978,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
   switch (s -> index) {
   case SVGA_REG_FENCE_GOAL:
     //ret = 0;
-    ret = s -> fifo[SVGA_FIFO_FENCE];
+    ret = s -> fifo[SVGA_FIFO_FENCE_GOAL];
     #ifdef VERBOSE
     printf("%s: SVGA_REG_FENCE_GOAL register %d with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -9090,7 +9090,7 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
     #endif
     break;
   case SVGA_REG_FENCE_GOAL:
-    s -> fifo[SVGA_FIFO_FENCE] = value;
+    s -> fifo[SVGA_FIFO_FENCE_GOAL] = value;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_FENCE_GOAL register %d with the value of %u\n", __func__, s -> index, value);
     #endif
