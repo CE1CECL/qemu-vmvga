@@ -2024,8 +2024,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       if ((s -> irq_mask & (SVGA_IRQFLAG_ANY_FENCE))) {
         #ifdef VERBOSE
         printf("s->irq_status |= SVGA_IRQFLAG_ANY_FENCE\n");
-        #endif
+        #else
         s -> irq_status |= SVGA_IRQFLAG_ANY_FENCE;
+        #endif
       } else if ((s -> irq_mask & SVGA_IRQFLAG_FENCE_GOAL) && (s -> fifo[SVGA_FIFO_FENCE] == s -> fifo[SVGA_FIFO_FENCE_GOAL])) {
         #ifdef VERBOSE
         printf("s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
@@ -3962,10 +3963,10 @@ void * vmsvga_loop(void * arg) {
     s -> fc -= SVGA_FIFO_CAP_SCREEN_OBJECT_2;
     #endif
     s -> fifo[SVGA_FIFO_CAPABILITIES] = s -> fc;
-    s -> fifo[SVGA_FIFO_DEAD]=2;
-    s -> fifo[SVGA_FIFO_CURSOR_SCREEN_ID]=-1;
-    s -> fifo[1025]=-99;
-    s -> fifo[1024]=30;
+    s -> fifo[SVGA_FIFO_DEAD] = 2;
+    s -> fifo[SVGA_FIFO_CURSOR_SCREEN_ID] = -1;
+    s -> fifo[1025] = -99;
+    s -> fifo[1024] = 30;
     if ((s -> enable >= 1 || s -> config >= 1) && (s -> new_width >= 1 && s -> new_height >= 1 && s -> new_depth >= 1)) {
       if (s -> pitchlock != 0) {
             s -> new_width = (((s -> pitchlock) * (8)) / (s -> new_depth));
