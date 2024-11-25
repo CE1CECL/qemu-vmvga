@@ -78,6 +78,12 @@
 #define SVGA_CAP2_EXTRA_REGS 0x00004000
 #define SVGA_CAP2_LO_STAGING 0x00008000
 #define SVGA_CAP2_VIDEO_BLT 0x00010000
+#define SVGA_REG_CURSOR_MOBID 65
+#define SVGA_REG_CURSOR_MAX_BYTE_SIZE 66
+#define SVGA_REG_CURSOR_MAX_DIMENSION 67
+#define SVGA_REG_FIFO_CAPS 68
+#define SVGA_REG_FENCE 69
+#define SVGA_REG_SCREENDMA 75
 #define SVGA_REG_GBOBJECT_MEM_SIZE_KB 76
 #define SVGA_REG_FENCE_GOAL 84
 #define SVGA_REG_MSHINT 81
@@ -1654,6 +1660,7 @@ struct vmsvga_state_s {
   uint32_t display_id;
   uint32_t pitchlock;
   uint32_t cursor;
+  uint32_t fc;
   uint32_t *fifo;
   uint32_t *scratch;
   VGACommonState vga;
@@ -3670,7 +3677,6 @@ void * vmsvga_loop(void * arg) {
   struct vmsvga_state_s * s = (struct vmsvga_state_s * ) arg;
   uint32_t cx = 0;
   uint32_t cy = 0;
-  uint32_t fc = 0;
   while (true) {
     s -> fifo[32] = 0x00000001;
     s -> fifo[33] = 0x00000008;
@@ -3948,14 +3954,18 @@ void * vmsvga_loop(void * arg) {
     #endif
     s -> fifo[SVGA_FIFO_BUSY] = s -> sync;
     //s -> fifo[SVGA_FIFO_CAPABILITIES] = 1919;
-    fc = 4294967295;
+    s -> fc = 4294967295;
     #ifdef VERBOSE
     #else
-    fc -= SVGA_FIFO_CAP_SCREEN_OBJECT;
-    fc -= SVGA_FIFO_CAP_GMR2;
-    fc -= SVGA_FIFO_CAP_SCREEN_OBJECT_2;
+    s -> fc -= SVGA_FIFO_CAP_SCREEN_OBJECT;
+    s -> fc -= SVGA_FIFO_CAP_GMR2;
+    s -> fc -= SVGA_FIFO_CAP_SCREEN_OBJECT_2;
     #endif
-    s -> fifo[SVGA_FIFO_CAPABILITIES] = fc;
+    s -> fifo[SVGA_FIFO_CAPABILITIES] = s -> fc;
+    s -> fifo[SVGA_FIFO_DEAD]=2;
+    s -> fifo[SVGA_FIFO_CURSOR_SCREEN_ID]=-1;
+    s -> fifo[1025]=-99;
+    s -> fifo[1024]=30;
     if ((s -> enable >= 1 || s -> config >= 1) && (s -> new_width >= 1 && s -> new_height >= 1 && s -> new_depth >= 1)) {
       if (s -> pitchlock != 0) {
             s -> new_width = (((s -> pitchlock) * (8)) / (s -> new_depth));
@@ -9067,6 +9077,44 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     ret = s -> svgapalettebase768;
     #ifdef VERBOSE
     printf("%s: SVGA_PALETTE_BASE_768 register %u with the return of %u\n", __func__, s -> index, ret);
+    #endif
+    break;
+  case SVGA_REG_SCREENDMA:
+    ret = 1;
+    #ifdef VERBOSE
+    printf("%s: SVGA_REG_SCREENDMA register %u with the return of %u\n", __func__, s -> index, ret);
+    #endif
+    break;
+  case SVGA_REG_FENCE:
+    //ret = -99;
+    ret = s -> fifo[SVGA_FIFO_FENCE];
+    #ifdef VERBOSE
+    printf("%s: SVGA_REG_FENCE register %u with the return of %u\n", __func__, s -> index, ret);
+    #endif
+    break;
+  case SVGA_REG_FIFO_CAPS:
+    //ret = 1919;
+    ret = s -> fc;
+    #ifdef VERBOSE
+    printf("%s: 68 register %u with the return of %u\n", __func__, s -> index, ret);
+    #endif
+    break;
+  case SVGA_REG_CURSOR_MAX_DIMENSION:
+    ret = 2048;
+    #ifdef VERBOSE
+    printf("%s: SVGA_REG_CURSOR_MAX_DIMENSION register %u with the return of %u\n", __func__, s -> index, ret);
+    #endif
+    break;
+  case SVGA_REG_CURSOR_MAX_BYTE_SIZE:
+    ret = 8388608;
+    #ifdef VERBOSE
+    printf("%s: SVGA_REG_CURSOR_MAX_BYTE_SIZE register %u with the return of %u\n", __func__, s -> index, ret);
+    #endif
+    break;
+  case SVGA_REG_CURSOR_MOBID:
+    ret = -1;
+    #ifdef VERBOSE
+    printf("%s: SVGA_REG_CURSOR_MOBID register %u with the return of %u\n", __func__, s -> index, ret);
     #endif
     break;
   default:
@@ -15608,6 +15656,7 @@ const VMStateDescription vmstate_vmware_vga_internal = {
     VMSTATE_UINT32(display_id, struct vmsvga_state_s),
     VMSTATE_UINT32(pitchlock, struct vmsvga_state_s),
     VMSTATE_UINT32(cursor, struct vmsvga_state_s),
+    VMSTATE_UINT32(fc, struct vmsvga_state_s),
     VMSTATE_END_OF_LIST()
   }
 };
