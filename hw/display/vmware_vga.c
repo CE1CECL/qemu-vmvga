@@ -1757,9 +1757,6 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s * s) {
   s -> fifo_next = le32_to_cpu(s -> fifo[SVGA_FIFO_NEXT_CMD]);
   s -> fifo_stop = le32_to_cpu(s -> fifo[SVGA_FIFO_STOP]);
   num = s -> fifo_next - s -> fifo_stop;
-  if (num < 1) {
-    num += s -> fifo_max - s -> fifo_min;
-  }
   return num >> 2;
 }
 static inline uint32_t vmsvga_fifo_read_raw(struct vmsvga_state_s * s) {
@@ -1841,18 +1838,27 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
   uint32_t UnknownCommandBB;
   uint32_t UnknownCommandBC;
   uint32_t UnknownCommandBD;
-  uint32_t dx, dy, z, gmrIdCMD, offsetPages, x, y, width, height;
+  uint32_t dx;
+  uint32_t dy;
+  uint32_t z;
+  uint32_t gmrIdCMD;
+  uint32_t offsetPages;
+  uint32_t x;
+  uint32_t y;
+  uint32_t width;
+  uint32_t height;
   #endif
+  uint32_t args = 1024;
+  uint32_t len = 1024;
+  uint32_t maxloop = 1024;
   uint32_t cmd;
-  uint32_t args, len, maxloop = 1024;
   uint32_t i;
-  struct vmsvga_cursor_definition_s cursor;
-  uint32_t cmd_start;
   uint32_t fence_arg;
-  uint32_t flags, num_pages;
+  uint32_t flags;
+  uint32_t num_pages;
+  struct vmsvga_cursor_definition_s cursor;
   len = vmsvga_fifo_length(s);
   while (len > 0 && --maxloop > 0) {
-    cmd_start = s -> fifo_stop;
     cmd = vmsvga_fifo_read(s);
     #ifdef VERBOSE
     printf("%s: Unknown command %u in SVGA command FIFO\n", __func__, cmd);
@@ -1860,9 +1866,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
     switch (cmd) {
     case SVGA_CMD_UPDATE:
       len -= 5;
-      if (len < 1) {
-        goto rewind;
-      };
       #ifdef VERBOSE
       x = vmsvga_fifo_read(s);
       y = vmsvga_fifo_read(s);
@@ -1880,9 +1883,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       break;
     case SVGA_CMD_UPDATE_VERBOSE:
       len -= 6;
-      if (len < 1) {
-        goto rewind;
-      }
       #ifdef VERBOSE
       x = vmsvga_fifo_read(s);
       y = vmsvga_fifo_read(s);
@@ -1902,9 +1902,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       break;
     case SVGA_CMD_RECT_FILL:
       len -= 6;
-      if (len < 1) {
-        goto rewind;
-      }
       #ifdef VERBOSE
       UnknownCommandAQ = vmsvga_fifo_read(s);
       UnknownCommandAR = vmsvga_fifo_read(s);
@@ -1916,9 +1913,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       break;
     case SVGA_CMD_RECT_COPY:
       len -= 7;
-      if (len < 1) {
-        goto rewind;
-      }
       #ifdef VERBOSE
       x = vmsvga_fifo_read(s);
       y = vmsvga_fifo_read(s);
@@ -1940,9 +1934,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       break;
     case SVGA_CMD_DEFINE_CURSOR:
       len -= 8;
-      if (len < 1) {
-        goto rewind;
-      }
       cursor.id = vmsvga_fifo_read(s);
       cursor.hot_x = vmsvga_fifo_read(s);
       cursor.hot_y = vmsvga_fifo_read(s);
@@ -1958,9 +1949,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
         break;
       }
       len -= args;
-      if (len < 1) {
-        goto rewind;
-      }
       for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.and_mask_bpp); args++) {
         cursor.and_mask[args] = vmsvga_fifo_read_raw(s);
         #ifdef VERBOSE
@@ -1980,9 +1968,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       break;
     case SVGA_CMD_DEFINE_ALPHA_CURSOR:
       len -= 6;
-      if (len < 1) {
-        goto rewind;
-      }
       cursor.id = vmsvga_fifo_read(s);
       cursor.hot_x = vmsvga_fifo_read(s);
       cursor.hot_y = vmsvga_fifo_read(s);
@@ -1998,9 +1983,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
         break;
       }
       len -= args;
-      if (len < 1) {
-        goto rewind;
-      }
       for (i = 0; i < args; i++) {
         uint32_t rgba = vmsvga_fifo_read_raw(s);
         cursor.xor_mask[i] = rgba & 0x00ffffff;
@@ -2016,9 +1998,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       break;
     case SVGA_CMD_FENCE:
       len -= 2;
-      if (len < 1) {
-        goto rewind;
-      }
       fence_arg = vmsvga_fifo_read(s);
       s -> fifo[SVGA_FIFO_FENCE] = cpu_to_le32(fence_arg);
       if ((s -> irq_mask & (SVGA_IRQFLAG_ANY_FENCE))) {
@@ -2027,7 +2006,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
         #else
         s -> irq_status |= SVGA_IRQFLAG_ANY_FENCE;
         #endif
-      } else if ((s -> irq_mask & SVGA_IRQFLAG_FENCE_GOAL) && (s -> fifo[SVGA_FIFO_FENCE] == s -> fifo[SVGA_FIFO_FENCE_GOAL])) {
+      } else if ((s -> irq_mask & SVGA_IRQFLAG_FENCE_GOAL) && ((s -> fifo[SVGA_FIFO_FENCE] == s -> fifo[SVGA_FIFO_FENCE_GOAL]) || (fence_arg == s -> fifo[SVGA_FIFO_FENCE_GOAL]))) {
         #ifdef VERBOSE
         printf("s->irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
         #endif
@@ -2039,9 +2018,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       break;
     case SVGA_CMD_DEFINE_GMR2:
       len -= 3;
-      if (len < 1) {
-        goto rewind;
-      }
       #ifdef VERBOSE
       UnknownCommandAW = vmsvga_fifo_read(s);
       UnknownCommandAX = vmsvga_fifo_read(s);
@@ -2050,9 +2026,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       break;
     case SVGA_CMD_REMAP_GMR2:
       len -= 5;
-      if (len < 1) {
-        goto rewind;
-      }
       #ifdef VERBOSE
       gmrIdCMD = vmsvga_fifo_read(s);
       #else
@@ -2078,9 +2051,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       break;
     case SVGA_CMD_RECT_ROP_COPY:
       len -= 8;
-      if (len < 1) {
-        goto rewind;
-      }
       #ifdef VERBOSE
       UnknownCommandAY = vmsvga_fifo_read(s);
       UnknownCommandAZ = vmsvga_fifo_read(s);
@@ -3612,21 +3582,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       break;
     default:
       args = 0;
-      if (len < 1) {
-        goto rewind;
-      }
       while (args--) {
         vmsvga_fifo_read(s);
       }
       #ifdef VERBOSE
       printf("%s: default command %u in SVGA command FIFO\n", __func__, cmd);
-      #endif
-      break;
-    rewind:
-      s -> fifo_stop = cmd_start;
-      s -> fifo[SVGA_FIFO_STOP] = cpu_to_le32(s -> fifo_stop);
-      #ifdef VERBOSE
-      printf("%s: rewind command in SVGA command FIFO\n", __func__);
       #endif
       break;
     }
@@ -3855,23 +3815,23 @@ void * vmsvga_loop(void * arg) {
     s -> fifo[215] = 1092616192;
     s -> fifo[216] = 91;
     s -> fifo[217] = 19161088;
-    if (s -> pitchlock != 0) {
-        s -> fifo[SVGA_FIFO_PITCHLOCK] = s -> pitchlock;
-    } else {
-        s -> fifo[SVGA_FIFO_PITCHLOCK] = (((s -> new_depth) * (s -> new_width)) / (8));
-    }
     s -> fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
     s -> fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
+    s -> fifo[SVGA_FIFO_BUSY] = s -> sync;
+    s -> fifo[SVGA_FIFO_DEAD] = 2;
+    s -> fifo[SVGA_FIFO_CURSOR_SCREEN_ID] = -1;
     #ifdef VERBOSE
     s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
     #else
     s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE;
     #endif
-    s -> fifo[SVGA_FIFO_BUSY] = s -> sync;
     //s -> fifo[SVGA_FIFO_CAPABILITIES] = 1919;
     s -> fifo[SVGA_FIFO_CAPABILITIES] = s -> fc;
-    s -> fifo[SVGA_FIFO_DEAD] = 2;
-    s -> fifo[SVGA_FIFO_CURSOR_SCREEN_ID] = -1;
+    if (s -> pitchlock != 0) {
+        s -> fifo[SVGA_FIFO_PITCHLOCK] = s -> pitchlock;
+    } else {
+        s -> fifo[SVGA_FIFO_PITCHLOCK] = (((s -> new_depth) * (s -> new_width)) / (8));
+    }
     if ((s -> enable >= 1 || s -> config >= 1) && (s -> new_width >= 1 && s -> new_height >= 1 && s -> new_depth >= 1)) {
       if (s -> pitchlock != 0) {
             s -> new_width = (((s -> pitchlock) * (8)) / (s -> new_depth));
