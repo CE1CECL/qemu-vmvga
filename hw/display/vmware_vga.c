@@ -1757,12 +1757,12 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s * s) {
   s -> fifo_max = le32_to_cpu(s -> fifo[SVGA_FIFO_MAX]);
   s -> fifo_next = le32_to_cpu(s -> fifo[SVGA_FIFO_NEXT_CMD]);
   s -> fifo_stop = le32_to_cpu(s -> fifo[SVGA_FIFO_STOP]);
-  if (s -> fifo_next >= s -> fifo_stop) {
+  if ((s -> fifo_next) >= (s -> fifo_stop)) {
     num = ((s -> fifo_next) - (s -> fifo_stop));
   } else {
-    num = ((s -> fifo_max - s -> fifo_min) + (s -> fifo_next - s -> fifo_stop));
+    num = (((s -> fifo_max) - (s -> fifo_min)) + ((s -> fifo_next) - (s -> fifo_stop)));
   }
-  return num >> 2;
+  return (num >> 2);
 }
 static inline uint32_t vmsvga_fifo_read_raw(struct vmsvga_state_s * s) {
   #ifdef VERBOSE
@@ -1872,6 +1872,20 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
     printf("%s: Unknown command %u in SVGA command FIFO\n", __func__, cmd);
     #endif
     switch (cmd) {
+    case SVGA_CMD_INVALID_CMD:
+      if (len < 1) {
+            s -> fifo_stop = cmd_start;
+            s -> fifo[SVGA_FIFO_STOP] = cpu_to_le32(s -> fifo_stop);
+            #ifdef VERBOSE
+            printf("%s: rewind command in SVGA command FIFO\n", __func__);
+            #endif
+            break;
+      }
+      len -= 1;
+      #ifdef VERBOSE
+      printf("%s: SVGA_CMD_INVALID_CMD command %u in SVGA command FIFO \n", __func__, cmd);
+      #endif
+      break;
     case SVGA_CMD_UPDATE:
       if (len < 5) {
             s -> fifo_stop = cmd_start;
@@ -2356,20 +2370,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       UnknownCommandAO = vmsvga_fifo_read(s);
       UnknownCommandAP = vmsvga_fifo_read(s);
       printf("%s: SVGA_CMD_MOVE_CURSOR command %u in SVGA command FIFO %u %u \n", __func__, cmd, UnknownCommandAO, UnknownCommandAP);
-      #endif
-      break;
-    case SVGA_CMD_INVALID_CMD:
-      if (len < 1) {
-            s -> fifo_stop = cmd_start;
-            s -> fifo[SVGA_FIFO_STOP] = cpu_to_le32(s -> fifo_stop);
-            #ifdef VERBOSE
-            printf("%s: rewind command in SVGA command FIFO\n", __func__);
-            #endif
-            break;
-      }
-      len -= 1;
-      #ifdef VERBOSE
-      printf("%s: SVGA_CMD_INVALID_CMD command %u in SVGA command FIFO \n", __func__, cmd);
       #endif
       break;
     case SVGA_CMD_FRONT_ROP_FILL:
@@ -3083,7 +3083,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       }
       len -= 1;
       #ifdef VERBOSE
-      printf("%s: SVGA_3D_CMD_VB_DX_CLEAR_RENDERTARGET_VIEW_REGION command %u in SVGA command FIFO \n", __func__, cmd);
+      printf("%s: SVGA_3D_CMD_DEAD1 command %u in SVGA command FIFO \n", __func__, cmd);
       #endif
       break;
     case SVGA_3D_CMD_DEAD2:
@@ -5663,6 +5663,15 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       #endif
       break;
     default:
+      if (len < 1) {
+            s -> fifo_stop = cmd_start;
+            s -> fifo[SVGA_FIFO_STOP] = cpu_to_le32(s -> fifo_stop);
+            #ifdef VERBOSE
+            printf("%s: rewind command in SVGA command FIFO\n", __func__);
+            #endif
+            break;
+      }
+      len -= 1;
       #ifdef VERBOSE
       printf("%s: default command %u in SVGA command FIFO\n", __func__, cmd);
       #endif
@@ -5709,8 +5718,7 @@ static void vmsvga_index_write(void * opaque, uint32_t address, uint32_t index) 
   #endif
   s -> index = index;
 }
-void * vmsvga_loop(void * arg);
-void * vmsvga_loop(void * arg) {
+static void * vmsvga_loop(void * arg) {
   #ifdef VERBOSE
   //printf("vmsvga: vmsvga_loop was just executed\n");
   #endif
@@ -5901,11 +5909,7 @@ void * vmsvga_loop(void * arg) {
     }
     s -> fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
     s -> fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
-    #ifdef VERBOSE
     s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
-    #else
-    s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE;
-    #endif
     s -> fifo[SVGA_FIFO_BUSY] = s -> sync;
     //s -> fifo[SVGA_FIFO_CAPABILITIES] = 1919;
     s -> fifo[SVGA_FIFO_CAPABILITIES] = s -> fc;
@@ -5918,6 +5922,7 @@ void * vmsvga_loop(void * arg) {
       dpy_gfx_update(s -> vga.con, cx, cy, s -> new_width, s -> new_height);
     };
   };
+  return 0;
 };
 static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
   #ifdef VERBOSE
@@ -6103,11 +6108,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_VRAM_SIZE:
-    #ifdef VERBOSE
-    ret = 4194304;
-    #else
     ret = s -> vga.vram_size;
-    #endif
     #ifdef VERBOSE
     printf("%s: SVGA_REG_VRAM_SIZE register %u with the return of %u\n", __func__, s -> index, ret);
     #endif
@@ -6163,15 +6164,8 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     caps = 4294967295;
     #ifdef VERBOSE
     #else
-    caps -= SVGA_CAP_RECT_COPY;
-    caps -= SVGA_CAP_8BIT_EMULATION;
-    caps -= SVGA_CAP_GMR;
-    caps -= SVGA_CAP_GMR2;
-    caps -= SVGA_CAP_SCREEN_OBJECT_2;
-    caps -= SVGA_CAP_COMMAND_BUFFERS;
     caps -= SVGA_CAP_CMD_BUFFERS_2;
     caps -= SVGA_CAP_GBOBJECTS;
-    caps -= SVGA_CAP_CMD_BUFFERS_3;
     #endif
     ret = caps;
     #ifdef VERBOSE
@@ -6181,9 +6175,6 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
   case SVGA_REG_CAP2:
     //ret = 389119;
     cap2 = 4294967295;
-    #ifdef VERBOSE
-    #else
-    #endif
     ret = cap2;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CAP2 register %u with the return of %u\n", __func__, s -> index, ret);
@@ -15973,10 +15964,12 @@ static void vmsvga_value_write(void * opaque, uint32_t address, uint32_t value) 
       s -> devcap_val = 0x00000014;
     };
     if (value == 19) {
-      s -> devcap_val = 0x00008000;
+      //s -> devcap_val = 0x00008000;
+      s -> devcap_val = 0x00002000;
     };
     if (value == 20) {
-      s -> devcap_val = 0x00008000;
+      //s -> devcap_val = 0x00008000;
+      s -> devcap_val = 0x00002000;
     };
     if (value == 21) {
       s -> devcap_val = 0x00004000;
@@ -17682,7 +17675,6 @@ static void vmsvga_init(DeviceState * dev, struct vmsvga_state_s * s,
     #ifdef VERBOSE
     #else
     s -> fc -= SVGA_FIFO_CAP_SCREEN_OBJECT;
-    s -> fc -= SVGA_FIFO_CAP_GMR2;
     s -> fc -= SVGA_FIFO_CAP_SCREEN_OBJECT_2;
     #endif
     pthread_create(threads, NULL, vmsvga_loop, (void * ) s);
