@@ -6164,6 +6164,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     caps = 4294967295;
     #ifdef VERBOSE
     #else
+    caps -= SVGA_CAP_SCREEN_OBJECT_2;
     caps -= SVGA_CAP_CMD_BUFFERS_2;
     caps -= SVGA_CAP_GBOBJECTS;
     #endif
