@@ -1762,6 +1762,9 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s * s) {
   } else {
     num = (((s -> fifo_max) - (s -> fifo_min)) + ((s -> fifo_next) - (s -> fifo_stop)));
   }
+  #ifdef VERBOSE
+  printf("vmsvga: vmsvga_fifo_length: fifo_min: %u, fifo_max: %u, fifo_next: %u, fifo_stop: %u, num: %u, fifo_min: %u, fifo_max: %u, fifo_next: %u, fifo_stop: %u\n", s -> fifo_min, s -> fifo_max, s -> fifo_next, s -> fifo_stop, num, s -> fifo[SVGA_FIFO_MIN], s -> fifo[SVGA_FIFO_MAX], s -> fifo[SVGA_FIFO_NEXT_CMD], s -> fifo[SVGA_FIFO_STOP]);
+  #endif
   return (num >> 2);
 }
 static inline uint32_t vmsvga_fifo_read_raw(struct vmsvga_state_s * s) {
@@ -5676,6 +5679,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       printf("%s: default command %u in SVGA command FIFO\n", __func__, cmd);
       #endif
       break;
+    }
+    while (s -> fifo[SVGA_FIFO_STOP] < s -> fifo[SVGA_FIFO_NEXT_CMD]) {
+      #ifdef VERBOSE
+      printf("%s: FIFO SVGA_FIFO_STOP < SVGA_FIFO_NEXT_CMD: CMD: %u, SVGA_FIFO_STOP: %u, SVGA_FIFO_NEXT_CMD: %u\n", __func__, vmsvga_fifo_read(s), s -> fifo[SVGA_FIFO_STOP], s -> fifo[SVGA_FIFO_NEXT_CMD]);
+      #else
+      vmsvga_fifo_read(s);
+      #endif
     }
   }
   if ((irq_status) || ((s -> irq_mask) & (SVGA_IRQFLAG_FIFO_PROGRESS))) {
