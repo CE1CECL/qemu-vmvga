@@ -5680,6 +5680,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       #endif
       break;
     }
+    #ifdef VERBOSE
     while (s -> fifo[SVGA_FIFO_STOP] < s -> fifo[SVGA_FIFO_NEXT_CMD]) {
       #ifdef VERBOSE
       printf("%s: FIFO SVGA_FIFO_STOP < SVGA_FIFO_NEXT_CMD: CMD: %u, SVGA_FIFO_STOP: %u, SVGA_FIFO_NEXT_CMD: %u\n", __func__, vmsvga_fifo_read(s), s -> fifo[SVGA_FIFO_STOP], s -> fifo[SVGA_FIFO_NEXT_CMD]);
@@ -5687,6 +5688,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       vmsvga_fifo_read(s);
       #endif
     }
+    #endif
   }
   if ((irq_status) || ((s -> irq_mask) & (SVGA_IRQFLAG_FIFO_PROGRESS))) {
     #ifdef VERBOSE
