@@ -5680,15 +5680,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s * s) {
       #endif
       break;
     }
-    #ifdef VERBOSE
-    while (s -> fifo[SVGA_FIFO_STOP] < s -> fifo[SVGA_FIFO_NEXT_CMD]) {
-      #ifdef VERBOSE
-      printf("%s: FIFO SVGA_FIFO_STOP < SVGA_FIFO_NEXT_CMD: CMD: %u, SVGA_FIFO_STOP: %u, SVGA_FIFO_NEXT_CMD: %u\n", __func__, vmsvga_fifo_read(s), s -> fifo[SVGA_FIFO_STOP], s -> fifo[SVGA_FIFO_NEXT_CMD]);
-      #else
-      vmsvga_fifo_read(s);
-      #endif
-    }
-    #endif
   }
   if ((irq_status) || ((s -> irq_mask) & (SVGA_IRQFLAG_FIFO_PROGRESS))) {
     #ifdef VERBOSE
@@ -5921,7 +5912,11 @@ static void * vmsvga_loop(void * arg) {
     }
     s -> fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
     s -> fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
+    #ifdef VERBOSE
     s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_ACCELFRONT;
+    #else
+    s -> fifo[SVGA_FIFO_FLAGS] = SVGA_FIFO_FLAG_NONE;
+    #endif
     s -> fifo[SVGA_FIFO_BUSY] = s -> sync;
     //s -> fifo[SVGA_FIFO_CAPABILITIES] = 1919;
     s -> fifo[SVGA_FIFO_CAPABILITIES] = s -> fc;
