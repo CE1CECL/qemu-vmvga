@@ -6403,8 +6403,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     #endif
     break;
   case SVGA_REG_MEMORY_SIZE:
-    //ret = 1073741824;
-    ret = 4194304;
+    ret = 1073741824;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_MEMORY_SIZE register %u with the return of %u\n", __func__, s -> index, ret);
     #endif
