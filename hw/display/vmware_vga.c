@@ -6168,7 +6168,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   case SVGA_REG_CAPABILITIES:
     //ret = 4261397474;
-    caps = SVGA_CAP_CAP2_REGISTER;
+    caps = 0xffffffff;
     #ifdef VERBOSE
     #else
     caps -= SVGA_CAP_SCREEN_OBJECT_2;
@@ -6182,7 +6182,7 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     break;
   case SVGA_REG_CAP2:
     //ret = 389119;
-    cap2 = SVGA_CAP2_RESERVED;
+    cap2 = 0xffffffff;
     ret = cap2;
     #ifdef VERBOSE
     printf("%s: SVGA_REG_CAP2 register %u with the return of %u\n", __func__, s -> index, ret);
@@ -17678,7 +17678,7 @@ static void vmsvga_init(DeviceState * dev, struct vmsvga_state_s * s,
     s -> new_height = 768;
     s -> new_depth = 32;
     pthread_t threads[1];
-    s -> fc = SVGA_FIFO_RESERVED_UNKNOWN;
+    s -> fc = 0xffffffff;
     #ifdef VERBOSE
     #else
     s -> fc -= SVGA_FIFO_CAP_SCREEN_OBJECT;
