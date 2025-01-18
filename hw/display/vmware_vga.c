@@ -56,6 +56,16 @@
 #include "include/VGPU10ShaderTokens.h"
 #include "include/vmware_pack_begin.h"
 #include "include/vmware_pack_end.h"
+#define SVGA_CAP_UNKNOWN_A 0x00000001
+#define SVGA_CAP_UNKNOWN_B 0x00000004
+#define SVGA_CAP_UNKNOWN_C 0x00000008
+#define SVGA_CAP_UNKNOWN_D 0x00000010
+#define SVGA_CAP_UNKNOWN_E 0x00000400
+#define SVGA_CAP_UNKNOWN_F 0x00000800
+#define SVGA_CAP_UNKNOWN_G 0x00001000
+#define SVGA_CAP_UNKNOWN_H 0x00002000
+#define SVGA_CAP_HP_CMD_QUEUE 0x20000000
+#define SVGA_CAP_NO_BB_RESTRICTION 0x40000000
 #define VMSVGA_IS_VALID_FIFO_REG(a_iIndex, a_offFifoMin) ( ((a_iIndex) + 1) * sizeof(uint32_t) <= (a_offFifoMin) )
 #define SVGA_PIXMAP_SIZE(w, h, bpp)(((((w) * (bpp))) >> 5) * (h))
 #define SVGA_CMD_RECT_FILL 2
@@ -1644,6 +1654,7 @@ struct vmsvga_state_s {
   uint32_t pitchlock;
   uint32_t cursor;
   uint32_t fc;
+  uint32_t ff;
   uint32_t *fifo;
   uint32_t *scratch;
   VGACommonState vga;
@@ -5894,9 +5905,8 @@ static void * vmsvga_loop(void * arg) {
     }
     s -> fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_CURRENT;
     s -> fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_CURRENT;
-    #ifdef VERBOSE
-    s -> fifo[SVGA_FIFO_FLAGS] = 0xffffffff;
-    #endif
+    //s -> fifo[SVGA_FIFO_FLAGS] = 0;
+    s -> fifo[SVGA_FIFO_FLAGS] = s -> ff;
     s -> fifo[SVGA_FIFO_BUSY] = s -> sync;
     //s -> fifo[SVGA_FIFO_CAPABILITIES] = 1919;
     s -> fifo[SVGA_FIFO_CAPABILITIES] = s -> fc;
@@ -6151,10 +6161,12 @@ static uint32_t vmsvga_value_read(void * opaque, uint32_t address) {
     caps = 0xffffffff;
     #ifdef VERBOSE
     #else
-    caps -= 0x00000001;
-    caps -= SVGA_CAP_SCREEN_OBJECT_2;
-    caps -= SVGA_CAP_CMD_BUFFERS_2;
-    caps -= SVGA_CAP_GBOBJECTS;
+    caps -= SVGA_CAP_UNKNOWN_A; // Windows 9x
+    caps -= SVGA_CAP_UNKNOWN_C; // Windows 9x
+    caps -= SVGA_CAP_RECT_COPY; // Windows 9x & Windows (XPDM)
+    caps -= SVGA_CAP_SCREEN_OBJECT_2; // Linux
+    caps -= SVGA_CAP_CMD_BUFFERS_2; // Windows (WDDM)
+    caps -= SVGA_CAP_GBOBJECTS; // Linux, Windows (XPDM) & Windows (WDDM)
     #endif
     ret = caps;
     #ifdef VERBOSE
@@ -17619,6 +17631,7 @@ const VMStateDescription vmstate_vmware_vga_internal = {
     VMSTATE_UINT32(pitchlock, struct vmsvga_state_s),
     VMSTATE_UINT32(cursor, struct vmsvga_state_s),
     VMSTATE_UINT32(fc, struct vmsvga_state_s),
+    VMSTATE_UINT32(ff, struct vmsvga_state_s),
     VMSTATE_END_OF_LIST()
   }
 };
@@ -17660,10 +17673,12 @@ static void vmsvga_init(DeviceState * dev, struct vmsvga_state_s * s,
     s -> new_depth = 32;
     pthread_t threads[1];
     s -> fc = 0xffffffff;
+    s -> ff = 0xffffffff;
     #ifdef VERBOSE
     #else
-    s -> fc -= SVGA_FIFO_CAP_SCREEN_OBJECT;
-    s -> fc -= SVGA_FIFO_CAP_SCREEN_OBJECT_2;
+    s -> ff -= SVGA_FIFO_FLAG_ACCELFRONT; // Windows (XPDM)
+    s -> fc -= SVGA_FIFO_CAP_SCREEN_OBJECT; // Windows (WDDM)
+    s -> fc -= SVGA_FIFO_CAP_SCREEN_OBJECT_2; // Windows (WDDM)
     #endif
     pthread_create(threads, NULL, vmsvga_loop, (void * ) s);
   };
