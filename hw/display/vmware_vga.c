@@ -26,6 +26,7 @@
   
  */
 //#define VERBOSE
+//#define QEMU_V9_2_0
 #include <pthread.h>
 #include "qemu/osdep.h"
 #include "qemu/module.h"
@@ -34,7 +35,12 @@
 #include "qemu/log.h"
 #include "hw/loader.h"
 #include "trace.h"
+#ifdef QEMU_V9_2_0
+#include "hw/pci/pci_device.h"
+#else
 #include "hw/pci/pci.h"
+#endif
+#include "ui/console.h"
 #include "hw/qdev-properties.h"
 #include "migration/vmstate.h"
 #include "qom/object.h"
@@ -1711,7 +1717,11 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s * s,
     printf("vmsvga: vmsvga_cursor_define | xor_mask == %u : and_mask == %u\n", * c -> xor_mask, * c -> and_mask);
     #endif
     dpy_cursor_define(s -> vga.con, qc);
+    #ifdef QEMU_V9_2_0
+    cursor_unref(qc);
+    #else
     cursor_put(qc);
+    #endif
   }
 }
 static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s * s,
@@ -1738,7 +1748,11 @@ static inline void vmsvga_rgba_cursor_define(struct vmsvga_state_s * s,
     printf("vmsvga: vmsvga_rgba_cursor_define | xor_mask == %u : and_mask == %u\n", * c -> xor_mask, * c -> and_mask);
     #endif
     dpy_cursor_define(s -> vga.con, qc);
+    #ifdef QEMU_V9_2_0
+    cursor_unref(qc);
+    #else
     cursor_put(qc);
+    #endif
   }
 }
 static inline int vmsvga_fifo_length(struct vmsvga_state_s * s) {
@@ -16820,13 +16834,12 @@ static int vmsvga_post_load(void * opaque, int version_id) {
   s -> config = 1;
   return 0;
 }
-static
-const VMStateDescription vmstate_vmware_vga_internal = {
+static const VMStateDescription vmstate_vmware_vga_internal = {
   .name = "vmware_vga_internal",
   .version_id = 1,
   .minimum_version_id = 0,
   .post_load = vmsvga_post_load,
-  .fields = (VMStateField[]) {
+  .fields = (const VMStateField[]) {
     VMSTATE_UINT32(svgapalettebase0, struct vmsvga_state_s),
     VMSTATE_UINT32(svgapalettebase1, struct vmsvga_state_s),
     VMSTATE_UINT32(svgapalettebase2, struct vmsvga_state_s),
@@ -17640,7 +17653,7 @@ const VMStateDescription vmstate_vmware_vga = {
   .name = "vmware_vga",
   .version_id = 0,
   .minimum_version_id = 0,
-  .fields = (VMStateField[]) {
+  .fields = (const VMStateField[]) {
     VMSTATE_PCI_DEVICE(parent_obj, struct pci_vmsvga_state_s),
     VMSTATE_STRUCT(chip, struct pci_vmsvga_state_s, 0, vmstate_vmware_vga_internal, struct vmsvga_state_s),
     VMSTATE_END_OF_LIST()
@@ -17665,7 +17678,11 @@ static void vmsvga_init(DeviceState * dev, struct vmsvga_state_s * s,
   s -> fifo = (uint32_t * ) memory_region_get_ram_ptr( & s -> fifo_ram);
   vga_common_init( & s -> vga, OBJECT(dev), & error_fatal);
   vga_init( & s -> vga, OBJECT(dev), address_space, io, true);
+  #ifdef QEMU_V9_2_0
+  vmstate_register_any(NULL, &vmstate_vga_common, &s->vga);
+  #else
   vmstate_register(NULL, 0, & vmstate_vga_common, & s -> vga);
+  #endif
   if (s -> thread <= 0) {
     s -> thread++;
     s -> new_width = 1024;
@@ -17804,7 +17821,11 @@ static void vmsvga_class_init(ObjectClass * klass, void * data) {
   k -> subsystem_vendor_id = PCI_VENDOR_ID_VMWARE;
   k -> subsystem_id = PCI_DEVICE_ID_VMWARE_SVGA2;
   k -> revision = 0x00;
+  #ifdef QEMU_V9_2_0
+  device_class_set_legacy_reset(dc, vmsvga_reset);
+  #else
   dc -> reset = vmsvga_reset;
+  #endif
   dc -> vmsd = & vmstate_vmware_vga;
   device_class_set_props(dc, vga_vmware_properties);
   dc -> hotpluggable = false;
