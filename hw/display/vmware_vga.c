@@ -6869,7 +6869,7 @@ static void *vmsvga_loop(void *arg) {
     s->fifo[215] = 1092616192;
     s->fifo[216] = 91;
     s->fifo[217] = 19161088;
-    if (s->pitchlock != 0) {
+    if (s->pitchlock >= 1) {
       s->fifo[SVGA_FIFO_PITCHLOCK] = s->pitchlock;
     } else {
       s->fifo[SVGA_FIFO_PITCHLOCK] = (((s->new_depth) * (s->new_width)) / (8));
@@ -6885,7 +6885,7 @@ static void *vmsvga_loop(void *arg) {
     s->fifo[SVGA_FIFO_CURSOR_SCREEN_ID] = -1;
     if ((s->enable >= 1 || s->config >= 1) &&
         (s->new_width >= 1 && s->new_height >= 1 && s->new_depth >= 1)) {
-      if (s->pitchlock != 0) {
+      if (s->pitchlock >= 1) {
         s->new_width = (((s->pitchlock) * (8)) / (s->new_depth));
       }
       dpy_gfx_update(s->vga.con, cx, cy, s->new_width, s->new_height);
@@ -6933,7 +6933,13 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     break;
   case SVGA_REG_WIDTH:
     // ret = 1024;
-    ret = s->new_width;
+    if (s->new_width >= 1) {
+      ret = s->new_width;
+    } else {
+      ret = 1024;
+      s->enable = 0;
+      s->config = 0;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_WIDTH register %u with the return of %u\n",
            (unsigned)time(NULL), __func__, s->index, ret);
@@ -6941,7 +6947,13 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     break;
   case SVGA_REG_HEIGHT:
     // ret = 768;
-    ret = s->new_height;
+    if (s->new_height >= 1) {
+      ret = s->new_height;
+    } else {
+      ret = 768;
+      s->enable = 0;
+      s->config = 0;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_HEIGHT register %u with the return of %u\n",
            (unsigned)time(NULL), __func__, s->index, ret);
@@ -6981,7 +6993,13 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     break;
   case SVGA_REG_BITS_PER_PIXEL:
     // ret = 32;
-    ret = s->new_depth;
+    if (s->new_depth >= 1) {
+      ret = s->new_depth;
+    } else {
+      ret = 32;
+      s->enable = 0;
+      s->config = 0;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_BITS_PER_PIXEL register %u with the return "
            "of %u\n",
@@ -6989,7 +7007,14 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
 #endif
     break;
   case SVGA_REG_HOST_BITS_PER_PIXEL:
-    ret = 32;
+    // ret = 32;
+    if (s->new_depth >= 1) {
+      ret = s->new_depth;
+    } else {
+      ret = 32;
+      s->enable = 0;
+      s->config = 0;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_HOST_BITS_PER_PIXEL register %u with the "
            "return of %u\n",
@@ -7000,8 +7025,12 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     // ret = 0;
     if ((s->new_depth) == (32)) {
       ret = 24;
-    } else {
+    } else if (s->new_depth >= 1) {
       ret = s->new_depth;
+    } else {
+      ret = 24;
+      s->enable = 0;
+      s->config = 0;
     };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_DEPTH register %u with the return of %u\n",
@@ -7071,7 +7100,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     break;
   case SVGA_REG_BYTES_PER_LINE:
     // ret = 4096;
-    if (s->pitchlock != 0) {
+    if (s->pitchlock >= 1) {
       ret = s->pitchlock;
     } else {
       ret = (((s->new_depth) * (s->new_width)) / (8));
@@ -7117,7 +7146,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     break;
   case SVGA_REG_FB_SIZE:
     // ret = 3145728;
-    if (s->pitchlock != 0) {
+    if (s->pitchlock >= 1) {
       ret = ((s->new_height) * (s->pitchlock));
     } else {
       ret = ((s->new_height) * ((((s->new_depth) * (s->new_width)) / (8))));
@@ -7145,7 +7174,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     break;
   case SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB:
     // ret = 3145728;
-    if (s->pitchlock != 0) {
+    if (s->pitchlock >= 1) {
       ret = ((s->new_height) * (s->pitchlock));
     } else {
       ret = ((s->new_height) * ((((s->new_depth) * (s->new_width)) / (8))));
@@ -7317,7 +7346,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     break;
   case SVGA_REG_PITCHLOCK:
     // ret = 0;
-    if (s->pitchlock != 0) {
+    if (s->pitchlock >= 1) {
       ret = s->pitchlock;
     } else {
       ret = (((s->new_depth) * (s->new_width)) / (8));
@@ -7381,7 +7410,13 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     break;
   case SVGA_REG_DISPLAY_WIDTH:
     // ret = 0;
-    ret = s->new_width;
+    if (s->new_width >= 1) {
+      ret = s->new_width;
+    } else {
+      ret = 1024;
+      s->enable = 0;
+      s->config = 0;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_DISPLAY_WIDTH register %u with the return "
            "of %u\n",
@@ -7390,7 +7425,13 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     break;
   case SVGA_REG_DISPLAY_HEIGHT:
     // ret = 0;
-    ret = s->new_height;
+    if (s->new_height >= 1) {
+      ret = s->new_height;
+    } else {
+      ret = 768;
+      s->enable = 0;
+      s->config = 0;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_DISPLAY_HEIGHT register %u with the return "
            "of %u\n",
@@ -13692,7 +13733,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
     break;
   case SVGA_REG_ENABLE:
     s->enable = value;
-    if (value == 0) {
+    if (value < 1) {
       s->config = value;
     }
 #ifdef VERBOSE
@@ -13701,21 +13742,39 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
 #endif
     break;
   case SVGA_REG_WIDTH:
-    s->new_width = value;
+    if (value >= 1) {
+      s->new_width = value;
+    } else {
+      s->new_width = 1024;
+      s->enable = 0;
+      s->config = 0;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_WIDTH register %u with the value of %u\n",
            (unsigned)time(NULL), __func__, s->index, value);
 #endif
     break;
   case SVGA_REG_HEIGHT:
-    s->new_height = value;
+    if (value >= 1) {
+      s->new_height = value;
+    } else {
+      s->new_height = 768;
+      s->enable = 0;
+      s->config = 0;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_HEIGHT register %u with the value of %u\n",
            (unsigned)time(NULL), __func__, s->index, value);
 #endif
     break;
   case SVGA_REG_BITS_PER_PIXEL:
-    s->new_depth = value;
+    if (value >= 1) {
+      s->new_depth = value;
+    } else {
+      s->new_depth = 32;
+      s->enable = 0;
+      s->config = 0;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_BITS_PER_PIXEL register %u with the value "
            "of %u\n",
@@ -13724,7 +13783,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
     break;
   case SVGA_REG_CONFIG_DONE:
     s->config = value;
-    if (value == 0) {
+    if (value < 1) {
       s->enable = value;
     }
 #ifdef VERBOSE
@@ -13892,7 +13951,13 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
 #endif
     break;
   case SVGA_REG_DISPLAY_WIDTH:
-    s->new_width = value;
+    if (value >= 1) {
+      s->new_width = value;
+    } else {
+      s->new_width = 1024;
+      s->enable = 0;
+      s->config = 0;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_DISPLAY_WIDTH register %u with the value of "
            "%u\n",
@@ -13900,7 +13965,13 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
 #endif
     break;
   case SVGA_REG_DISPLAY_HEIGHT:
-    s->new_height = value;
+    if (value >= 1) {
+      s->new_height = value;
+    } else {
+      s->new_height = 768;
+      s->enable = 0;
+      s->config = 0;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_DISPLAY_HEIGHT register %u with the value "
            "of %u\n",
@@ -20865,7 +20936,7 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s) {
 #endif
   DisplaySurface *surface = qemu_console_surface(s->vga.con);
   uint32_t new_stride;
-  if (s->pitchlock != 0) {
+  if (s->pitchlock >= 1) {
     new_stride = s->pitchlock;
   } else {
     new_stride = (((s->new_depth) * (s->new_width)) / (8));
