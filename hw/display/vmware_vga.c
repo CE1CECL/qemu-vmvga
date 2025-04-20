@@ -13733,8 +13733,9 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
     break;
   case SVGA_REG_ENABLE:
     s->enable = value;
-    if (value < 1) {
-      s->config = value;
+    if ((value < 1) || (value & SVGA_REG_ENABLE_DISABLE) || (value & SVGA_REG_ENABLE_HIDE)) {
+      s->enable = 0;
+      s->config = 0;
     }
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_ENABLE register %u with the value of %u\n",
@@ -13784,7 +13785,8 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
   case SVGA_REG_CONFIG_DONE:
     s->config = value;
     if (value < 1) {
-      s->enable = value;
+      s->enable = 0;
+      s->config = 0;
     }
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_CONFIG_DONE register %u with the value of %u\n",
@@ -21852,7 +21854,7 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
 #else
   vmstate_register(NULL, 0, &vmstate_vga_common, &s->vga);
 #endif
-  if (s->thread <= 0) {
+  if (s->thread < 1) {
     s->thread++;
     s->new_width = 1024;
     s->new_height = 768;
