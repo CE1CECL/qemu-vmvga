@@ -1659,6 +1659,7 @@ struct vmsvga_state_s {
   uint32_t *fifo;
   uint32_t *scratch;
   VGACommonState vga;
+  VGACommonState vcs;
   MemoryRegion fifo_ram;
 };
 DECLARE_INSTANCE_CHECKER(struct pci_vmsvga_state_s, VMWARE_SVGA, "vmware-svga")
@@ -6684,14 +6685,35 @@ static void vmsvga_index_write(void *opaque, uint32_t address, uint32_t index) {
 #endif
   s->index = index;
 }
+static inline void vmsvga_check_size(struct vmsvga_state_s *s) {
+#ifdef VERBOSE
+// printf("%u - %s: vmsvga: vmsvga_check_size was just executed\n",
+//  (unsigned)time(NULL), __func__);
+#endif
+  DisplaySurface *surface = qemu_console_surface(s->vga.con);
+  uint32_t new_stride;
+  if (s->pitchlock >= 1) {
+    new_stride = s->pitchlock;
+  } else {
+    new_stride = (((s->new_depth) * (s->new_width)) / (8));
+  }
+  if (s->new_width != surface_width(surface) ||
+      s->new_height != surface_height(surface) ||
+      (new_stride != surface_stride(surface)) ||
+      s->new_depth != surface_bits_per_pixel(surface)) {
+    pixman_format_code_t format =
+        qemu_default_pixman_format(s->new_depth, true);
+    surface = qemu_create_displaysurface_from(
+        s->new_width, s->new_height, format, new_stride, s->vga.vram_ptr);
+    dpy_gfx_replace_surface(s->vga.con, surface);
+  }
+}
 static void *vmsvga_loop(void *arg) {
 #ifdef VERBOSE
 // printf("%u - %s: vmsvga: vmsvga_loop was just executed\n",
 // (unsigned)time(NULL), __func__);
 #endif
   struct vmsvga_state_s *s = (struct vmsvga_state_s *)arg;
-  uint32_t cx = 0;
-  uint32_t cy = 0;
   while (true) {
     s->fifo[32] = 186;
     s->fifo[33] = 256;
@@ -6888,7 +6910,7 @@ static void *vmsvga_loop(void *arg) {
       if (s->pitchlock >= 1) {
         s->new_width = (((s->pitchlock) * (8)) / (s->new_depth));
       }
-      dpy_gfx_update(s->vga.con, cx, cy, s->new_width, s->new_height);
+      dpy_gfx_update(s->vga.con, 0, 0, s->new_width, s->new_height);
     };
   };
   return 0;
@@ -13732,11 +13754,13 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
 #endif
     break;
   case SVGA_REG_ENABLE:
-    s->enable = value;
-    if ((value < 1) || (value & SVGA_REG_ENABLE_DISABLE) || (value & SVGA_REG_ENABLE_HIDE)) {
+    if ((value < 1) || (value & SVGA_REG_ENABLE_DISABLE) ||
+        (value & SVGA_REG_ENABLE_HIDE)) {
       s->enable = 0;
       s->config = 0;
-    }
+    } else {
+      s->enable = value;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_ENABLE register %u with the value of %u\n",
            (unsigned)time(NULL), __func__, s->index, value);
@@ -13783,11 +13807,12 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
 #endif
     break;
   case SVGA_REG_CONFIG_DONE:
-    s->config = value;
     if (value < 1) {
       s->enable = 0;
       s->config = 0;
-    }
+    } else {
+      s->config = value;
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_CONFIG_DONE register %u with the value of %u\n",
            (unsigned)time(NULL), __func__, s->index, value);
@@ -20931,29 +20956,6 @@ static void vmsvga_bios_write(void *opaque, uint32_t address, uint32_t data) {
          address, data);
 #endif
 }
-static inline void vmsvga_check_size(struct vmsvga_state_s *s) {
-#ifdef VERBOSE
-// printf("%u - %s: vmsvga: vmsvga_check_size was just executed\n",
-//  (unsigned)time(NULL), __func__);
-#endif
-  DisplaySurface *surface = qemu_console_surface(s->vga.con);
-  uint32_t new_stride;
-  if (s->pitchlock >= 1) {
-    new_stride = s->pitchlock;
-  } else {
-    new_stride = (((s->new_depth) * (s->new_width)) / (8));
-  }
-  if (s->new_width != surface_width(surface) ||
-      s->new_height != surface_height(surface) ||
-      (new_stride != surface_stride(surface)) ||
-      s->new_depth != surface_bits_per_pixel(surface)) {
-    pixman_format_code_t format =
-        qemu_default_pixman_format(s->new_depth, true);
-    surface = qemu_create_displaysurface_from(
-        s->new_width, s->new_height, format, new_stride, s->vga.vram_ptr);
-    dpy_gfx_replace_surface(s->vga.con, surface);
-  }
-}
 static void vmsvga_update_display(void *opaque) {
 #ifdef VERBOSE
 // printf("%u - %s: vmsvga: vmsvga_update_display was just executed\n",
@@ -20965,12 +20967,10 @@ static void vmsvga_update_display(void *opaque) {
     vmsvga_check_size(s);
     vmsvga_fifo_run(s);
     cursor_update_from_fifo(s);
-    return;
   } else {
-    s->vga.hw_ops->gfx_update(&s->vga);
-    return;
+    s->vcs = s->vga;
+    s->vga.hw_ops->gfx_update(&s->vcs);
   }
-  return;
 }
 static void vmsvga_reset(DeviceState *dev) {
 #ifdef VERBOSE
