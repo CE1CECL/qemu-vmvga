@@ -26,10 +26,10 @@
  THE SOFTWARE.
 
 */
-// #define VERBOSE
 // #define EXPCAPS
-// #define RAISE_IRQ_OFF
 // #define QEMU_V9_2_0
+// #define RAISE_IRQ_OFF
+// #define VERBOSE
 #include "qemu/osdep.h" // Required to be the first #include
 #include "qapi/error.h"
 #include <pthread.h>    // Required for Windows (MSYS2)
@@ -1681,8 +1681,8 @@ static void cursor_update_from_fifo(struct vmsvga_state_s *s) {
   } else {
     dpy_mouse_set(s->vga.con, s->fifo[SVGA_FIFO_CURSOR_X],
                   s->fifo[SVGA_FIFO_CURSOR_Y], SVGA_CURSOR_ON_HIDE);
-  }
-}
+  };
+};
 struct vmsvga_cursor_definition_s {
   uint32_t width;
   uint32_t height;
@@ -1710,11 +1710,11 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
       uint32_t pixels = ((c->width) * (c->height));
       for (i = 0; i < pixels; i++) {
         qc->data[i] = ((c->xor_mask[i]) + (c->and_mask[i]));
-      }
+      };
     } else {
       cursor_set_mono(qc, 0xffffff, 0x000000, (void *)c->xor_mask, 1,
                       (void *)c->and_mask);
-    }
+    };
 #ifdef VERBOSE
     cursor_print_ascii_art(qc, "vmsvga_mono");
     printf("%u - %s: vmsvga: vmsvga_cursor_define | xor_mask == %u : "
@@ -1727,8 +1727,8 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
 #else
     cursor_put(qc);
 #endif
-  }
-}
+  };
+};
 static inline void
 vmsvga_rgba_cursor_define(struct vmsvga_state_s *s,
                           struct vmsvga_cursor_definition_s *c) {
@@ -1746,11 +1746,11 @@ vmsvga_rgba_cursor_define(struct vmsvga_state_s *s,
       uint32_t pixels = ((c->width) * (c->height));
       for (i = 0; i < pixels; i++) {
         qc->data[i] = ((c->xor_mask[i]) + (c->and_mask[i]));
-      }
+      };
     } else {
       cursor_set_mono(qc, 0xffffff, 0x000000, (void *)c->xor_mask, 1,
                       (void *)c->and_mask);
-    }
+    };
 #ifdef VERBOSE
     cursor_print_ascii_art(qc, "vmsvga_rgba");
     printf("%u - %s: vmsvga: vmsvga_rgba_cursor_define | xor_mask == %u : "
@@ -1763,8 +1763,8 @@ vmsvga_rgba_cursor_define(struct vmsvga_state_s *s,
 #else
     cursor_put(qc);
 #endif
-  }
-}
+  };
+};
 static inline int vmsvga_fifo_length(struct vmsvga_state_s *s) {
 #ifdef VERBOSE
 // printf("%u - %s: vmsvga: vmsvga_fifo_length was just executed\n",
@@ -1779,7 +1779,7 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s *s) {
     num = ((s->fifo_next) - (s->fifo_stop));
   } else {
     num = (((s->fifo_max) - (s->fifo_min)) + ((s->fifo_next) - (s->fifo_stop)));
-  }
+  };
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_fifo_length: fifo_min: %u, fifo_max: "
          "%u, fifo_next: "
@@ -1790,7 +1790,7 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s *s) {
          s->fifo[SVGA_FIFO_NEXT_CMD], s->fifo[SVGA_FIFO_STOP]);
 #endif
   return (num >> 2);
-}
+};
 static inline uint32_t vmsvga_fifo_read_raw(struct vmsvga_state_s *s) {
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_fifo_read_raw was just executed\n",
@@ -1800,17 +1800,17 @@ static inline uint32_t vmsvga_fifo_read_raw(struct vmsvga_state_s *s) {
   s->fifo_stop += 4;
   if (s->fifo_stop >= s->fifo_max) {
     s->fifo_stop = s->fifo_min;
-  }
+  };
   s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
   return cmd;
-}
+};
 static inline uint32_t vmsvga_fifo_read(struct vmsvga_state_s *s) {
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_fifo_read was just executed\n",
          (unsigned)time(NULL), __func__);
 #endif
   return le32_to_cpu(vmsvga_fifo_read_raw(s));
-}
+};
 static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #ifdef VERBOSE
 // printf("%u - %s: vmsvga: vmsvga_fifo_run was just executed\n",
@@ -1920,7 +1920,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 5;
 #ifdef VERBOSE
       x = vmsvga_fifo_read(s);
@@ -1948,7 +1948,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 6;
 #ifdef VERBOSE
       x = vmsvga_fifo_read(s);
@@ -1979,7 +1979,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 6;
 #ifdef VERBOSE
       UnknownCommandAQ = vmsvga_fifo_read(s);
@@ -2004,7 +2004,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 7;
 #ifdef VERBOSE
       x = vmsvga_fifo_read(s);
@@ -2037,7 +2037,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 8;
       cursor.id = vmsvga_fifo_read(s);
       cursor.hot_x = vmsvga_fifo_read(s);
@@ -2062,7 +2062,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                cursor.xor_mask_bpp);
 #endif
         break;
-      }
+      };
       if (len < args) {
         s->fifo_stop = cmd_start;
         s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
@@ -2071,7 +2071,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= args;
       for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height,
                                              cursor.and_mask_bpp);
@@ -2081,7 +2081,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         printf("%u - %s: cursor.and_mask[args] %u\n", (unsigned)time(NULL),
                __func__, cursor.and_mask[args]);
 #endif
-      }
+      };
       for (args = 0; args < SVGA_PIXMAP_SIZE(cursor.width, cursor.height,
                                              cursor.xor_mask_bpp);
            args++) {
@@ -2090,7 +2090,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         printf("%u - %s: cursor.xor_mask[args] %u\n", (unsigned)time(NULL),
                __func__, cursor.xor_mask[args]);
 #endif
-      }
+      };
       vmsvga_cursor_define(s, &cursor);
 #ifdef VERBOSE
       printf("%u - %s: SVGA_CMD_DEFINE_CURSOR command %u in SVGA command "
@@ -2110,7 +2110,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 6;
       cursor.id = vmsvga_fifo_read(s);
       cursor.hot_x = vmsvga_fifo_read(s);
@@ -2133,7 +2133,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                cursor.xor_mask_bpp);
 #endif
         break;
-      }
+      };
       if (len < args) {
         s->fifo_stop = cmd_start;
         s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
@@ -2142,7 +2142,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= args;
       for (i = 0; i < args; i++) {
         uint32_t rgba = vmsvga_fifo_read_raw(s);
@@ -2151,7 +2151,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #ifdef VERBOSE
         printf("%u - %s: rgba %u\n", (unsigned)time(NULL), __func__, rgba);
 #endif
-      }
+      };
       vmsvga_rgba_cursor_define(s, &cursor);
 #ifdef VERBOSE
       printf("%u - %s: SVGA_CMD_DEFINE_ALPHA_CURSOR command %u in SVGA "
@@ -2171,7 +2171,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 2;
       uint32_t offFifoMin = s->fifo[SVGA_FIFO_MIN];
       if (VMSVGA_IS_VALID_FIFO_REG(SVGA_FIFO_FENCE, offFifoMin)) {
@@ -2197,14 +2197,14 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                  (unsigned)time(NULL), __func__);
 #endif
           irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
-        }
+        };
       } else {
 #ifdef VERBOSE
         printf("%u - %s: vmsvga: VMSVGA_IS_VALID_FIFO_REG SVGA_FIFO_FENCE "
                "0\n",
                (unsigned)time(NULL), __func__);
 #endif
-      }
+      };
 #ifdef VERBOSE
       printf("%u - %s: SVGA_CMD_FENCE command %u in SVGA command FIFO %u "
              "%u %u %u\n",
@@ -2221,7 +2221,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 3;
 #ifdef VERBOSE
       UnknownCommandAW = vmsvga_fifo_read(s);
@@ -2241,7 +2241,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 5;
 #ifdef VERBOSE
       gmrIdCMD = vmsvga_fifo_read(s);
@@ -2261,8 +2261,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         args = (flags & SVGA_REMAP_GMR2_SINGLE_PPN) ? 1 : num_pages;
         if (flags & SVGA_REMAP_GMR2_PPN64) {
           args *= 2;
-        }
-      }
+        };
+      };
 #ifdef VERBOSE
       printf("%u - %s: SVGA_CMD_REMAP_GMR2 command %u in SVGA command "
              "FIFO %u %u %u "
@@ -2280,7 +2280,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 8;
 #ifdef VERBOSE
       UnknownCommandAY = vmsvga_fifo_read(s);
@@ -2307,7 +2307,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 4;
 #ifdef VERBOSE
       UnknownCommandA = vmsvga_fifo_read(s);
@@ -2328,7 +2328,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 10;
 #ifdef VERBOSE
       UnknownCommandD = vmsvga_fifo_read(s);
@@ -2358,7 +2358,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 3;
 #ifdef VERBOSE
       UnknownCommandC = vmsvga_fifo_read(s);
@@ -2379,7 +2379,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 2;
 #ifdef VERBOSE
       UnknownCommandO = vmsvga_fifo_read(s);
@@ -2397,7 +2397,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 6;
 #ifdef VERBOSE
       UnknownCommandP = vmsvga_fifo_read(s);
@@ -2422,7 +2422,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 8;
 #ifdef VERBOSE
       UnknownCommandU = vmsvga_fifo_read(s);
@@ -2449,7 +2449,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 8;
 #ifdef VERBOSE
       UnknownCommandAB = vmsvga_fifo_read(s);
@@ -2476,7 +2476,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 4;
 #ifdef VERBOSE
       UnknownCommandAI = vmsvga_fifo_read(s);
@@ -2498,7 +2498,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 4;
 #ifdef VERBOSE
       UnknownCommandAL = vmsvga_fifo_read(s);
@@ -2520,7 +2520,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                (unsigned)time(NULL), __func__);
 #endif
         break;
-      }
+      };
       len -= 3;
 #ifdef VERBOSE
       UnknownCommandAO = vmsvga_fifo_read(s);
@@ -4503,8 +4503,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
-    }
-  }
+    };
+  };
   if ((irq_status) || ((s->irq_mask) & (SVGA_IRQFLAG_FIFO_PROGRESS))) {
 #ifdef VERBOSE
     printf("%u - %s: s -> irq_mask || irq_status & "
@@ -4517,7 +4517,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              (unsigned)time(NULL), __func__);
 #endif
       irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
-    }
+    };
     if ((s->irq_mask) & (irq_status)) {
 #ifdef RAISE_IRQ_OFF
 #else
@@ -4532,9 +4532,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #else
       pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
 #endif
-    }
-  }
-}
+    };
+  };
+};
 static uint32_t vmsvga_index_read(void *opaque, uint32_t address) {
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_index_read was just executed\n",
@@ -4546,7 +4546,7 @@ static uint32_t vmsvga_index_read(void *opaque, uint32_t address) {
          address, s->index);
 #endif
   return s->index;
-}
+};
 static void vmsvga_index_write(void *opaque, uint32_t address, uint32_t index) {
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_index_write was just executed\n",
@@ -4558,7 +4558,7 @@ static void vmsvga_index_write(void *opaque, uint32_t address, uint32_t index) {
          address, index);
 #endif
   s->index = index;
-}
+};
 static inline void vmsvga_check_size(struct vmsvga_state_s *s) {
 #ifdef VERBOSE
 // printf("%u - %s: vmsvga: vmsvga_check_size was just executed\n",
@@ -4570,7 +4570,7 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s) {
     new_stride = s->pitchlock;
   } else {
     new_stride = (((s->new_depth) * (s->new_width)) / (8));
-  }
+  };
   if (s->new_width != surface_width(surface) ||
       s->new_height != surface_height(surface) ||
       (new_stride != surface_stride(surface)) ||
@@ -4580,8 +4580,8 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s) {
     surface = qemu_create_displaysurface_from(
         s->new_width, s->new_height, format, new_stride, s->vga.vram_ptr);
     dpy_gfx_replace_surface(s->vga.con, surface);
-  }
-}
+  };
+};
 static void *vmsvga_loop(void *arg) {
 #ifdef VERBOSE
 // printf("%u - %s: vmsvga: vmsvga_loop was just executed\n",
@@ -5001,7 +5001,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
       ret = s->pitchlock;
     } else {
       ret = (((s->new_depth) * (s->new_width)) / (8));
-    }
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_BYTES_PER_LINE register %u with the return "
            "of %u\n",
@@ -5018,7 +5018,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            (unsigned)time(NULL), __func__, s->index, ret);
 #endif
     break;
-  }
+  };
   case SVGA_REG_FB_OFFSET:
     ret = 0;
 #ifdef VERBOSE
@@ -5047,7 +5047,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
       ret = ((s->new_height) * (s->pitchlock));
     } else {
       ret = ((s->new_height) * ((((s->new_depth) * (s->new_width)) / (8))));
-    }
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_FB_SIZE register %u with the return of %u\n",
            (unsigned)time(NULL), __func__, s->index, ret);
@@ -5075,7 +5075,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
       ret = ((s->new_height) * (s->pitchlock));
     } else {
       ret = ((s->new_height) * ((((s->new_depth) * (s->new_width)) / (8))));
-    }
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB register %u "
            "with the "
@@ -5138,7 +5138,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            (unsigned)time(NULL), __func__, s->index, ret);
 #endif
     break;
-  }
+  };
   case SVGA_REG_MEM_SIZE:
     // ret = 262144;
     ret = s->fifo_size;
@@ -5211,7 +5211,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
       ret = SVGA_CURSOR_ON_SHOW;
     } else {
       ret = SVGA_CURSOR_ON_HIDE;
-    }
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_CURSOR_ON register %u with the return of %u\n",
            (unsigned)time(NULL), __func__, s->index, ret);
@@ -5248,7 +5248,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
       ret = s->pitchlock;
     } else {
       ret = (((s->new_depth) * (s->new_width)) / (8));
-    }
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_PITCHLOCK register %u with the return of %u\n",
            (unsigned)time(NULL), __func__, s->index, ret);
@@ -11606,9 +11606,9 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            (unsigned)time(NULL), __func__, s->index, ret);
 #endif
     break;
-  }
+  };
   return ret;
-}
+};
 static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
   struct vmsvga_state_s *s = opaque;
 #ifdef VERBOSE
@@ -11782,7 +11782,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
              (unsigned)time(NULL), __func__);
 #endif
       irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
-    }
+    };
     if ((irq_status) || ((value) & (SVGA_IRQFLAG_FIFO_PROGRESS))) {
 #ifdef VERBOSE
       printf("%u - %s: value || irq_status & SVGA_IRQFLAG_FIFO_PROGRESS\n",
@@ -11794,7 +11794,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
                (unsigned)time(NULL), __func__);
 #endif
         irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
-      }
+      };
       if ((value) & (irq_status)) {
 #ifdef VERBOSE
         printf("%u - %s: REG: Pci_set_irq=1\n", (unsigned)time(NULL), __func__);
@@ -11804,7 +11804,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
 #else
         pci_set_irq(pci_dev, 1);
 #endif
-      }
+      };
     } else if ((s->irq_status) & (value)) {
 #ifdef VERBOSE
       printf("%u - %s: REG: Pci_set_irq=1\n", (unsigned)time(NULL), __func__);
@@ -11821,7 +11821,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
 #else
       pci_set_irq(pci_dev, 0);
 #endif
-    }
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_IRQMASK register %u with the value of %u\n",
            (unsigned)time(NULL), __func__, s->index, value);
@@ -18785,8 +18785,8 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
     printf("%u - %s: default register %u with the value of %u\n",
            (unsigned)time(NULL), __func__, s->index, value);
 #endif
-  }
-}
+  };
+};
 static uint32_t vmsvga_irqstatus_read(void *opaque, uint32_t address) {
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_irqstatus_read was just executed\n",
@@ -18798,7 +18798,7 @@ static uint32_t vmsvga_irqstatus_read(void *opaque, uint32_t address) {
          __func__, address, s->irq_status);
 #endif
   return s->irq_status;
-}
+};
 static void vmsvga_irqstatus_write(void *opaque, uint32_t address,
                                    uint32_t data) {
 #ifdef VERBOSE
@@ -18825,8 +18825,8 @@ static void vmsvga_irqstatus_write(void *opaque, uint32_t address,
 #else
     pci_set_irq(pci_dev, 0);
 #endif
-  }
-}
+  };
+};
 static uint32_t vmsvga_bios_read(void *opaque, uint32_t address) {
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_bios_read was just executed\n",
@@ -18838,7 +18838,7 @@ static uint32_t vmsvga_bios_read(void *opaque, uint32_t address) {
          address, s->bios);
 #endif
   return s->bios;
-}
+};
 static void vmsvga_bios_write(void *opaque, uint32_t address, uint32_t data) {
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_bios_write was just executed\n",
@@ -18850,7 +18850,7 @@ static void vmsvga_bios_write(void *opaque, uint32_t address, uint32_t data) {
   printf("%u - %s: vmsvga_bios_write %u %u\n", (unsigned)time(NULL), __func__,
          address, data);
 #endif
-}
+};
 static void vmsvga_update_display(void *opaque) {
 #ifdef VERBOSE
 // printf("%u - %s: vmsvga: vmsvga_update_display was just executed\n",
@@ -18865,8 +18865,8 @@ static void vmsvga_update_display(void *opaque) {
   } else {
     s->vcs = s->vga;
     s->vga.hw_ops->gfx_update(&s->vcs);
-  }
-}
+  };
+};
 static void vmsvga_reset(DeviceState *dev) {
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_reset was just executed\n",
@@ -18876,13 +18876,13 @@ static void vmsvga_reset(DeviceState *dev) {
   struct vmsvga_state_s *s = &pci->chip;
   s->enable = 0;
   s->config = 0;
-}
+};
 static void vmsvga_invalidate_display(void *opaque) {
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_invalidate_display was just executed\n",
          (unsigned)time(NULL), __func__);
 #endif
-}
+};
 static void vmsvga_text_update(void *opaque, console_ch_t *chardata) {
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_text_update was just executed\n",
@@ -18891,8 +18891,8 @@ static void vmsvga_text_update(void *opaque, console_ch_t *chardata) {
   struct vmsvga_state_s *s = opaque;
   if (s->vga.hw_ops->text_update) {
     s->vga.hw_ops->text_update(&s->vga, chardata);
-  }
-}
+  };
+};
 static int vmsvga_post_load(void *opaque, int version_id) {
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_post_load was just executed\n",
@@ -18902,8 +18902,8 @@ static int vmsvga_post_load(void *opaque, int version_id) {
   s->enable = 1;
   s->config = 1;
   return 0;
-}
-static const VMStateDescription vmstate_vmware_vga_internal = {
+};
+static VMStateDescription vmstate_vmware_vga_internal = {
     .name = "vmware_vga_internal",
     .version_id = 1,
     .minimum_version_id = 0,
@@ -19714,7 +19714,7 @@ static const VMStateDescription vmstate_vmware_vga_internal = {
         VMSTATE_UINT32(fc, struct vmsvga_state_s),
         VMSTATE_UINT32(ff, struct vmsvga_state_s),
         VMSTATE_END_OF_LIST()}};
-static const VMStateDescription vmstate_vmware_vga = {
+static VMStateDescription vmstate_vmware_vga = {
     .name = "vmware_vga",
     .version_id = 0,
     .minimum_version_id = 0,
@@ -19723,7 +19723,7 @@ static const VMStateDescription vmstate_vmware_vga = {
         VMSTATE_STRUCT(chip, struct pci_vmsvga_state_s, 0,
                        vmstate_vmware_vga_internal, struct vmsvga_state_s),
         VMSTATE_END_OF_LIST()}};
-static const GraphicHwOps vmsvga_ops = {
+static GraphicHwOps vmsvga_ops = {
     .invalidate = vmsvga_invalidate_display,
     .gfx_update = vmsvga_update_display,
     .text_update = vmsvga_text_update,
@@ -19764,7 +19764,7 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
 #endif
     pthread_create(threads, NULL, vmsvga_loop, (void *)s);
   };
-}
+};
 static uint64_t vmsvga_io_read(void *opaque, hwaddr addr, unsigned size) {
 #ifdef VERBOSE
   printf("%u - %s: vmsvga: vmsvga_io_read was just executed\n",
@@ -19802,8 +19802,8 @@ static uint64_t vmsvga_io_read(void *opaque, hwaddr addr, unsigned size) {
            __func__);
 #endif
     return 0;
-  }
-}
+  };
+};
 static void vmsvga_io_write(void *opaque, hwaddr addr, uint64_t data,
                             unsigned size) {
 #ifdef VERBOSE
@@ -19846,9 +19846,9 @@ static void vmsvga_io_write(void *opaque, hwaddr addr, uint64_t data,
            __func__);
 #endif
     break;
-  }
-}
-static const MemoryRegionOps vmsvga_io_ops = {
+  };
+};
+static MemoryRegionOps vmsvga_io_ops = {
     .read = vmsvga_io_read,
     .write = vmsvga_io_write,
     .endianness = DEVICE_LITTLE_ENDIAN,
@@ -19881,7 +19881,7 @@ static void pci_vmsvga_realize(PCIDevice *dev, Error **errp) {
               pci_address_space_io(dev));
   pci_register_bar(dev, 1, PCI_BASE_ADDRESS_MEM_TYPE_32, &s->chip.vga.vram);
   pci_register_bar(dev, 2, PCI_BASE_ADDRESS_MEM_PREFETCH, &s->chip.fifo_ram);
-}
+};
 static Property vga_vmware_properties[] = {
     DEFINE_PROP_UINT32("vgamem_mb", struct pci_vmsvga_state_s,
                        chip.vga.vram_size_mb, 128),
@@ -19913,8 +19913,8 @@ static void vmsvga_class_init(ObjectClass *klass, void *data) {
   device_class_set_props(dc, vga_vmware_properties);
   dc->hotpluggable = false;
   set_bit(DEVICE_CATEGORY_DISPLAY, dc->categories);
-}
-static const TypeInfo vmsvga_info = {
+};
+static TypeInfo vmsvga_info = {
     .name = "vmware-svga",
     .parent = TYPE_PCI_DEVICE,
     .instance_size = sizeof(struct pci_vmsvga_state_s),
@@ -19931,5 +19931,5 @@ static void vmsvga_register_types(void) {
          (unsigned)time(NULL), __func__);
 #endif
   type_register_static(&vmsvga_info);
-}
+};
 type_init(vmsvga_register_types)
