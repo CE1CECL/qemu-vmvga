@@ -1637,7 +1637,7 @@ struct vmsvga_state_s {
   uint32_t gmrdesc;
   uint32_t gmrid;
   uint32_t gmrpage;
-  uint32_t tracez;
+  uint32_t traces;
   uint32_t cmd_low;
   uint32_t cmd_high;
   uint32_t guest;
@@ -5370,7 +5370,8 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
 #endif
     break;
   case SVGA_REG_TRACES:
-    ret = 0;
+    // ret = 0;
+    ret = s->traces;
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_TRACES register %u with the return of %u\n",
            (unsigned)time(NULL), __func__, s->index, ret);
@@ -11894,7 +11895,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
 #endif
     break;
   case SVGA_REG_TRACES:
-    s->tracez = value;
+    s->traces = value;
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_TRACES register %u with the value of %u\n",
            (unsigned)time(NULL), __func__, s->index, value);
@@ -19692,7 +19693,7 @@ static const VMStateDescription vmstate_vmware_vga_internal = {
         VMSTATE_UINT32(gmrdesc, struct vmsvga_state_s),
         VMSTATE_UINT32(gmrid, struct vmsvga_state_s),
         VMSTATE_UINT32(gmrpage, struct vmsvga_state_s),
-        VMSTATE_UINT32(tracez, struct vmsvga_state_s),
+        VMSTATE_UINT32(traces, struct vmsvga_state_s),
         VMSTATE_UINT32(cmd_low, struct vmsvga_state_s),
         VMSTATE_UINT32(cmd_high, struct vmsvga_state_s),
         VMSTATE_UINT32(guest, struct vmsvga_state_s),
