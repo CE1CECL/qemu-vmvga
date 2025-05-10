@@ -1706,7 +1706,7 @@ static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
     qc->hot_x = c->hot_x;
     qc->hot_y = c->hot_y;
     if (c->xor_mask_bpp != 1 && c->and_mask_bpp != 1) {
-      uint32_t i = 0;
+      uint32_t i;
       uint32_t pixels = ((c->width) * (c->height));
       for (i = 0; i < pixels; i++) {
         qc->data[i] = ((c->xor_mask[i]) + (c->and_mask[i]));
@@ -1742,7 +1742,7 @@ vmsvga_rgba_cursor_define(struct vmsvga_state_s *s,
     qc->hot_x = c->hot_x;
     qc->hot_y = c->hot_y;
     if (c->xor_mask_bpp != 1 && c->and_mask_bpp != 1) {
-      uint32_t i = 0;
+      uint32_t i;
       uint32_t pixels = ((c->width) * (c->height));
       for (i = 0; i < pixels; i++) {
         qc->data[i] = ((c->xor_mask[i]) + (c->and_mask[i]));
@@ -1770,7 +1770,7 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s *s) {
 // printf("%u - %s: vmsvga: vmsvga_fifo_length was just executed\n",
 //  (unsigned)time(NULL), __func__);
 #endif
-  uint32_t num = 0;
+  uint32_t num;
   s->fifo_min = le32_to_cpu(s->fifo[SVGA_FIFO_MIN]);
   s->fifo_max = le32_to_cpu(s->fifo[SVGA_FIFO_MAX]);
   s->fifo_next = le32_to_cpu(s->fifo[SVGA_FIFO_NEXT_CMD]);
@@ -1817,85 +1817,85 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 // (unsigned)time(NULL), __func__);
 #endif
 #ifdef VERBOSE
-  uint32_t UnknownCommandA = 0;
-  uint32_t UnknownCommandB = 0;
-  uint32_t UnknownCommandC = 0;
-  uint32_t UnknownCommandD = 0;
-  uint32_t UnknownCommandE = 0;
-  uint32_t UnknownCommandF = 0;
-  uint32_t UnknownCommandG = 0;
-  uint32_t UnknownCommandH = 0;
-  uint32_t UnknownCommandI = 0;
-  uint32_t UnknownCommandJ = 0;
-  uint32_t UnknownCommandK = 0;
-  uint32_t UnknownCommandL = 0;
-  uint32_t UnknownCommandM = 0;
-  uint32_t UnknownCommandN = 0;
-  uint32_t UnknownCommandO = 0;
-  uint32_t UnknownCommandP = 0;
-  uint32_t UnknownCommandQ = 0;
-  uint32_t UnknownCommandR = 0;
-  uint32_t UnknownCommandS = 0;
-  uint32_t UnknownCommandT = 0;
-  uint32_t UnknownCommandU = 0;
-  uint32_t UnknownCommandV = 0;
-  uint32_t UnknownCommandW = 0;
-  uint32_t UnknownCommandX = 0;
-  uint32_t UnknownCommandY = 0;
-  uint32_t UnknownCommandZ = 0;
-  uint32_t UnknownCommandAA = 0;
-  uint32_t UnknownCommandAB = 0;
-  uint32_t UnknownCommandAC = 0;
-  uint32_t UnknownCommandAD = 0;
-  uint32_t UnknownCommandAE = 0;
-  uint32_t UnknownCommandAF = 0;
-  uint32_t UnknownCommandAG = 0;
-  uint32_t UnknownCommandAH = 0;
-  uint32_t UnknownCommandAI = 0;
-  uint32_t UnknownCommandAJ = 0;
-  uint32_t UnknownCommandAK = 0;
-  uint32_t UnknownCommandAL = 0;
-  uint32_t UnknownCommandAM = 0;
-  uint32_t UnknownCommandAN = 0;
-  uint32_t UnknownCommandAO = 0;
-  uint32_t UnknownCommandAP = 0;
-  uint32_t UnknownCommandAQ = 0;
-  uint32_t UnknownCommandAR = 0;
-  uint32_t UnknownCommandAS = 0;
-  uint32_t UnknownCommandAT = 0;
-  uint32_t UnknownCommandAU = 0;
-  uint32_t UnknownCommandAV = 0;
-  uint32_t UnknownCommandAW = 0;
-  uint32_t UnknownCommandAX = 0;
-  uint32_t UnknownCommandAY = 0;
-  uint32_t UnknownCommandAZ = 0;
-  uint32_t UnknownCommandBA = 0;
-  uint32_t UnknownCommandBB = 0;
-  uint32_t UnknownCommandBC = 0;
-  uint32_t UnknownCommandBD = 0;
-  uint32_t gmrIdCMD = 0;
-  uint32_t offsetPages = 0;
-  uint32_t width = 0;
-  uint32_t height = 0;
-  uint32_t dx = 0;
-  uint32_t dy = 0;
-  uint32_t x = 0;
-  uint32_t y = 0;
-  uint32_t z = 0;
+  uint32_t UnknownCommandA;
+  uint32_t UnknownCommandB;
+  uint32_t UnknownCommandC;
+  uint32_t UnknownCommandD;
+  uint32_t UnknownCommandE;
+  uint32_t UnknownCommandF;
+  uint32_t UnknownCommandG;
+  uint32_t UnknownCommandH;
+  uint32_t UnknownCommandI;
+  uint32_t UnknownCommandJ;
+  uint32_t UnknownCommandK;
+  uint32_t UnknownCommandL;
+  uint32_t UnknownCommandM;
+  uint32_t UnknownCommandN;
+  uint32_t UnknownCommandO;
+  uint32_t UnknownCommandP;
+  uint32_t UnknownCommandQ;
+  uint32_t UnknownCommandR;
+  uint32_t UnknownCommandS;
+  uint32_t UnknownCommandT;
+  uint32_t UnknownCommandU;
+  uint32_t UnknownCommandV;
+  uint32_t UnknownCommandW;
+  uint32_t UnknownCommandX;
+  uint32_t UnknownCommandY;
+  uint32_t UnknownCommandZ;
+  uint32_t UnknownCommandAA;
+  uint32_t UnknownCommandAB;
+  uint32_t UnknownCommandAC;
+  uint32_t UnknownCommandAD;
+  uint32_t UnknownCommandAE;
+  uint32_t UnknownCommandAF;
+  uint32_t UnknownCommandAG;
+  uint32_t UnknownCommandAH;
+  uint32_t UnknownCommandAI;
+  uint32_t UnknownCommandAJ;
+  uint32_t UnknownCommandAK;
+  uint32_t UnknownCommandAL;
+  uint32_t UnknownCommandAM;
+  uint32_t UnknownCommandAN;
+  uint32_t UnknownCommandAO;
+  uint32_t UnknownCommandAP;
+  uint32_t UnknownCommandAQ;
+  uint32_t UnknownCommandAR;
+  uint32_t UnknownCommandAS;
+  uint32_t UnknownCommandAT;
+  uint32_t UnknownCommandAU;
+  uint32_t UnknownCommandAV;
+  uint32_t UnknownCommandAW;
+  uint32_t UnknownCommandAX;
+  uint32_t UnknownCommandAY;
+  uint32_t UnknownCommandAZ;
+  uint32_t UnknownCommandBA;
+  uint32_t UnknownCommandBB;
+  uint32_t UnknownCommandBC;
+  uint32_t UnknownCommandBD;
+  uint32_t gmrIdCMD;
+  uint32_t offsetPages;
+  uint32_t width;
+  uint32_t height;
+  uint32_t dx;
+  uint32_t dy;
+  uint32_t x;
+  uint32_t y;
+  uint32_t z;
 #endif
-  uint32_t args = 0;
-  uint32_t len = 0;
-  uint32_t cmd = 0;
-  uint32_t i = 0;
-  uint32_t flags = 0;
-  uint32_t num_pages = 0;
-  uint32_t cmd_start = 0;
-  uint32_t fence_arg = 0;
-  uint32_t irq_status = 0;
-  uint32_t maxloop = 11;
+  uint32_t args;
+  uint32_t len;
+  uint32_t cmd;
+  uint32_t i;
+  uint32_t flags;
+  uint32_t num_pages;
+  uint32_t cmd_start;
+  uint32_t fence_arg;
+  uint32_t irq_status;
   struct vmsvga_cursor_definition_s cursor;
   len = vmsvga_fifo_length(s);
-  while ((len >= 1) && (--maxloop >= 1)) {
+  irq_status = s->irq_status;
+  while (len >= 1) {
     cmd = vmsvga_fifo_read(s);
     cmd_start = s->fifo_stop;
 #ifdef VERBOSE
@@ -1904,7 +1904,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
     switch (cmd) {
     case SVGA_CMD_INVALID_CMD:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_CMD_INVALID_CMD command %u in SVGA command "
              "FIFO\n",
@@ -2532,7 +2541,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_CMD_FRONT_ROP_FILL:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_CMD_FRONT_ROP_FILL command %u in SVGA command "
              "FIFO\n",
@@ -2540,42 +2558,96 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_CMD_DEAD:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_CMD_DEAD command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_CMD_DEAD_2:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_CMD_DEAD_2 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_CMD_NOP:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_CMD_NOP command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_CMD_NOP_ERROR:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_CMD_NOP_ERROR command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_CMD_MAX:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_CMD_MAX command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_LEGACY_BASE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_LEGACY_BASE command %u in SVGA command "
              "FIFO\n",
@@ -2583,7 +2655,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SURFACE_DEFINE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SURFACE_DEFINE command %u in SVGA "
              "command FIFO\n",
@@ -2591,7 +2672,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SURFACE_DESTROY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SURFACE_DESTROY command %u in SVGA "
              "command FIFO\n",
@@ -2599,7 +2689,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SURFACE_COPY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SURFACE_COPY command %u in SVGA "
              "command FIFO\n",
@@ -2607,7 +2706,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SURFACE_STRETCHBLT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SURFACE_STRETCHBLT command %u in SVGA "
              "command "
@@ -2616,7 +2724,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SURFACE_DMA:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SURFACE_DMA command %u in SVGA command "
              "FIFO\n",
@@ -2624,7 +2741,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_CONTEXT_DEFINE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_CONTEXT_DEFINE command %u in SVGA "
              "command FIFO\n",
@@ -2632,7 +2758,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_CONTEXT_DESTROY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_CONTEXT_DESTROY command %u in SVGA "
              "command FIFO\n",
@@ -2640,7 +2775,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SETTRANSFORM:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SETTRANSFORM command %u in SVGA "
              "command FIFO\n",
@@ -2648,7 +2792,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SETZRANGE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SETZRANGE command %u in SVGA command "
              "FIFO\n",
@@ -2656,7 +2809,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SETRENDERSTATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SETRENDERSTATE command %u in SVGA "
              "command FIFO\n",
@@ -2664,7 +2826,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SETRENDERTARGET:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SETRENDERTARGET command %u in SVGA "
              "command FIFO\n",
@@ -2672,7 +2843,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SETTEXTURESTATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SETTEXTURESTATE command %u in SVGA "
              "command FIFO\n",
@@ -2680,7 +2860,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SETMATERIAL:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SETMATERIAL command %u in SVGA command "
              "FIFO\n",
@@ -2688,7 +2877,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SETLIGHTDATA:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SETLIGHTDATA command %u in SVGA "
              "command FIFO\n",
@@ -2696,7 +2894,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SETLIGHTENABLED:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SETLIGHTENABLED command %u in SVGA "
              "command FIFO\n",
@@ -2704,7 +2911,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SETVIEWPORT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SETVIEWPORT command %u in SVGA command "
              "FIFO\n",
@@ -2712,7 +2928,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SETCLIPPLANE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SETCLIPPLANE command %u in SVGA "
              "command FIFO\n",
@@ -2720,21 +2945,48 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_CLEAR:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_CLEAR command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_PRESENT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_PRESENT command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_SHADER_DEFINE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SHADER_DEFINE command %u in SVGA "
              "command FIFO\n",
@@ -2742,7 +2994,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SHADER_DESTROY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SHADER_DESTROY command %u in SVGA "
              "command FIFO\n",
@@ -2750,7 +3011,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SET_SHADER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SET_SHADER command %u in SVGA command "
              "FIFO\n",
@@ -2758,7 +3028,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SET_SHADER_CONST:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SET_SHADER_CONST command %u in SVGA "
              "command FIFO\n",
@@ -2766,7 +3045,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DRAW_PRIMITIVES:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DRAW_PRIMITIVES command %u in SVGA "
              "command FIFO\n",
@@ -2774,7 +3062,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SETSCISSORRECT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SETSCISSORRECT command %u in SVGA "
              "command FIFO\n",
@@ -2782,7 +3079,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_BEGIN_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_BEGIN_QUERY command %u in SVGA command "
              "FIFO\n",
@@ -2790,7 +3096,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_END_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_END_QUERY command %u in SVGA command "
              "FIFO\n",
@@ -2798,7 +3113,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_WAIT_FOR_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_WAIT_FOR_QUERY command %u in SVGA "
              "command FIFO\n",
@@ -2806,7 +3130,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_PRESENT_READBACK:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_PRESENT_READBACK command %u in SVGA "
              "command FIFO\n",
@@ -2814,7 +3147,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN command %u in SVGA "
              "command FIFO\n",
@@ -2822,7 +3164,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SURFACE_DEFINE_V2:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SURFACE_DEFINE_V2 command %u in SVGA "
              "command "
@@ -2831,7 +3182,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_GENERATE_MIPMAPS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_GENERATE_MIPMAPS command %u in SVGA "
              "command FIFO\n",
@@ -2839,63 +3199,144 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEAD4:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD4 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD5:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD5 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD6:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD6 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD7:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD7 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD8:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD8 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD9:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD9 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD10:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD10 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD11:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD11 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_ACTIVATE_SURFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_ACTIVATE_SURFACE command %u in SVGA "
              "command FIFO\n",
@@ -2903,7 +3344,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEACTIVATE_SURFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEACTIVATE_SURFACE command %u in SVGA "
              "command "
@@ -2912,7 +3362,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SCREEN_DMA:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SCREEN_DMA command %u in SVGA command "
              "FIFO\n",
@@ -2920,63 +3379,144 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEAD1:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD1 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD2:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD2 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD12:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD12 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD13:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD13 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD14:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD14 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD15:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD15 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD16:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD16 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DEAD17:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD17 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_SET_OTABLE_BASE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SET_OTABLE_BASE command %u in SVGA "
              "command FIFO\n",
@@ -2984,7 +3524,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_READBACK_OTABLE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_READBACK_OTABLE command %u in SVGA "
              "command FIFO\n",
@@ -2992,7 +3541,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEFINE_GB_MOB:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEFINE_GB_MOB command %u in SVGA "
              "command FIFO\n",
@@ -3000,7 +3558,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DESTROY_GB_MOB:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DESTROY_GB_MOB command %u in SVGA "
              "command FIFO\n",
@@ -3008,14 +3575,32 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEAD3:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEAD3 command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_UPDATE_GB_MOB_MAPPING:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_UPDATE_GB_MOB_MAPPING command %u in "
              "SVGA command "
@@ -3024,7 +3609,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEFINE_GB_SURFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEFINE_GB_SURFACE command %u in SVGA "
              "command "
@@ -3033,7 +3627,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DESTROY_GB_SURFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DESTROY_GB_SURFACE command %u in SVGA "
              "command "
@@ -3042,7 +3645,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_BIND_GB_SURFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_BIND_GB_SURFACE command %u in SVGA "
              "command FIFO\n",
@@ -3050,7 +3662,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_COND_BIND_GB_SURFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_COND_BIND_GB_SURFACE command %u in "
              "SVGA command "
@@ -3059,7 +3680,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_UPDATE_GB_IMAGE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_UPDATE_GB_IMAGE command %u in SVGA "
              "command FIFO\n",
@@ -3067,7 +3697,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_UPDATE_GB_SURFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_UPDATE_GB_SURFACE command %u in SVGA "
              "command "
@@ -3076,7 +3715,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_READBACK_GB_IMAGE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_READBACK_GB_IMAGE command %u in SVGA "
              "command "
@@ -3085,7 +3733,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_READBACK_GB_SURFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_READBACK_GB_SURFACE command %u in SVGA "
              "command "
@@ -3094,7 +3751,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_INVALIDATE_GB_IMAGE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_INVALIDATE_GB_IMAGE command %u in SVGA "
              "command "
@@ -3103,7 +3769,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_INVALIDATE_GB_SURFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_INVALIDATE_GB_SURFACE command %u in "
              "SVGA command "
@@ -3112,7 +3787,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEFINE_GB_CONTEXT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEFINE_GB_CONTEXT command %u in SVGA "
              "command "
@@ -3121,7 +3805,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DESTROY_GB_CONTEXT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DESTROY_GB_CONTEXT command %u in SVGA "
              "command "
@@ -3130,7 +3823,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_BIND_GB_CONTEXT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_BIND_GB_CONTEXT command %u in SVGA "
              "command FIFO\n",
@@ -3138,7 +3840,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_READBACK_GB_CONTEXT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_READBACK_GB_CONTEXT command %u in SVGA "
              "command "
@@ -3147,7 +3858,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_INVALIDATE_GB_CONTEXT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_INVALIDATE_GB_CONTEXT command %u in "
              "SVGA command "
@@ -3156,7 +3876,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEFINE_GB_SHADER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEFINE_GB_SHADER command %u in SVGA "
              "command FIFO\n",
@@ -3164,7 +3893,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DESTROY_GB_SHADER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DESTROY_GB_SHADER command %u in SVGA "
              "command "
@@ -3173,7 +3911,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_BIND_GB_SHADER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_BIND_GB_SHADER command %u in SVGA "
              "command FIFO\n",
@@ -3181,7 +3928,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SET_OTABLE_BASE64:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SET_OTABLE_BASE64 command %u in SVGA "
              "command "
@@ -3190,7 +3946,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_BEGIN_GB_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_BEGIN_GB_QUERY command %u in SVGA "
              "command FIFO\n",
@@ -3198,7 +3963,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_END_GB_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_END_GB_QUERY command %u in SVGA "
              "command FIFO\n",
@@ -3206,7 +3980,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_WAIT_FOR_GB_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_WAIT_FOR_GB_QUERY command %u in SVGA "
              "command "
@@ -3215,14 +3998,32 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_NOP:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_NOP command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_ENABLE_GART:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_ENABLE_GART command %u in SVGA command "
              "FIFO\n",
@@ -3230,7 +4031,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DISABLE_GART:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DISABLE_GART command %u in SVGA "
              "command FIFO\n",
@@ -3238,7 +4048,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_MAP_MOB_INTO_GART:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_MAP_MOB_INTO_GART command %u in SVGA "
              "command "
@@ -3247,7 +4066,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_UNMAP_GART_RANGE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_UNMAP_GART_RANGE command %u in SVGA "
              "command FIFO\n",
@@ -3255,7 +4083,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEFINE_GB_SCREENTARGET:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEFINE_GB_SCREENTARGET command %u in SVGA "
              "command FIFO\n",
@@ -3263,7 +4100,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DESTROY_GB_SCREENTARGET:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DESTROY_GB_SCREENTARGET command %u in "
              "SVGA "
@@ -3272,7 +4118,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_BIND_GB_SCREENTARGET:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_BIND_GB_SCREENTARGET command %u in "
              "SVGA command "
@@ -3281,7 +4136,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_UPDATE_GB_SCREENTARGET:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_UPDATE_GB_SCREENTARGET command %u in SVGA "
              "command FIFO\n",
@@ -3289,7 +4153,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_READBACK_GB_IMAGE_PARTIAL:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_READBACK_GB_IMAGE_PARTIAL command %u "
              "in SVGA "
@@ -3298,7 +4171,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_INVALIDATE_GB_IMAGE_PARTIAL:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_INVALIDATE_GB_IMAGE_PARTIAL command %u "
              "in SVGA "
@@ -3307,7 +4189,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SET_GB_SHADERCONSTS_INLINE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SET_GB_SHADERCONSTS_INLINE command %u "
              "in SVGA "
@@ -3316,7 +4207,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_GB_SCREEN_DMA:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_GB_SCREEN_DMA command %u in SVGA "
              "command FIFO\n",
@@ -3324,7 +4224,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_BIND_GB_SURFACE_WITH_PITCH:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_BIND_GB_SURFACE_WITH_PITCH command %u "
              "in SVGA "
@@ -3333,7 +4242,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_GB_MOB_FENCE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_GB_MOB_FENCE command %u in SVGA "
              "command FIFO\n",
@@ -3341,7 +4259,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEFINE_GB_SURFACE_V2:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEFINE_GB_SURFACE_V2 command %u in "
              "SVGA command "
@@ -3350,7 +4277,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEFINE_GB_MOB64:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEFINE_GB_MOB64 command %u in SVGA "
              "command FIFO\n",
@@ -3358,7 +4294,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_REDEFINE_GB_MOB64:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_REDEFINE_GB_MOB64 command %u in SVGA "
              "command "
@@ -3367,7 +4312,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_NOP_ERROR:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_NOP_ERROR command %u in SVGA command "
              "FIFO\n",
@@ -3375,7 +4329,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SET_VERTEX_STREAMS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SET_VERTEX_STREAMS command %u in SVGA "
              "command "
@@ -3384,7 +4347,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SET_VERTEX_DECLS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SET_VERTEX_DECLS command %u in SVGA "
              "command FIFO\n",
@@ -3392,7 +4364,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SET_VERTEX_DIVISORS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SET_VERTEX_DIVISORS command %u in SVGA "
              "command "
@@ -3401,14 +4382,32 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DRAW:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DRAW command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DRAW_INDEXED:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DRAW_INDEXED command %u in SVGA "
              "command FIFO\n",
@@ -3416,7 +4415,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_CONTEXT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_CONTEXT command %u in SVGA "
              "command "
@@ -3425,7 +4433,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_CONTEXT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_CONTEXT command %u in SVGA "
              "command "
@@ -3434,7 +4451,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_BIND_CONTEXT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_BIND_CONTEXT command %u in SVGA "
              "command FIFO\n",
@@ -3442,7 +4468,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_READBACK_CONTEXT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_READBACK_CONTEXT command %u in SVGA "
              "command "
@@ -3451,7 +4486,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_INVALIDATE_CONTEXT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_INVALIDATE_CONTEXT command %u in "
              "SVGA command "
@@ -3460,7 +4504,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_SINGLE_CONSTANT_BUFFER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_SINGLE_CONSTANT_BUFFER command "
              "%u in SVGA "
@@ -3469,7 +4522,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_SHADER_RESOURCES:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_SHADER_RESOURCES command %u in "
              "SVGA "
@@ -3478,7 +4540,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_SHADER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_SHADER command %u in SVGA "
              "command FIFO\n",
@@ -3486,7 +4557,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_SAMPLERS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_SAMPLERS command %u in SVGA "
              "command FIFO\n",
@@ -3494,14 +4574,32 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DRAW:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DRAW command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DX_DRAW_INDEXED:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DRAW_INDEXED command %u in SVGA "
              "command FIFO\n",
@@ -3509,7 +4607,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DRAW_INSTANCED:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DRAW_INSTANCED command %u in SVGA "
              "command "
@@ -3518,7 +4625,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED command %u "
              "in SVGA "
@@ -3527,7 +4643,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DRAW_AUTO:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DRAW_AUTO command %u in SVGA "
              "command FIFO\n",
@@ -3535,7 +4660,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_INPUT_LAYOUT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_INPUT_LAYOUT command %u in SVGA "
              "command "
@@ -3544,7 +4678,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_VERTEX_BUFFERS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_VERTEX_BUFFERS command %u in "
              "SVGA command "
@@ -3553,7 +4696,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_INDEX_BUFFER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_INDEX_BUFFER command %u in SVGA "
              "command "
@@ -3562,7 +4714,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_TOPOLOGY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_TOPOLOGY command %u in SVGA "
              "command FIFO\n",
@@ -3570,7 +4731,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_RENDERTARGETS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_RENDERTARGETS command %u in "
              "SVGA command "
@@ -3579,7 +4749,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_BLEND_STATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_BLEND_STATE command %u in SVGA "
              "command "
@@ -3588,7 +4767,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_DEPTHSTENCIL_STATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_DEPTHSTENCIL_STATE command %u "
              "in SVGA "
@@ -3597,7 +4785,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_RASTERIZER_STATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_RASTERIZER_STATE command %u in "
              "SVGA "
@@ -3606,7 +4803,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_QUERY command %u in SVGA "
              "command FIFO\n",
@@ -3614,7 +4820,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_QUERY command %u in SVGA "
              "command FIFO\n",
@@ -3622,7 +4837,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_BIND_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_BIND_QUERY command %u in SVGA "
              "command FIFO\n",
@@ -3630,7 +4854,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_QUERY_OFFSET:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_QUERY_OFFSET command %u in SVGA "
              "command "
@@ -3639,7 +4872,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_BEGIN_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_BEGIN_QUERY command %u in SVGA "
              "command FIFO\n",
@@ -3647,7 +4889,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_END_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_END_QUERY command %u in SVGA "
              "command FIFO\n",
@@ -3655,7 +4906,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_READBACK_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_READBACK_QUERY command %u in SVGA "
              "command "
@@ -3664,7 +4924,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_PREDICATION:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_PREDICATION command %u in SVGA "
              "command "
@@ -3673,7 +4942,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_SOTARGETS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_SOTARGETS command %u in SVGA "
              "command FIFO\n",
@@ -3681,7 +4959,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_VIEWPORTS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_VIEWPORTS command %u in SVGA "
              "command FIFO\n",
@@ -3689,7 +4976,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_SCISSORRECTS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_SCISSORRECTS command %u in SVGA "
              "command "
@@ -3698,7 +4994,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_CLEAR_RENDERTARGET_VIEW:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_CLEAR_RENDERTARGET_VIEW command %u "
              "in SVGA "
@@ -3707,7 +5012,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_CLEAR_DEPTHSTENCIL_VIEW:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_CLEAR_DEPTHSTENCIL_VIEW command %u "
              "in SVGA "
@@ -3716,7 +5030,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_PRED_COPY_REGION:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_PRED_COPY_REGION command %u in SVGA "
              "command "
@@ -3725,7 +5048,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_PRED_COPY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_PRED_COPY command %u in SVGA "
              "command FIFO\n",
@@ -3733,7 +5065,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_PRESENTBLT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_PRESENTBLT command %u in SVGA "
              "command FIFO\n",
@@ -3741,7 +5082,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_GENMIPS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_GENMIPS command %u in SVGA command "
              "FIFO\n",
@@ -3749,7 +5099,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_UPDATE_SUBRESOURCE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_UPDATE_SUBRESOURCE command %u in "
              "SVGA command "
@@ -3758,7 +5117,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_READBACK_SUBRESOURCE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_READBACK_SUBRESOURCE command %u in "
              "SVGA "
@@ -3767,7 +5135,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_INVALIDATE_SUBRESOURCE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_INVALIDATE_SUBRESOURCE command %u "
              "in SVGA "
@@ -3776,7 +5153,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_SHADERRESOURCE_VIEW:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_SHADERRESOURCE_VIEW command "
              "%u in SVGA "
@@ -3785,7 +5171,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_SHADERRESOURCE_VIEW:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_SHADERRESOURCE_VIEW command "
              "%u in "
@@ -3794,7 +5189,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_RENDERTARGET_VIEW:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_RENDERTARGET_VIEW command %u "
              "in SVGA "
@@ -3803,7 +5207,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_RENDERTARGET_VIEW:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_RENDERTARGET_VIEW command "
              "%u in SVGA "
@@ -3812,7 +5225,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW command %u "
              "in SVGA "
@@ -3821,7 +5243,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_VIEW:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_VIEW command "
              "%u in SVGA "
@@ -3830,7 +5261,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_ELEMENTLAYOUT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_ELEMENTLAYOUT command %u in "
              "SVGA "
@@ -3839,7 +5279,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_ELEMENTLAYOUT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_ELEMENTLAYOUT command %u in "
              "SVGA "
@@ -3848,7 +5297,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_BLEND_STATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_BLEND_STATE command %u in "
              "SVGA command "
@@ -3857,7 +5315,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_BLEND_STATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_BLEND_STATE command %u in SVGA "
              "command FIFO\n",
@@ -3865,7 +5332,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_STATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_STATE command "
              "%u in SVGA "
@@ -3874,7 +5350,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_STATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_STATE command "
              "%u in SVGA "
@@ -3883,7 +5368,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_RASTERIZER_STATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_RASTERIZER_STATE command %u "
              "in SVGA "
@@ -3892,7 +5386,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_RASTERIZER_STATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_RASTERIZER_STATE command %u "
              "in SVGA "
@@ -3901,7 +5404,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_SAMPLER_STATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_SAMPLER_STATE command %u in "
              "SVGA "
@@ -3910,7 +5422,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_SAMPLER_STATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_SAMPLER_STATE command %u in "
              "SVGA "
@@ -3919,7 +5440,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_SHADER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_SHADER command %u in SVGA "
              "command FIFO\n",
@@ -3927,7 +5457,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_SHADER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_SHADER command %u in SVGA "
              "command "
@@ -3936,7 +5475,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_BIND_SHADER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_BIND_SHADER command %u in SVGA "
              "command FIFO\n",
@@ -3944,7 +5492,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT command %u in SVGA "
              "command FIFO\n",
@@ -3952,7 +5509,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_STREAMOUTPUT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_STREAMOUTPUT command %u in "
              "SVGA "
@@ -3961,7 +5527,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_STREAMOUTPUT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_STREAMOUTPUT command %u in SVGA "
              "command "
@@ -3970,7 +5545,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_COTABLE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_COTABLE command %u in SVGA "
              "command FIFO\n",
@@ -3978,7 +5562,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_READBACK_COTABLE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_READBACK_COTABLE command %u in SVGA "
              "command "
@@ -3987,7 +5580,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_BUFFER_COPY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_BUFFER_COPY command %u in SVGA "
              "command FIFO\n",
@@ -3995,7 +5597,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_TRANSFER_FROM_BUFFER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_TRANSFER_FROM_BUFFER command %u in "
              "SVGA "
@@ -4004,7 +5615,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SURFACE_COPY_AND_READBACK:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SURFACE_COPY_AND_READBACK command "
              "%u in SVGA "
@@ -4013,7 +5633,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_MOVE_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_MOVE_QUERY command %u in SVGA "
              "command FIFO\n",
@@ -4021,7 +5650,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_BIND_ALL_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_BIND_ALL_QUERY command %u in SVGA "
              "command "
@@ -4030,7 +5668,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_READBACK_ALL_QUERY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_READBACK_ALL_QUERY command %u in "
              "SVGA command "
@@ -4039,7 +5686,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_PRED_TRANSFER_FROM_BUFFER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_PRED_TRANSFER_FROM_BUFFER command "
              "%u in SVGA "
@@ -4048,7 +5704,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_MOB_FENCE_64:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_MOB_FENCE_64 command %u in SVGA "
              "command FIFO\n",
@@ -4056,7 +5721,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_BIND_ALL_SHADER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_BIND_ALL_SHADER command %u in SVGA "
              "command "
@@ -4065,14 +5739,32 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_HINT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_HINT command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_DX_BUFFER_UPDATE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_BUFFER_UPDATE command %u in SVGA "
              "command FIFO\n",
@@ -4080,7 +5772,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_VS_CONSTANT_BUFFER_OFFSET:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_VS_CONSTANT_BUFFER_OFFSET "
              "command %u in "
@@ -4089,7 +5790,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_PS_CONSTANT_BUFFER_OFFSET:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_PS_CONSTANT_BUFFER_OFFSET "
              "command %u in "
@@ -4098,7 +5808,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_GS_CONSTANT_BUFFER_OFFSET:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_GS_CONSTANT_BUFFER_OFFSET "
              "command %u in "
@@ -4107,7 +5826,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_HS_CONSTANT_BUFFER_OFFSET:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_HS_CONSTANT_BUFFER_OFFSET "
              "command %u in "
@@ -4116,7 +5844,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_DS_CONSTANT_BUFFER_OFFSET:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_DS_CONSTANT_BUFFER_OFFSET "
              "command %u in "
@@ -4125,7 +5862,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_CS_CONSTANT_BUFFER_OFFSET:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_CS_CONSTANT_BUFFER_OFFSET "
              "command %u in "
@@ -4134,7 +5880,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_COND_BIND_ALL_SHADER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_COND_BIND_ALL_SHADER command %u in "
              "SVGA "
@@ -4143,7 +5898,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SCREEN_COPY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SCREEN_COPY command %u in SVGA command "
              "FIFO\n",
@@ -4151,7 +5915,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_GROW_OTABLE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_GROW_OTABLE command %u in SVGA command "
              "FIFO\n",
@@ -4159,7 +5932,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_GROW_COTABLE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_GROW_COTABLE command %u in SVGA "
              "command FIFO\n",
@@ -4167,7 +5949,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_INTRA_SURFACE_COPY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_INTRA_SURFACE_COPY command %u in SVGA "
              "command "
@@ -4176,7 +5967,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEFINE_GB_SURFACE_V3:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEFINE_GB_SURFACE_V3 command %u in "
              "SVGA command "
@@ -4185,7 +5985,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_RESOLVE_COPY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_RESOLVE_COPY command %u in SVGA "
              "command FIFO\n",
@@ -4193,7 +6002,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_PRED_RESOLVE_COPY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_PRED_RESOLVE_COPY command %u in "
              "SVGA command "
@@ -4202,7 +6020,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_PRED_CONVERT_REGION:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_PRED_CONVERT_REGION command %u in SVGA "
              "command FIFO\n",
@@ -4210,7 +6037,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_PRED_CONVERT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_PRED_CONVERT command %u in SVGA "
              "command FIFO\n",
@@ -4218,7 +6054,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_WHOLE_SURFACE_COPY:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_WHOLE_SURFACE_COPY command %u in SVGA "
              "command "
@@ -4227,7 +6072,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_UA_VIEW:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_UA_VIEW command %u in SVGA "
              "command "
@@ -4236,7 +6090,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DESTROY_UA_VIEW:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DESTROY_UA_VIEW command %u in SVGA "
              "command "
@@ -4245,7 +6108,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_CLEAR_UA_VIEW_UINT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_CLEAR_UA_VIEW_UINT command %u in "
              "SVGA command "
@@ -4254,7 +6126,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_CLEAR_UA_VIEW_FLOAT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_CLEAR_UA_VIEW_FLOAT command %u in SVGA "
              "command FIFO\n",
@@ -4262,7 +6143,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_COPY_STRUCTURE_COUNT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_COPY_STRUCTURE_COUNT command %u in "
              "SVGA "
@@ -4271,7 +6161,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_UA_VIEWS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_UA_VIEWS command %u in SVGA "
              "command FIFO\n",
@@ -4279,7 +6178,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED_INDIRECT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED_INDIRECT "
              "command %u in "
@@ -4288,7 +6196,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DRAW_INSTANCED_INDIRECT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DRAW_INSTANCED_INDIRECT command %u "
              "in SVGA "
@@ -4297,7 +6214,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DISPATCH:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DISPATCH command %u in SVGA command "
              "FIFO\n",
@@ -4305,7 +6231,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DISPATCH_INDIRECT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DISPATCH_INDIRECT command %u in "
              "SVGA command "
@@ -4314,7 +6249,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_WRITE_ZERO_SURFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_WRITE_ZERO_SURFACE command %u in SVGA "
              "command "
@@ -4323,7 +6267,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_HINT_ZERO_SURFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_HINT_ZERO_SURFACE command %u in SVGA "
              "command "
@@ -4332,7 +6285,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_TRANSFER_TO_BUFFER:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_TRANSFER_TO_BUFFER command %u in "
              "SVGA command "
@@ -4341,7 +6303,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_STRUCTURE_COUNT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_STRUCTURE_COUNT command %u in SVGA "
              "command FIFO\n",
@@ -4349,7 +6320,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_LOGICOPS_BITBLT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_LOGICOPS_BITBLT command %u in SVGA "
              "command FIFO\n",
@@ -4357,7 +6337,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_LOGICOPS_TRANSBLT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_LOGICOPS_TRANSBLT command %u in SVGA "
              "command "
@@ -4366,7 +6355,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_LOGICOPS_STRETCHBLT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_LOGICOPS_STRETCHBLT command %u in SVGA "
              "command "
@@ -4375,7 +6373,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_LOGICOPS_COLORFILL:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_LOGICOPS_COLORFILL command %u in SVGA "
              "command "
@@ -4384,7 +6391,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_LOGICOPS_ALPHABLEND:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_LOGICOPS_ALPHABLEND command %u in SVGA "
              "command "
@@ -4393,7 +6409,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_LOGICOPS_CLEARTYPEBLEND:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_LOGICOPS_CLEARTYPEBLEND command %u in "
              "SVGA "
@@ -4402,7 +6427,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DEFINE_GB_SURFACE_V4:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DEFINE_GB_SURFACE_V4 command %u in "
              "SVGA command "
@@ -4411,7 +6445,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_CS_UA_VIEWS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_CS_UA_VIEWS command %u in SVGA "
              "command "
@@ -4420,7 +6463,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_MIN_LOD:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_MIN_LOD command %u in SVGA "
              "command FIFO\n",
@@ -4428,7 +6480,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW_V2:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW_V2 command "
              "%u in "
@@ -4437,7 +6498,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT_WITH_MOB:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT_WITH_MOB "
              "command %u in "
@@ -4446,7 +6516,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_SET_SHADER_IFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_SET_SHADER_IFACE command %u in SVGA "
              "command "
@@ -4455,7 +6534,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_BIND_STREAMOUTPUT:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_BIND_STREAMOUTPUT command %u in "
              "SVGA command "
@@ -4464,7 +6552,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_SURFACE_STRETCHBLT_NON_MS_TO_MS:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_SURFACE_STRETCHBLT_NON_MS_TO_MS "
              "command %u in "
@@ -4473,7 +6570,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_DX_BIND_SHADER_IFACE:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_DX_BIND_SHADER_IFACE command %u in "
              "SVGA command "
@@ -4482,14 +6588,32 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     case SVGA_3D_CMD_MAX:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_MAX command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
 #endif
       break;
     case SVGA_3D_CMD_FUTURE_MAX:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: SVGA_3D_CMD_FUTURE_MAX command %u in SVGA command "
              "FIFO\n",
@@ -4497,7 +6621,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
 #endif
       break;
     default:
-      len = 0;
+      if (len < 1) {
+        s->fifo_stop = cmd_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+#ifdef VERBOSE
+        printf("%u - %s: rewind command in SVGA command FIFO\n",
+               (unsigned)time(NULL), __func__);
+#endif
+        break;
+      }
+      len -= 1;
 #ifdef VERBOSE
       printf("%u - %s: default command %u in SVGA command FIFO\n",
              (unsigned)time(NULL), __func__, cmd);
@@ -4565,7 +6698,7 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s) {
 //  (unsigned)time(NULL), __func__);
 #endif
   DisplaySurface *surface = qemu_console_surface(s->vga.con);
-  uint32_t new_stride = 0;
+  uint32_t new_stride;
   if (s->pitchlock >= 1) {
     new_stride = s->pitchlock;
   } else {
@@ -4795,9 +6928,9 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
   printf("%u - %s: vmsvga: vmsvga_value_read was just executed\n",
          (unsigned)time(NULL), __func__);
 #endif
-  uint32_t ret = 0;
-  uint32_t caps = 0;
-  uint32_t cap2 = 0;
+  uint32_t ret;
+  uint32_t caps;
+  uint32_t cap2;
   struct vmsvga_state_s *s = opaque;
 #ifdef VERBOSE
   printf("%u - %s: Unknown register %u\n", (unsigned)time(NULL), __func__,
@@ -11703,7 +13836,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
 #endif
     break;
   case SVGA_REG_BUSY:
-    // s->sync = value;
+    s->sync = value;
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_BUSY register %u with the value of %u\n",
            (unsigned)time(NULL), __func__, s->index, value);
@@ -11768,7 +13901,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
     PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
 #endif
     uint32_t offFifoMin = s->fifo[SVGA_FIFO_MIN];
-    uint32_t irq_status = 0;
+    uint32_t irq_status = s->irq_status;
     if ((value) & (SVGA_IRQFLAG_ANY_FENCE)) {
 #ifdef VERBOSE
       printf("%u - %s: irq_status |= SVGA_IRQFLAG_ANY_FENCE\n",
