@@ -13878,7 +13878,11 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
 #endif
     break;
   case SVGA_REG_BYTES_PER_LINE:
-    s->pitchlock = value;
+    if (value >= 1) {
+      s->pitchlock = value;
+    } else {
+      s->pitchlock = (((s->new_depth) * (s->new_width)) / (8));
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_BYTES_PER_LINE register %u with the value "
            "of %u\n",
@@ -13886,7 +13890,11 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
 #endif
     break;
   case SVGA_REG_PITCHLOCK:
-    s->pitchlock = value;
+    if (value >= 1) {
+      s->pitchlock = value;
+    } else {
+      s->pitchlock = (((s->new_depth) * (s->new_width)) / (8));
+    };
 #ifdef VERBOSE
     printf("%u - %s: SVGA_REG_PITCHLOCK register %u with the value of %u\n",
            (unsigned)time(NULL), __func__, s->index, value);
@@ -21031,9 +21039,6 @@ static int vmsvga_post_load(void *opaque, int version_id) {
   printf("%u - %s: vmsvga: vmsvga_post_load was just executed\n",
          (unsigned)time(NULL), __func__);
 #endif
-  struct vmsvga_state_s *s = opaque;
-  s->enable = 1;
-  s->config = 1;
   return 0;
 };
 static VMStateDescription vmstate_vmware_vga_internal = {
@@ -21883,6 +21888,7 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
 #endif
   if (s->thread < 1) {
     s->thread++;
+    s->fifo[SVGA_FIFO_CURSOR_ON] = SVGA_CURSOR_ON_SHOW;
     s->new_width = 1024;
     s->new_height = 768;
     s->new_depth = 32;
