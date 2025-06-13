@@ -4732,6 +4732,7 @@ static void pci_vmsvga_realize(PCIDevice *dev, Error **errp) {
   struct pci_vmsvga_state_s *s = VMWARE_SVGA(dev);
   dev->config[PCI_INTERRUPT_PIN] = 1;
   dev->config[PCI_LATENCY_TIMER] = 64;
+  dev->config[PCI_CACHE_LINE_SIZE] = 32;
   memory_region_init_io(&s->io_bar, OBJECT(dev), &vmsvga_io_ops, &s->chip,
                         "vmsvga-io", 0x10);
   memory_region_set_flush_coalesced(&s->io_bar);
