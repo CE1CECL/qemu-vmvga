@@ -859,35 +859,83 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       }
       break;
     case SVGA_3D_CMD_SURFACE_COPY:
-      if (len < 1) {
+      if (len < 7) {  // src surface image id (3) + dest surface image id (3) + at least one copy box
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_SURFACE_COPY command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      {
+        // Source surface image id
+        uint32_t src_sid = vmsvga_fifo_read(s);
+        uint32_t src_face = vmsvga_fifo_read(s);
+        uint32_t src_mipmap = vmsvga_fifo_read(s);
+        // Dest surface image id  
+        uint32_t dest_sid = vmsvga_fifo_read(s);
+        uint32_t dest_face = vmsvga_fifo_read(s);
+        uint32_t dest_mipmap = vmsvga_fifo_read(s);
+        len -= 6;
+        // TODO: Read SVGA3dCopyBox structures (variable number)
+        VPRINT("SVGA_3D_CMD_SURFACE_COPY command %u in SVGA "
+               "command FIFO src_sid=%u dest_sid=%u\n",
+               cmd, src_sid, dest_sid);
+      }
       break;
     case SVGA_3D_CMD_SURFACE_STRETCHBLT:
-      if (len < 1) {
+      if (len < 15) {  // src + dest surface image ids (6) + two SVGA3dBox (6 each) + mode
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_SURFACE_STRETCHBLT command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      {
+        // Source surface image id
+        uint32_t src_sid = vmsvga_fifo_read(s);
+        uint32_t src_face = vmsvga_fifo_read(s);
+        uint32_t src_mipmap = vmsvga_fifo_read(s);
+        // Dest surface image id
+        uint32_t dest_sid = vmsvga_fifo_read(s);
+        uint32_t dest_face = vmsvga_fifo_read(s);
+        uint32_t dest_mipmap = vmsvga_fifo_read(s);
+        // Source box
+        uint32_t src_x = vmsvga_fifo_read(s);
+        uint32_t src_y = vmsvga_fifo_read(s);
+        uint32_t src_z = vmsvga_fifo_read(s);
+        uint32_t src_w = vmsvga_fifo_read(s);
+        uint32_t src_h = vmsvga_fifo_read(s);
+        uint32_t src_d = vmsvga_fifo_read(s);
+        // Dest box
+        uint32_t dest_x = vmsvga_fifo_read(s);
+        uint32_t dest_y = vmsvga_fifo_read(s);
+        uint32_t dest_z = vmsvga_fifo_read(s);
+        uint32_t dest_w = vmsvga_fifo_read(s);
+        uint32_t dest_h = vmsvga_fifo_read(s);
+        uint32_t dest_d = vmsvga_fifo_read(s);
+        // Mode
+        uint32_t mode = vmsvga_fifo_read(s);
+        len -= 19;
+        VPRINT("SVGA_3D_CMD_SURFACE_STRETCHBLT command %u in SVGA "
+               "command FIFO src_sid=%u dest_sid=%u mode=%u\n",
+               cmd, src_sid, dest_sid, mode);
+      }
       break;
     case SVGA_3D_CMD_SURFACE_DMA:
-      if (len < 1) {
+      if (len < 7) {  // guest ptr (2) + host surface id (3) + transfer type (1) + at least some data
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_SURFACE_DMA command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      {
+        // SVGAGuestImage guest - GMR ID + offset
+        uint32_t guest_ptr_gmr = vmsvga_fifo_read(s);
+        uint32_t guest_ptr_offset = vmsvga_fifo_read(s);
+        // SVGA3dSurfaceImageId host
+        uint32_t host_sid = vmsvga_fifo_read(s);
+        uint32_t host_face = vmsvga_fifo_read(s);
+        uint32_t host_mipmap = vmsvga_fifo_read(s);
+        // Transfer type
+        uint32_t transfer = vmsvga_fifo_read(s);
+        len -= 6;
+        // TODO: Read variable number of SVGA3dCopyBox structures
+        VPRINT("SVGA_3D_CMD_SURFACE_DMA command %u in SVGA command "
+               "FIFO host_sid=%u transfer=%u\n",
+               cmd, host_sid, transfer);
+      }
       break;
     case SVGA_3D_CMD_CONTEXT_DEFINE:
       if (len < 2) {  // cid
@@ -990,44 +1038,77 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       }
       break;
     case SVGA_3D_CMD_SETTEXTURESTATE:
-      if (len < 1) {
+      if (len < 4) {  // cid + at least one texture state (stage + name + value)
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_SETTEXTURESTATE command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      {
+        uint32_t cid = vmsvga_fifo_read(s);
+        len -= 1;
+        // Read texture states (each is 3 uint32s: stage + name + value)
+        while (len >= 3) {
+          uint32_t stage = vmsvga_fifo_read(s);
+          uint32_t name = vmsvga_fifo_read(s);
+          uint32_t value = vmsvga_fifo_read(s);
+          len -= 3;
+          VPRINT("SVGA_3D_CMD_SETTEXTURESTATE stage=%u name=%u value=%u\n",
+                 stage, name, value);
+        }
+        VPRINT("SVGA_3D_CMD_SETTEXTURESTATE command %u in SVGA "
+               "command FIFO cid=%u\n",
+               cmd, cid);
+      }
       break;
     case SVGA_3D_CMD_SETMATERIAL:
-      if (len < 1) {
+      if (len < 19) {  // cid + face + material (diffuse[4] + ambient[4] + specular[4] + emissive[4] + shininess)
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_SETMATERIAL command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      {
+        uint32_t cid = vmsvga_fifo_read(s);
+        uint32_t face = vmsvga_fifo_read(s);
+        // Read material properties (17 floats total)
+        for (int i = 0; i < 17; i++) {
+          vmsvga_fifo_read(s); // Skip for now, just consume the data
+        }
+        len -= 19;
+        VPRINT("SVGA_3D_CMD_SETMATERIAL command %u in SVGA command "
+               "FIFO cid=%u face=%u\n",
+               cmd, cid, face);
+      }
       break;
     case SVGA_3D_CMD_SETLIGHTDATA:
-      if (len < 1) {
+      if (len < 17) {  // cid + index + light data (15 values: type, inWorldSpace, 13 floats)
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_SETLIGHTDATA command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      {
+        uint32_t cid = vmsvga_fifo_read(s);
+        uint32_t index = vmsvga_fifo_read(s);
+        // Read light data (15 more values)
+        for (int i = 0; i < 15; i++) {
+          vmsvga_fifo_read(s); // Skip for now, just consume the data
+        }
+        len -= 17;
+        VPRINT("SVGA_3D_CMD_SETLIGHTDATA command %u in SVGA "
+               "command FIFO cid=%u index=%u\n",
+               cmd, cid, index);
+      }
       break;
     case SVGA_3D_CMD_SETLIGHTENABLED:
-      if (len < 1) {
+      if (len < 4) {  // cid + index + enabled
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_SETLIGHTENABLED command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      {
+        uint32_t cid = vmsvga_fifo_read(s);
+        uint32_t index = vmsvga_fifo_read(s);
+        uint32_t enabled = vmsvga_fifo_read(s);
+        len -= 3;
+        VPRINT("SVGA_3D_CMD_SETLIGHTENABLED command %u in SVGA "
+               "command FIFO cid=%u index=%u enabled=%u\n",
+               cmd, cid, index, enabled);
+      }
       break;
     case SVGA_3D_CMD_SETVIEWPORT:
       if (len < 5) {  // cid + rect (x, y, w, h)
@@ -1047,14 +1128,23 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       }
       break;
     case SVGA_3D_CMD_SETCLIPPLANE:
-      if (len < 1) {
+      if (len < 7) {  // cid + index + plane[4]
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_SETCLIPPLANE command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      {
+        uint32_t cid = vmsvga_fifo_read(s);
+        uint32_t index = vmsvga_fifo_read(s);
+        float plane[4];
+        for (int i = 0; i < 4; i++) {
+          plane[i] = *(float*)&s->fifo[s->fifo_stop >> 2];
+          vmsvga_fifo_read_raw(s);
+        }
+        len -= 6;
+        VPRINT("SVGA_3D_CMD_SETCLIPPLANE command %u in SVGA "
+               "command FIFO cid=%u index=%u\n",
+               cmd, cid, index);
+      }
       break;
     case SVGA_3D_CMD_CLEAR:
       if (len < 5) {  // cid + clearFlag + color + depth + stencil (minimum, plus variable rects)
@@ -1134,24 +1224,41 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       }
       break;
     case SVGA_3D_CMD_SET_SHADER_CONST:
-      if (len < 1) {
+      if (len < 8) {  // cid + reg + type + ctype + values[4] (minimum)
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_SET_SHADER_CONST command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      {
+        uint32_t cid = vmsvga_fifo_read(s);
+        uint32_t reg = vmsvga_fifo_read(s);
+        uint32_t type = vmsvga_fifo_read(s);
+        uint32_t ctype = vmsvga_fifo_read(s);
+        uint32_t values[4];
+        for (int i = 0; i < 4; i++) {
+          values[i] = vmsvga_fifo_read(s);
+        }
+        len -= 8;
+        // TODO: Read additional values if present
+        VPRINT("SVGA_3D_CMD_SET_SHADER_CONST command %u in SVGA "
+               "command FIFO cid=%u reg=%u type=%u\n",
+               cmd, cid, reg, type);
+      }
       break;
     case SVGA_3D_CMD_DRAW_PRIMITIVES:
-      if (len < 1) {
+      if (len < 4) {  // cid + numVertexDecls + numRanges (minimum, plus variable data)
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_DRAW_PRIMITIVES command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      {
+        uint32_t cid = vmsvga_fifo_read(s);
+        uint32_t numVertexDecls = vmsvga_fifo_read(s);
+        uint32_t numRanges = vmsvga_fifo_read(s);
+        len -= 3;
+        // TODO: Read variable arrays of vertex declarations and primitive ranges
+        VPRINT("SVGA_3D_CMD_DRAW_PRIMITIVES command %u in SVGA "
+               "command FIFO cid=%u numVertexDecls=%u numRanges=%u\n",
+               cmd, cid, numVertexDecls, numRanges);
+      }
       break;
     case SVGA_3D_CMD_SETSCISSORRECT:
       if (len < 5) {  // cid + rect (x, y, w, h)
@@ -1199,14 +1306,20 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       }
       break;
     case SVGA_3D_CMD_WAIT_FOR_QUERY:
-      if (len < 1) {
+      if (len < 5) {  // cid + type + guestResult (2 uint32s)
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_WAIT_FOR_QUERY command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      {
+        uint32_t cid = vmsvga_fifo_read(s);
+        uint32_t type = vmsvga_fifo_read(s);
+        uint32_t guest_ptr_low = vmsvga_fifo_read(s);
+        uint32_t guest_ptr_high = vmsvga_fifo_read(s);
+        len -= 4;
+        VPRINT("SVGA_3D_CMD_WAIT_FOR_QUERY command %u in SVGA "
+               "command FIFO cid=%u type=%u\n",
+               cmd, cid, type);
+      }
       break;
     case SVGA_3D_CMD_PRESENT_READBACK:
       if (len < 1) {
