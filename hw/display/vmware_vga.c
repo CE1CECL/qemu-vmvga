@@ -4358,15 +4358,15 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
     VPRINT("SVGA_REG_PITCHLOCK register %u with the value of %u\n", s->index,
            value);
     break;
-  case SVGA_REG_IRQMASK:
+  case SVGA_REG_IRQMASK: {
+    uint32_t offFifoMin = s->fifo[SVGA_FIFO_MIN];
+    uint32_t irq_status = s->irq_status;
     s->irq_mask = value;
 #ifndef RAISE_IRQ_OFF
     struct pci_vmsvga_state_s *pci_vmsvga =
         container_of(s, struct pci_vmsvga_state_s, chip);
     PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
 #endif
-    uint32_t offFifoMin = s->fifo[SVGA_FIFO_MIN];
-    uint32_t irq_status = s->irq_status;
     if ((value) & (SVGA_IRQFLAG_ANY_FENCE)) {
       VPRINT("irq_status |= SVGA_IRQFLAG_ANY_FENCE\n");
 #ifndef ANY_FENCE_OFF
@@ -4404,6 +4404,7 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
     VPRINT("SVGA_REG_IRQMASK register %u with the value of %u\n", s->index,
            value);
     break;
+  }
   case SVGA_REG_NUM_GUEST_DISPLAYS:
     s->num_gd = value;
     VPRINT("SVGA_REG_NUM_GUEST_DISPLAYS register %u with the "
