@@ -318,11 +318,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
   uint32_t UnknownCommandAN;
   uint32_t UnknownCommandAO;
   uint32_t UnknownCommandAP;
-  uint32_t UnknownCommandAQ;
-  uint32_t UnknownCommandAR;
-  uint32_t UnknownCommandAS;
-  uint32_t UnknownCommandAT;
-  uint32_t UnknownCommandAU;
+
   uint32_t UnknownCommandAV;
   uint32_t UnknownCommandAW;
   uint32_t UnknownCommandAX;
@@ -839,6 +835,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         for (int i = 0; i < 6; i++) {
           faces[i] = vmsvga_fifo_read(s);
         }
+        (void)faces; // Suppress unused warning
         len -= 9;
         // TODO: Read additional mip level data based on face information
         VPRINT("SVGA_3D_CMD_SURFACE_DEFINE command %u in SVGA "
@@ -873,6 +870,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         uint32_t dest_sid = vmsvga_fifo_read(s);
         uint32_t dest_face = vmsvga_fifo_read(s);
         uint32_t dest_mipmap = vmsvga_fifo_read(s);
+        (void)src_face; (void)src_mipmap; (void)dest_face; (void)dest_mipmap; // Suppress unused warnings
         len -= 6;
         // TODO: Read SVGA3dCopyBox structures (variable number)
         VPRINT("SVGA_3D_CMD_SURFACE_COPY command %u in SVGA "
@@ -910,6 +908,10 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         uint32_t dest_d = vmsvga_fifo_read(s);
         // Mode
         uint32_t mode = vmsvga_fifo_read(s);
+        // Suppress unused warnings for detailed parameters
+        (void)src_face; (void)src_mipmap; (void)dest_face; (void)dest_mipmap;
+        (void)src_x; (void)src_y; (void)src_z; (void)src_w; (void)src_h; (void)src_d;
+        (void)dest_x; (void)dest_y; (void)dest_z; (void)dest_w; (void)dest_h; (void)dest_d;
         len -= 19;
         VPRINT("SVGA_3D_CMD_SURFACE_STRETCHBLT command %u in SVGA "
                "command FIFO src_sid=%u dest_sid=%u mode=%u\n",
@@ -931,6 +933,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         uint32_t host_mipmap = vmsvga_fifo_read(s);
         // Transfer type
         uint32_t transfer = vmsvga_fifo_read(s);
+        // Suppress unused warnings
+        (void)guest_ptr_gmr; (void)guest_ptr_offset; (void)host_face; (void)host_mipmap;
         len -= 6;
         // TODO: Read variable number of SVGA3dCopyBox structures
         VPRINT("SVGA_3D_CMD_SURFACE_DMA command %u in SVGA command "
@@ -977,6 +981,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
           matrix[i] = *(float*)&s->fifo[s->fifo_stop >> 2];
           vmsvga_fifo_read_raw(s);
         }
+        (void)matrix; // Suppress unused warning
         len -= 19;
         VPRINT("SVGA_3D_CMD_SETTRANSFORM command %u in SVGA "
                "command FIFO cid=%u type=%u\n",
@@ -1032,6 +1037,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         uint32_t sid = vmsvga_fifo_read(s);
         uint32_t face = vmsvga_fifo_read(s);
         uint32_t mipmap = vmsvga_fifo_read(s);
+        (void)face; (void)mipmap; // Suppress unused warnings
         len -= 5;
         VPRINT("SVGA_3D_CMD_SETRENDERTARGET command %u in SVGA "
                "command FIFO cid=%u type=%u sid=%u\n",
@@ -1141,6 +1147,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
           plane[i] = *(float*)&s->fifo[s->fifo_stop >> 2];
           vmsvga_fifo_read_raw(s);
         }
+        (void)plane; // Suppress unused warning
         len -= 6;
         VPRINT("SVGA_3D_CMD_SETCLIPPLANE command %u in SVGA "
                "command FIFO cid=%u index=%u\n",
@@ -1238,6 +1245,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         for (int i = 0; i < 4; i++) {
           values[i] = vmsvga_fifo_read(s);
         }
+        (void)values; (void)ctype; // Suppress unused warnings
         len -= 8;
         // TODO: Read additional values if present
         VPRINT("SVGA_3D_CMD_SET_SHADER_CONST command %u in SVGA "
@@ -1316,6 +1324,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         uint32_t type = vmsvga_fifo_read(s);
         uint32_t guest_ptr_low = vmsvga_fifo_read(s);
         uint32_t guest_ptr_high = vmsvga_fifo_read(s);
+        (void)guest_ptr_low; (void)guest_ptr_high; // Suppress unused warnings
         len -= 4;
         VPRINT("SVGA_3D_CMD_WAIT_FOR_QUERY command %u in SVGA "
                "command FIFO cid=%u type=%u\n",
@@ -1357,6 +1366,10 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         int32_t dest_top = (int32_t)vmsvga_fifo_read(s);
         int32_t dest_right = (int32_t)vmsvga_fifo_read(s);
         int32_t dest_bottom = (int32_t)vmsvga_fifo_read(s);
+        // Suppress unused warnings for detailed parameters  
+        (void)src_face; (void)src_mipmap;
+        (void)src_left; (void)src_top; (void)src_right; (void)src_bottom;
+        (void)dest_left; (void)dest_top; (void)dest_right; (void)dest_bottom;
         len -= 12;
         // TODO: Read optional clipping rectangles
         VPRINT("SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN command %u in SVGA "
@@ -1379,6 +1392,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         }
         uint32_t multisampleCount = vmsvga_fifo_read(s);
         uint32_t autogenFilter = vmsvga_fifo_read(s);
+        (void)faces; (void)multisampleCount; (void)autogenFilter; // Suppress unused warnings
         len -= 11;
         // TODO: Read additional mip level data based on face information
         VPRINT("SVGA_3D_CMD_SURFACE_DEFINE_V2 command %u in SVGA "
