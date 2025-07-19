@@ -1322,45 +1322,82 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       }
       break;
     case SVGA_3D_CMD_PRESENT_READBACK:
-      if (len < 1) {
+      if (len < 2) {  // Minimal structure, likely cid or similar
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_PRESENT_READBACK command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      {
+        uint32_t param = vmsvga_fifo_read(s);
+        len -= 1;
+        VPRINT("SVGA_3D_CMD_PRESENT_READBACK command %u in SVGA "
+               "command FIFO param=%u\n",
+               cmd, param);
+      }
       break;
     case SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN:
-      if (len < 1) {
+      if (len < 12) {  // srcImage (3) + srcRect (4) + destScreenId (1) + destRect (4)
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      {
+        // Source surface image id
+        uint32_t src_sid = vmsvga_fifo_read(s);
+        uint32_t src_face = vmsvga_fifo_read(s);
+        uint32_t src_mipmap = vmsvga_fifo_read(s);
+        // Source rect
+        int32_t src_left = (int32_t)vmsvga_fifo_read(s);
+        int32_t src_top = (int32_t)vmsvga_fifo_read(s);
+        int32_t src_right = (int32_t)vmsvga_fifo_read(s);
+        int32_t src_bottom = (int32_t)vmsvga_fifo_read(s);
+        // Dest screen id
+        uint32_t dest_screen_id = vmsvga_fifo_read(s);
+        // Dest rect
+        int32_t dest_left = (int32_t)vmsvga_fifo_read(s);
+        int32_t dest_top = (int32_t)vmsvga_fifo_read(s);
+        int32_t dest_right = (int32_t)vmsvga_fifo_read(s);
+        int32_t dest_bottom = (int32_t)vmsvga_fifo_read(s);
+        len -= 12;
+        // TODO: Read optional clipping rectangles
+        VPRINT("SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN command %u in SVGA "
+               "command FIFO src_sid=%u screen_id=%u\n",
+               cmd, src_sid, dest_screen_id);
+      }
       break;
     case SVGA_3D_CMD_SURFACE_DEFINE_V2:
-      if (len < 1) {
+      if (len < 11) {  // sid + surfaceFlags + format + 6 faces + multisampleCount + autogenFilter (minimum)
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_SURFACE_DEFINE_V2 command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      {
+        uint32_t sid = vmsvga_fifo_read(s);
+        uint32_t surfaceFlags = vmsvga_fifo_read(s);
+        uint32_t format = vmsvga_fifo_read(s);
+        uint32_t faces[6];
+        for (int i = 0; i < 6; i++) {
+          faces[i] = vmsvga_fifo_read(s);
+        }
+        uint32_t multisampleCount = vmsvga_fifo_read(s);
+        uint32_t autogenFilter = vmsvga_fifo_read(s);
+        len -= 11;
+        // TODO: Read additional mip level data based on face information
+        VPRINT("SVGA_3D_CMD_SURFACE_DEFINE_V2 command %u in SVGA "
+               "command FIFO sid=%u flags=%u format=%u\n",
+               cmd, sid, surfaceFlags, format);
+      }
       break;
     case SVGA_3D_CMD_GENERATE_MIPMAPS:
-      if (len < 1) {
+      if (len < 3) {  // sid + filter
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 1;
-      VPRINT("SVGA_3D_CMD_GENERATE_MIPMAPS command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      {
+        uint32_t sid = vmsvga_fifo_read(s);
+        uint32_t filter = vmsvga_fifo_read(s);
+        len -= 2;
+        VPRINT("SVGA_3D_CMD_GENERATE_MIPMAPS command %u in SVGA "
+               "command FIFO sid=%u filter=%u\n",
+               cmd, sid, filter);
+      }
       break;
     case SVGA_3D_CMD_DEAD4:
       if (len < 1) {
