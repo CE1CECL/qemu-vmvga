@@ -522,13 +522,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width,
              cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
       break;
-    case SVGA_CMD_FENCE:
+    case SVGA_CMD_FENCE: {
+      uint32_t offFifoMin = s->fifo[SVGA_FIFO_MIN];
       if (len < 2) {
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
       len -= 2;
-      uint32_t offFifoMin = s->fifo[SVGA_FIFO_MIN];
       fence_arg = vmsvga_fifo_read(s);
       s->fifo[SVGA_FIFO_FENCE] = fence_arg;
       if (VMSVGA_IS_VALID_FIFO_REG(SVGA_FIFO_FENCE, offFifoMin)) {
@@ -554,6 +554,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              "%u %u %u\n",
              cmd, s->irq_mask, irq_status, fence_arg, offFifoMin);
       break;
+    }
     case SVGA_CMD_DEFINE_GMR2:
       if (len < 3) {
         VMSVGA_FIFO_REWIND(s, cmd);
