@@ -224,6 +224,8 @@ struct vmsvga_cursor_definition_s {
 };
 
 /* Screen object structure for Windows 7 Aero support */
+#define SVGA_MAX_SCREEN_OBJECTS 32
+
 struct vmsvga_screen_object_s {
   uint32_t id;
   uint32_t flags;
@@ -238,7 +240,6 @@ struct vmsvga_screen_object_s {
   uint32_t defined; /* 0 = undefined, 1 = defined */
 };
 
-#define SVGA_MAX_SCREEN_OBJECTS 32
 static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
                                         struct vmsvga_cursor_definition_s *c) {
   VPRINT("vmsvga_cursor_define was just executed\n");
