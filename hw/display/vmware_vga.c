@@ -552,16 +552,21 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       break;
     }
     case SVGA_CMD_DEFINE_GMR2:
-      if (len < 3) {
+      if (len < 3) {  // gmrId + numPages
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 3;
-      UnknownCommandAW = vmsvga_fifo_read(s);
-      UnknownCommandAX = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_DEFINE_GMR2 command %u in SVGA command "
-             "FIFO %u %u\n",
-             cmd, UnknownCommandAW, UnknownCommandAX);
+      {
+        uint32_t gmr_id = vmsvga_fifo_read(s);
+        uint32_t num_pages = vmsvga_fifo_read(s);
+        
+        len -= 2;
+        
+        (void)gmr_id; (void)num_pages;
+        
+        VPRINT("SVGA_CMD_DEFINE_GMR2 command %u: gmr_id=%u num_pages=%u\n",
+               cmd, gmr_id, num_pages);
+      }
       break;
     case SVGA_CMD_REMAP_GMR2:
       if (len < 5) {
