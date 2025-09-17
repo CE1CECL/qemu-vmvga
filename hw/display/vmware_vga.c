@@ -137,6 +137,9 @@ struct vmsvga_state_s {
   VGACommonState vga;
   VGACommonState vcs;
   MemoryRegion fifo_ram;
+  /* Screen objects for Windows 7 Aero support */
+  struct vmsvga_screen_object_s screen_objects[SVGA_MAX_SCREEN_OBJECTS];
+  uint32_t primary_screen_id;
 };
 DECLARE_INSTANCE_CHECKER(struct pci_vmsvga_state_s, VMWARE_SVGA, "vmware-svga")
 struct pci_vmsvga_state_s {
@@ -155,6 +158,59 @@ static void cursor_update_from_fifo(struct vmsvga_state_s *s) {
                   s->fifo[SVGA_FIFO_CURSOR_Y], SVGA_CURSOR_ON_HIDE);
   };
 };
+
+/* Screen object management functions for Windows 7 Aero support */
+static struct vmsvga_screen_object_s *vmsvga_screen_object_find(struct vmsvga_state_s *s, uint32_t screen_id) {
+  int i;
+  for (i = 0; i < SVGA_MAX_SCREEN_OBJECTS; i++) {
+    if (s->screen_objects[i].defined && s->screen_objects[i].id == screen_id) {
+      return &s->screen_objects[i];
+    }
+  }
+  return NULL;
+}
+
+static struct vmsvga_screen_object_s *vmsvga_screen_object_allocate(struct vmsvga_state_s *s, uint32_t screen_id) {
+  int i;
+  /* First check if it already exists */
+  struct vmsvga_screen_object_s *existing = vmsvga_screen_object_find(s, screen_id);
+  if (existing) {
+    return existing;
+  }
+  
+  /* Find a free slot */
+  for (i = 0; i < SVGA_MAX_SCREEN_OBJECTS; i++) {
+    if (!s->screen_objects[i].defined) {
+      memset(&s->screen_objects[i], 0, sizeof(s->screen_objects[i]));
+      s->screen_objects[i].id = screen_id;
+      s->screen_objects[i].defined = 1;
+      return &s->screen_objects[i];
+    }
+  }
+  return NULL;
+}
+
+static void vmsvga_screen_object_destroy(struct vmsvga_state_s *s, uint32_t screen_id) {
+  struct vmsvga_screen_object_s *screen = vmsvga_screen_object_find(s, screen_id);
+  if (screen) {
+    VPRINT("Destroying screen object %u\n", screen_id);
+    screen->defined = 0;
+    memset(screen, 0, sizeof(*screen));
+  }
+}
+
+static void vmsvga_screen_object_update_display_size(struct vmsvga_state_s *s) {
+  /* Update display size based on primary screen object */
+  struct vmsvga_screen_object_s *primary = vmsvga_screen_object_find(s, s->primary_screen_id);
+  if (primary && primary->defined) {
+    if (s->new_width != primary->width || s->new_height != primary->height) {
+      VPRINT("Updating display size from screen object: %ux%u\n", primary->width, primary->height);
+      s->new_width = primary->width;
+      s->new_height = primary->height;
+      vmsvga_check_size(s);
+    }
+  }
+}
 struct vmsvga_cursor_definition_s {
   uint32_t width;
   uint32_t height;
@@ -166,6 +222,23 @@ struct vmsvga_cursor_definition_s {
   uint32_t and_mask[4096];
   uint32_t xor_mask[4096];
 };
+
+/* Screen object structure for Windows 7 Aero support */
+struct vmsvga_screen_object_s {
+  uint32_t id;
+  uint32_t flags;
+  uint32_t width;
+  uint32_t height;
+  int32_t root_x;
+  int32_t root_y;
+  uint32_t backing_gmr_id;
+  uint32_t backing_offset;
+  uint32_t backing_pitch;
+  uint32_t clone_count;
+  uint32_t defined; /* 0 = undefined, 1 = defined */
+};
+
+#define SVGA_MAX_SCREEN_OBJECTS 32
 static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
                                         struct vmsvga_cursor_definition_s *c) {
   VPRINT("vmsvga_cursor_define was just executed\n");
@@ -650,14 +723,32 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
           len -= 1;
         }
         
-        (void)structSize; (void)screen_id; (void)flags; (void)width; (void)height;
-        (void)root_x; (void)root_y; (void)backing_gmr_id; (void)backing_offset;
-        (void)backing_pitch; (void)clone_count;
-        
-        VPRINT("SVGA_CMD_DEFINE_SCREEN command %u: id=%u flags=0x%x size=%ux%u "
-               "root=(%d,%d) backing_gmr=%u offset=%u pitch=%u clone=%u\n",
-               cmd, screen_id, flags, width, height, root_x, root_y,
-               backing_gmr_id, backing_offset, backing_pitch, clone_count);
+        /* Actually create and store the screen object */
+        struct vmsvga_screen_object_s *screen = vmsvga_screen_object_allocate(s, screen_id);
+        if (screen) {
+          screen->flags = flags;
+          screen->width = width;
+          screen->height = height;
+          screen->root_x = root_x;
+          screen->root_y = root_y;
+          screen->backing_gmr_id = backing_gmr_id;
+          screen->backing_offset = backing_offset;
+          screen->backing_pitch = backing_pitch;
+          screen->clone_count = clone_count;
+          
+          /* If this is the primary screen or first screen, update display size */
+          if ((flags & SVGA_SCREEN_IS_PRIMARY) || s->primary_screen_id == 0xFFFFFFFF) {
+            s->primary_screen_id = screen_id;
+            vmsvga_screen_object_update_display_size(s);
+          }
+          
+          VPRINT("SVGA_CMD_DEFINE_SCREEN: Created screen object id=%u flags=0x%x size=%ux%u "
+                 "root=(%d,%d) backing_gmr=%u offset=%u pitch=%u clone=%u\n",
+                 screen_id, flags, width, height, root_x, root_y,
+                 backing_gmr_id, backing_offset, backing_pitch, clone_count);
+        } else {
+          VPRINT("SVGA_CMD_DEFINE_SCREEN: Failed to allocate screen object %u\n", screen_id);
+        }
       }
       break;
     case SVGA_CMD_DISPLAY_CURSOR:
@@ -682,10 +773,10 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         uint32_t screen_id = vmsvga_fifo_read(s);
         len -= 1;
         
-        (void)screen_id;
+        /* Actually destroy the screen object */
+        vmsvga_screen_object_destroy(s, screen_id);
         
-        VPRINT("SVGA_CMD_DESTROY_SCREEN command %u: screen_id=%u\n",
-               cmd, screen_id);
+        VPRINT("SVGA_CMD_DESTROY_SCREEN: Destroyed screen object %u\n", screen_id);
       }
       break;
     case SVGA_CMD_DEFINE_GMRFB:
@@ -727,8 +818,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         
         len -= 7;
         
-        (void)src_origin_x; (void)src_origin_y; (void)dest_left; (void)dest_top;
-        (void)dest_right; (void)dest_bottom; (void)dest_screen_id;
+        /* Validate the destination screen object exists */
+        struct vmsvga_screen_object_s *dest_screen = vmsvga_screen_object_find(s, dest_screen_id);
+        if (dest_screen) {
+          /* TODO: Implement actual blitting operation here */
+          /* For now, just validate the operation */
+          VPRINT("SVGA_CMD_BLIT_GMRFB_TO_SCREEN: Valid blit to screen %u\n", dest_screen_id);
+        }
         
         VPRINT("SVGA_CMD_BLIT_GMRFB_TO_SCREEN command %u: srcOrigin=(%d,%d) "
                "destRect=(%d,%d,%d,%d) destScreen=%u\n",
@@ -752,8 +848,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         
         len -= 7;
         
-        (void)dest_origin_x; (void)dest_origin_y; (void)src_left; (void)src_top;
-        (void)src_right; (void)src_bottom; (void)src_screen_id;
+        /* Validate the source screen object exists */
+        struct vmsvga_screen_object_s *src_screen = vmsvga_screen_object_find(s, src_screen_id);
+        if (src_screen) {
+          /* TODO: Implement actual blitting operation here */
+          /* For now, just validate the operation */
+          VPRINT("SVGA_CMD_BLIT_SCREEN_TO_GMRFB: Valid blit from screen %u\n", src_screen_id);
+        }
         
         VPRINT("SVGA_CMD_BLIT_SCREEN_TO_GMRFB command %u: destOrigin=(%d,%d) "
                "srcRect=(%d,%d,%d,%d) srcScreen=%u\n",
@@ -789,7 +890,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         
         len -= 3;
         
-        (void)src_origin_x; (void)src_origin_y; (void)src_screen_id;
+        /* Validate the source screen object exists */
+        struct vmsvga_screen_object_s *src_screen = vmsvga_screen_object_find(s, src_screen_id);
+        if (src_screen) {
+          /* TODO: Implement actual annotation copy operation here */
+          VPRINT("SVGA_CMD_ANNOTATION_COPY: Valid annotation copy from screen %u\n", src_screen_id);
+        }
         
         VPRINT("SVGA_CMD_ANNOTATION_COPY command %u: srcOrigin=(%d,%d) srcScreen=%u\n",
                cmd, src_origin_x, src_origin_y, src_screen_id);
@@ -1411,11 +1517,21 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         int32_t dest_top = (int32_t)vmsvga_fifo_read(s);
         int32_t dest_right = (int32_t)vmsvga_fifo_read(s);
         int32_t dest_bottom = (int32_t)vmsvga_fifo_read(s);
+        
+        len -= 12;
+        
+        /* Validate the destination screen object exists */
+        struct vmsvga_screen_object_s *dest_screen = vmsvga_screen_object_find(s, dest_screen_id);
+        if (dest_screen) {
+          /* TODO: Implement actual 3D surface to screen blitting here */
+          VPRINT("SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN: Valid 3D blit to screen %u\n", dest_screen_id);
+        }
+        
         // Suppress unused warnings for detailed parameters  
         (void)src_face; (void)src_mipmap;
         (void)src_left; (void)src_top; (void)src_right; (void)src_bottom;
         (void)dest_left; (void)dest_top; (void)dest_right; (void)dest_bottom;
-        len -= 12;
+        
         // TODO: Read optional clipping rectangles
         VPRINT("SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN command %u in SVGA "
                "command FIFO src_sid=%u screen_id=%u\n",
@@ -4862,6 +4978,10 @@ static void vmsvga_update_display(void *opaque) {
       (s->new_width >= 1 && s->new_height >= 1 && s->new_depth >= 1)) {
     vmsvga_check_size(s);
     vmsvga_fifo_run(s);
+    
+    /* Update display size based on screen objects */
+    vmsvga_screen_object_update_display_size(s);
+    
     cursor_update_from_fifo(s);
   } else {
     s->vcs = s->vga;
@@ -4970,6 +5090,11 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
     s->new_width = 1024;
     s->new_height = 768;
     s->new_depth = 32;
+    
+    /* Initialize screen objects for Windows 7 Aero support */
+    memset(s->screen_objects, 0, sizeof(s->screen_objects));
+    s->primary_screen_id = 0xFFFFFFFF; /* No primary screen initially */
+    
     pthread_t threads[1];
     s->fc = 0xffffffff;
     s->ff = 0xffffffff;
