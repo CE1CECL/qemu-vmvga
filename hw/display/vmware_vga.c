@@ -95,6 +95,24 @@
 static void vprint_noop(const char *fmt, ...) { (void)fmt; }
 #define VPRINT(fmt, ...) vprint_noop(fmt, ##__VA_ARGS__)
 #endif
+
+/* Screen object structure for Windows 7 Aero support */
+#define SVGA_MAX_SCREEN_OBJECTS 32
+
+struct vmsvga_screen_object_s {
+  uint32_t id;
+  uint32_t flags;
+  uint32_t width;
+  uint32_t height;
+  int32_t root_x;
+  int32_t root_y;
+  uint32_t backing_gmr_id;
+  uint32_t backing_offset;
+  uint32_t backing_pitch;
+  uint32_t clone_count;
+  uint32_t defined; /* 0 = undefined, 1 = defined */
+};
+
 struct vmsvga_state_s {
   uint32_t svgapalettebase[SVGA_PALETTE_SIZE];
   uint32_t enable;
@@ -221,23 +239,6 @@ struct vmsvga_cursor_definition_s {
   uint32_t xor_mask_bpp;
   uint32_t and_mask[4096];
   uint32_t xor_mask[4096];
-};
-
-/* Screen object structure for Windows 7 Aero support */
-#define SVGA_MAX_SCREEN_OBJECTS 32
-
-struct vmsvga_screen_object_s {
-  uint32_t id;
-  uint32_t flags;
-  uint32_t width;
-  uint32_t height;
-  int32_t root_x;
-  int32_t root_y;
-  uint32_t backing_gmr_id;
-  uint32_t backing_offset;
-  uint32_t backing_pitch;
-  uint32_t clone_count;
-  uint32_t defined; /* 0 = undefined, 1 = defined */
 };
 
 static inline void vmsvga_cursor_define(struct vmsvga_state_s *s,
