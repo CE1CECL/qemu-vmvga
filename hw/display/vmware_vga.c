@@ -620,26 +620,40 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, UnknownCommandA, UnknownCommandB, UnknownCommandAV);
       break;
     case SVGA_CMD_DEFINE_SCREEN:
-      if (len < 10) {
+      if (len < 10) {  // Minimum for SVGAScreenObject: structSize + id + flags + size(2) + root(2) + backingStore(3)
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 10;
-      UnknownCommandD = vmsvga_fifo_read(s);
-      UnknownCommandE = vmsvga_fifo_read(s);
-      UnknownCommandF = vmsvga_fifo_read(s);
-      UnknownCommandG = vmsvga_fifo_read(s);
-      UnknownCommandH = vmsvga_fifo_read(s);
-      UnknownCommandI = vmsvga_fifo_read(s);
-      UnknownCommandJ = vmsvga_fifo_read(s);
-      UnknownCommandK = vmsvga_fifo_read(s);
-      UnknownCommandL = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_DEFINE_SCREEN command %u in SVGA command "
-             "FIFO %u %u "
-             "%u %u %u %u %u %u %u\n",
-             cmd, UnknownCommandD, UnknownCommandE, UnknownCommandF,
-             UnknownCommandG, UnknownCommandH, UnknownCommandI, UnknownCommandJ,
-             UnknownCommandK, UnknownCommandL);
+      {
+        uint32_t structSize = vmsvga_fifo_read(s);
+        uint32_t screen_id = vmsvga_fifo_read(s);
+        uint32_t flags = vmsvga_fifo_read(s);
+        uint32_t width = vmsvga_fifo_read(s);
+        uint32_t height = vmsvga_fifo_read(s);
+        int32_t root_x = (int32_t)vmsvga_fifo_read(s);
+        int32_t root_y = (int32_t)vmsvga_fifo_read(s);
+        uint32_t backing_gmr_id = vmsvga_fifo_read(s);
+        uint32_t backing_offset = vmsvga_fifo_read(s);
+        uint32_t backing_pitch = vmsvga_fifo_read(s);
+        
+        len -= 10;
+        
+        // Handle additional fields if present
+        uint32_t clone_count = 0;
+        if (len > 0 && structSize > 40) { // Has cloneCount field
+          clone_count = vmsvga_fifo_read(s);
+          len -= 1;
+        }
+        
+        (void)structSize; (void)screen_id; (void)flags; (void)width; (void)height;
+        (void)root_x; (void)root_y; (void)backing_gmr_id; (void)backing_offset;
+        (void)backing_pitch; (void)clone_count;
+        
+        VPRINT("SVGA_CMD_DEFINE_SCREEN command %u: id=%u flags=0x%x size=%ux%u "
+               "root=(%d,%d) backing_gmr=%u offset=%u pitch=%u clone=%u\n",
+               cmd, screen_id, flags, width, height, root_x, root_y,
+               backing_gmr_id, backing_offset, backing_pitch, clone_count);
+      }
       break;
     case SVGA_CMD_DISPLAY_CURSOR:
       if (len < 3) {
@@ -655,100 +669,126 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, UnknownCommandC, UnknownCommandN);
       break;
     case SVGA_CMD_DESTROY_SCREEN:
-      if (len < 2) {
+      if (len < 2) {  // screenId
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 2;
-      UnknownCommandO = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_DESTROY_SCREEN command %u in SVGA command "
-             "FIFO %u\n",
-             cmd, UnknownCommandO);
+      {
+        uint32_t screen_id = vmsvga_fifo_read(s);
+        len -= 1;
+        
+        (void)screen_id;
+        
+        VPRINT("SVGA_CMD_DESTROY_SCREEN command %u: screen_id=%u\n",
+               cmd, screen_id);
+      }
       break;
     case SVGA_CMD_DEFINE_GMRFB:
-      if (len < 6) {
+      if (len < 6) {  // SVGAGuestPtr (2) + bytesPerLine + format (3 total for format)
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 6;
-      UnknownCommandP = vmsvga_fifo_read(s);
-      UnknownCommandQ = vmsvga_fifo_read(s);
-      UnknownCommandR = vmsvga_fifo_read(s);
-      UnknownCommandS = vmsvga_fifo_read(s);
-      UnknownCommandT = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_DEFINE_GMRFB command %u in SVGA command "
-             "FIFO %u %u "
-             "%u %u %u\n",
-             cmd, UnknownCommandP, UnknownCommandQ, UnknownCommandR,
-             UnknownCommandS, UnknownCommandT);
+      {
+        uint32_t gmr_id = vmsvga_fifo_read(s);
+        uint32_t offset = vmsvga_fifo_read(s);
+        uint32_t bytes_per_line = vmsvga_fifo_read(s);
+        uint32_t format_bpp = vmsvga_fifo_read(s);
+        uint32_t format_colorDepth = vmsvga_fifo_read(s);
+        uint32_t format_reserved = vmsvga_fifo_read(s);
+        
+        len -= 6;
+        
+        (void)gmr_id; (void)offset; (void)bytes_per_line;
+        (void)format_bpp; (void)format_colorDepth; (void)format_reserved;
+        
+        VPRINT("SVGA_CMD_DEFINE_GMRFB command %u: gmr_id=%u offset=%u "
+               "bytesPerLine=%u format(bpp=%u, depth=%u)\n",
+               cmd, gmr_id, offset, bytes_per_line, format_bpp, format_colorDepth);
+      }
       break;
     case SVGA_CMD_BLIT_GMRFB_TO_SCREEN:
-      if (len < 8) {
+      if (len < 8) {  // srcOrigin(2) + destRect(4) + destScreenId + pad
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 8;
-      UnknownCommandU = vmsvga_fifo_read(s);
-      UnknownCommandV = vmsvga_fifo_read(s);
-      UnknownCommandW = vmsvga_fifo_read(s);
-      UnknownCommandX = vmsvga_fifo_read(s);
-      UnknownCommandY = vmsvga_fifo_read(s);
-      UnknownCommandZ = vmsvga_fifo_read(s);
-      UnknownCommandAA = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_BLIT_GMRFB_TO_SCREEN command %u in SVGA "
-             "command "
-             "FIFO %u %u %u %u %u %u %u\n",
-             cmd, UnknownCommandU, UnknownCommandV, UnknownCommandW,
-             UnknownCommandX, UnknownCommandY, UnknownCommandZ,
-             UnknownCommandAA);
+      {
+        int32_t src_origin_x = (int32_t)vmsvga_fifo_read(s);
+        int32_t src_origin_y = (int32_t)vmsvga_fifo_read(s);
+        int32_t dest_left = (int32_t)vmsvga_fifo_read(s);
+        int32_t dest_top = (int32_t)vmsvga_fifo_read(s);
+        int32_t dest_right = (int32_t)vmsvga_fifo_read(s);
+        int32_t dest_bottom = (int32_t)vmsvga_fifo_read(s);
+        uint32_t dest_screen_id = vmsvga_fifo_read(s);
+        
+        len -= 7;
+        
+        (void)src_origin_x; (void)src_origin_y; (void)dest_left; (void)dest_top;
+        (void)dest_right; (void)dest_bottom; (void)dest_screen_id;
+        
+        VPRINT("SVGA_CMD_BLIT_GMRFB_TO_SCREEN command %u: srcOrigin=(%d,%d) "
+               "destRect=(%d,%d,%d,%d) destScreen=%u\n",
+               cmd, src_origin_x, src_origin_y, dest_left, dest_top,
+               dest_right, dest_bottom, dest_screen_id);
+      }
       break;
     case SVGA_CMD_BLIT_SCREEN_TO_GMRFB:
-      if (len < 8) {
+      if (len < 8) {  // destOrigin(2) + srcRect(4) + srcScreenId + pad
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 8;
-      UnknownCommandAB = vmsvga_fifo_read(s);
-      UnknownCommandAC = vmsvga_fifo_read(s);
-      UnknownCommandAD = vmsvga_fifo_read(s);
-      UnknownCommandAE = vmsvga_fifo_read(s);
-      UnknownCommandAF = vmsvga_fifo_read(s);
-      UnknownCommandAG = vmsvga_fifo_read(s);
-      UnknownCommandAH = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_BLIT_SCREEN_TO_GMRFB command %u in SVGA "
-             "command "
-             "FIFO %u %u %u %u %u %u %u\n",
-             cmd, UnknownCommandAB, UnknownCommandAC, UnknownCommandAD,
-             UnknownCommandAE, UnknownCommandAF, UnknownCommandAG,
-             UnknownCommandAH);
+      {
+        int32_t dest_origin_x = (int32_t)vmsvga_fifo_read(s);
+        int32_t dest_origin_y = (int32_t)vmsvga_fifo_read(s);
+        int32_t src_left = (int32_t)vmsvga_fifo_read(s);
+        int32_t src_top = (int32_t)vmsvga_fifo_read(s);
+        int32_t src_right = (int32_t)vmsvga_fifo_read(s);
+        int32_t src_bottom = (int32_t)vmsvga_fifo_read(s);
+        uint32_t src_screen_id = vmsvga_fifo_read(s);
+        
+        len -= 7;
+        
+        (void)dest_origin_x; (void)dest_origin_y; (void)src_left; (void)src_top;
+        (void)src_right; (void)src_bottom; (void)src_screen_id;
+        
+        VPRINT("SVGA_CMD_BLIT_SCREEN_TO_GMRFB command %u: destOrigin=(%d,%d) "
+               "srcRect=(%d,%d,%d,%d) srcScreen=%u\n",
+               cmd, dest_origin_x, dest_origin_y, src_left, src_top,
+               src_right, src_bottom, src_screen_id);
+      }
       break;
     case SVGA_CMD_ANNOTATION_FILL:
-      if (len < 4) {
+      if (len < 1) {  // SVGAColorBGRX color (1 word)
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 4;
-      UnknownCommandAI = vmsvga_fifo_read(s);
-      UnknownCommandAJ = vmsvga_fifo_read(s);
-      UnknownCommandAK = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_ANNOTATION_FILL command %u in SVGA "
-             "command FIFO %u "
-             "%u %u\n",
-             cmd, UnknownCommandAI, UnknownCommandAJ, UnknownCommandAK);
+      {
+        uint32_t color = vmsvga_fifo_read(s);  // BGRX format
+        
+        len -= 1;
+        
+        (void)color;
+        
+        VPRINT("SVGA_CMD_ANNOTATION_FILL command %u: color=0x%08x\n",
+               cmd, color);
+      }
       break;
     case SVGA_CMD_ANNOTATION_COPY:
-      if (len < 4) {
+      if (len < 3) {  // srcOrigin(2) + srcScreenId
         VMSVGA_FIFO_REWIND(s, cmd);
         break;
       }
-      len -= 4;
-      UnknownCommandAL = vmsvga_fifo_read(s);
-      UnknownCommandAM = vmsvga_fifo_read(s);
-      UnknownCommandAN = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_ANNOTATION_COPY command %u in SVGA "
-             "command FIFO %u "
-             "%u %u\n",
-             cmd, UnknownCommandAL, UnknownCommandAM, UnknownCommandAN);
+      {
+        int32_t src_origin_x = (int32_t)vmsvga_fifo_read(s);
+        int32_t src_origin_y = (int32_t)vmsvga_fifo_read(s);
+        uint32_t src_screen_id = vmsvga_fifo_read(s);
+        
+        len -= 3;
+        
+        (void)src_origin_x; (void)src_origin_y; (void)src_screen_id;
+        
+        VPRINT("SVGA_CMD_ANNOTATION_COPY command %u: srcOrigin=(%d,%d) srcScreen=%u\n",
+               cmd, src_origin_x, src_origin_y, src_screen_id);
+      }
       break;
     case SVGA_CMD_MOVE_CURSOR:
       if (len < 3) {
@@ -3971,9 +4011,10 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     caps -= SVGA_CAP_UNKNOWN_A;       // Windows 9x
     caps -= SVGA_CAP_UNKNOWN_C;       // Windows 9x
     caps -= SVGA_CAP_RECT_COPY;       // Windows 9x & Windows (XPDM)
-    caps -= SVGA_CAP_SCREEN_OBJECT_2; // Linux
-    caps -= SVGA_CAP_CMD_BUFFERS_2;   // Windows (WDDM)
-    caps -= SVGA_CAP_GBOBJECTS;       // Linux, Windows (XPDM) & Windows (WDDM)
+    // Enable capabilities needed for Windows 7 Aero:
+    // caps -= SVGA_CAP_SCREEN_OBJECT_2; // Enable for Windows 7 Aero
+    // caps -= SVGA_CAP_CMD_BUFFERS_2;   // Enable for Windows 7 Aero
+    // caps -= SVGA_CAP_GBOBJECTS;       // Enable for Windows 7 Aero
 #endif
     ret = caps;
     VPRINT("SVGA_REG_CAPABILITIES register %u with the return of "
@@ -4928,9 +4969,10 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
     s->fc = 0xffffffff;
     s->ff = 0xffffffff;
 #ifndef EXPCAPS
-    s->ff -= SVGA_FIFO_FLAG_ACCELFRONT;     // Windows (XPDM)
-    s->fc -= SVGA_FIFO_CAP_SCREEN_OBJECT;   // Windows (WDDM)
-    s->fc -= SVGA_FIFO_CAP_SCREEN_OBJECT_2; // Windows (WDDM)
+    // Enable FIFO capabilities needed for Windows 7 Aero:
+    // s->ff -= SVGA_FIFO_FLAG_ACCELFRONT;     // Enable for Windows 7 Aero  
+    // s->fc -= SVGA_FIFO_CAP_SCREEN_OBJECT;   // Enable for Windows 7 Aero
+    // s->fc -= SVGA_FIFO_CAP_SCREEN_OBJECT_2; // Enable for Windows 7 Aero
 #endif
     pthread_create(threads, NULL, vmsvga_loop, (void *)s);
   };
