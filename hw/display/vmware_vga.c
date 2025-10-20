@@ -4608,9 +4608,11 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
            value);
     break;
   case SVGA_REG_SYNC:
+    // s->sync = value;
     VPRINT("SVGA_REG_SYNC register %u with the value of %u\n", s->index, value);
     break;
   case SVGA_REG_BUSY:
+    // s->sync = value;
     VPRINT("SVGA_REG_BUSY register %u with the value of %u\n", s->index, value);
     break;
   case SVGA_REG_GUEST_ID:
