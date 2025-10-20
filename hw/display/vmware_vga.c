@@ -3239,6 +3239,18 @@ static void *vmsvga_loop(void *arg) {
   // VPRINT("vmsvga_loop was just executed\n");
   struct vmsvga_state_s *s = (struct vmsvga_state_s *)arg;
   while (true) {
+    // s->fifo[SVGA_FIFO_MIN] = 4096;
+    // s->fifo[SVGA_FIFO_MAX] = 2097152;
+    // s->fifo[SVGA_FIFO_NEXT_CMD] = 4096;
+    // s->fifo[SVGA_FIFO_STOP] = 4096;
+    // s->fifo[SVGA_FIFO_CAPABILITIES] = 1919;
+    // s->fifo[SVGA_FIFO_FENCE] = 4294967198;
+    s->fifo[SVGA_FIFO_3D_HWVERSION] = 131073; // SVGA3D_HWVERSION_WS8_B1
+    s->fifo[SVGA_FIFO_RESERVED] = 4294967295; // -1
+    s->fifo[SVGA_FIFO_CURSOR_SCREEN_ID] = 4294967295; // -1
+    // s->fifo[SVGA_FIFO_DEAD] = 2;
+    s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = 131073; // SVGA3D_HWVERSION_WS8_B1
+    // SVGA_FIFO_3D_CAPS 
     s->fifo[32] = 186;
     s->fifo[33] = 256;
     s->fifo[35] = 1;
@@ -3275,19 +3287,19 @@ static void *vmsvga_loop(void *arg) {
     s->fifo[66] = 16;
     s->fifo[67] = 1;
     s->fifo[68] = 17;
-    s->fifo[69] = 1128071168;
+    s->fifo[69] = 1065353216;
     s->fifo[70] = 18;
     s->fifo[71] = 20;
     s->fifo[72] = 19;
-    s->fifo[73] = 32768;
+    s->fifo[73] = 16384;
     s->fifo[74] = 20;
-    s->fifo[75] = 32768;
+    s->fifo[75] = 16384;
     s->fifo[76] = 21;
-    s->fifo[77] = 16384;
+    s->fifo[77] = 2048;
     s->fifo[78] = 22;
-    s->fifo[79] = 32768;
+    s->fifo[79] = 16384;
     s->fifo[80] = 23;
-    s->fifo[81] = 32768;
+    s->fifo[81] = 16384;
     s->fifo[82] = 24;
     s->fifo[83] = 16;
     s->fifo[84] = 25;
@@ -3408,28 +3420,23 @@ static void *vmsvga_loop(void *arg) {
     s->fifo[208] = 87;
     s->fifo[209] = 1;
     s->fifo[210] = 88;
-    s->fifo[211] = 1;
     s->fifo[212] = 89;
     s->fifo[213] = 1092616192;
     s->fifo[214] = 90;
     s->fifo[215] = 1092616192;
     s->fifo[216] = 91;
-    s->fifo[217] = 19161088;
+    s->fifo[217] = 19161088;	
+    // SVGA_FIFO_3D_CAPS 
+    // s->fifo[SVGA_FIFO_FENCE_GOAL] = 4294967198;
     if (s->pitchlock >= 1) {
       s->fifo[SVGA_FIFO_PITCHLOCK] = s->pitchlock;
     } else {
       s->fifo[SVGA_FIFO_PITCHLOCK] = (((s->new_depth) * (s->new_width)) / (8));
     };
-    s->fifo[SVGA_FIFO_3D_HWVERSION] = SVGA3D_HWVERSION_WS8_B1;
-    s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = SVGA3D_HWVERSION_WS8_B1;
-    // s -> fifo[SVGA_FIFO_FLAGS] = 0;
     s->fifo[SVGA_FIFO_FLAGS] = s->ff;
-    s->fifo[SVGA_FIFO_BUSY] = s->sync;
-    // s -> fifo[SVGA_FIFO_CAPABILITIES] = 1919;
     s->fifo[SVGA_FIFO_CAPABILITIES] = s->fc;
-    // s->fifo[SVGA_FIFO_DEAD] = 2;
+    s->fifo[SVGA_FIFO_BUSY] = s->sync;
     s->fifo[SVGA_FIFO_DEAD] = 0;
-    s->fifo[SVGA_FIFO_CURSOR_SCREEN_ID] = -1;
     if ((s->enable >= 1 || s->config >= 1) &&
         (s->new_width >= 1 && s->new_height >= 1 && s->new_depth >= 1)) {
       if (s->pitchlock >= 1) {
@@ -3447,34 +3454,22 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
   uint32_t cap2;
   struct vmsvga_state_s *s = opaque;
   VPRINT("Unknown register %u\n", s->index);
-
-  if (s->index >= SVGA_REG_PALETTE_MIN && s->index <= SVGA_REG_PALETTE_MAX) {
-    uint32_t idx = s->index - SVGA_REG_PALETTE_MIN;
-    ret = s->svgapalettebase[idx];
-    VPRINT("SVGA_REG_PALETTE_%u read %u\n", idx, ret);
-    return ret;
-  }
-
   switch (s->index) {
   case SVGA_REG_FENCE_GOAL:
-    // ret = 0;
     ret = s->fifo[SVGA_FIFO_FENCE_GOAL];
     VPRINT("SVGA_REG_FENCE_GOAL register %u with the return of %u\n", s->index,
            ret);
     break;
   case SVGA_REG_ID:
-    // ret = -1879048190;
     ret = s->svgaid;
     VPRINT("SVGA_REG_ID register %u with the return of %u\n", s->index, ret);
     break;
   case SVGA_REG_ENABLE:
-    // ret = 1;
     ret = s->enable;
     VPRINT("SVGA_REG_ENABLE register %u with the return of %u\n", s->index,
            ret);
     break;
   case SVGA_REG_WIDTH:
-    // ret = 1024;
     if (s->new_width >= 1) {
       ret = s->new_width;
     } else {
@@ -3485,7 +3480,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     VPRINT("SVGA_REG_WIDTH register %u with the return of %u\n", s->index, ret);
     break;
   case SVGA_REG_HEIGHT:
-    // ret = 768;
     if (s->new_height >= 1) {
       ret = s->new_height;
     } else {
@@ -3521,7 +3515,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_BITS_PER_PIXEL:
-    // ret = 32;
     if (s->new_depth >= 1) {
       ret = s->new_depth;
     } else {
@@ -3534,20 +3527,12 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_HOST_BITS_PER_PIXEL:
-    // ret = 32;
-    if (s->new_depth >= 1) {
-      ret = s->new_depth;
-    } else {
-      ret = 32;
-      s->enable = 0;
-      s->config = 0;
-    };
+    ret = 32;
     VPRINT("SVGA_REG_HOST_BITS_PER_PIXEL register %u with the "
            "return of %u\n",
            s->index, ret);
     break;
   case SVGA_REG_DEPTH:
-    // ret = 0;
     if ((s->new_depth) == (32)) {
       ret = 24;
     } else if (s->new_depth >= 1) {
@@ -3560,7 +3545,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     VPRINT("SVGA_REG_DEPTH register %u with the return of %u\n", s->index, ret);
     break;
   case SVGA_REG_PSEUDOCOLOR:
-    // ret = 0;
     if (s->new_depth == 8) {
       ret = 1;
     } else {
@@ -3571,7 +3555,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_RED_MASK:
-    // ret = 16711680;
     if (s->new_depth == 8) {
       ret = 0x00000007;
     } else if (s->new_depth == 15) {
@@ -3585,7 +3568,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            ret);
     break;
   case SVGA_REG_GREEN_MASK:
-    // ret = 65280;
     if (s->new_depth == 8) {
       ret = 0x00000038;
     } else if (s->new_depth == 15) {
@@ -3599,7 +3581,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            ret);
     break;
   case SVGA_REG_BLUE_MASK:
-    // ret = 255;
     if (s->new_depth == 8) {
       ret = 0x000000c0;
     } else if (s->new_depth == 15) {
@@ -3613,7 +3594,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            ret);
     break;
   case SVGA_REG_BYTES_PER_LINE:
-    // ret = 4096;
     if (s->pitchlock >= 1) {
       ret = s->pitchlock;
     } else {
@@ -3624,7 +3604,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_FB_START: {
-    // ret = -268435456;
     struct pci_vmsvga_state_s *pci_vmsvga =
         container_of(s, struct pci_vmsvga_state_s, chip);
     ret = pci_get_bar_addr(PCI_DEVICE(pci_vmsvga), 1);
@@ -3649,7 +3628,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            ret);
     break;
   case SVGA_REG_FB_SIZE:
-    // ret = 3145728;
     if (s->pitchlock >= 1) {
       ret = ((s->new_height) * (s->pitchlock));
     } else {
@@ -3659,7 +3637,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            ret);
     break;
   case SVGA_REG_MOB_MAX_SIZE:
-    ret = 1073741824;
+    ret = s->vga.vram_size * 2;
     VPRINT("SVGA_REG_MOB_MAX_SIZE register %u with the return of "
            "%u\n",
            s->index, ret);
@@ -3671,7 +3649,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_SUGGESTED_GBOBJECT_MEM_SIZE_KB:
-    // ret = 3145728;
     if (s->pitchlock >= 1) {
       ret = ((s->new_height) * (s->pitchlock));
     } else {
@@ -3683,7 +3660,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_MSHINT:
-    // ret = 0;
     ret = 1;
     VPRINT("SVGA_REG_MSHINT register %u with the return of %u\n", s->index,
            ret);
@@ -3696,12 +3672,11 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_CAPABILITIES:
-    // ret = 4261397474;
     caps = 0xffffffff;
 #ifndef EXPCAPS
     caps -= SVGA_CAP_UNKNOWN_A;       // Windows 9x
-    caps -= SVGA_CAP_UNKNOWN_C;       // Windows 9x
     caps -= SVGA_CAP_RECT_COPY;       // Windows 9x & Windows (XPDM)
+    caps -= SVGA_CAP_UNKNOWN_C;       // Windows 9x
     caps -= SVGA_CAP_SCREEN_OBJECT_2; // Linux
     caps -= SVGA_CAP_CMD_BUFFERS_2;   // Windows (WDDM)
     caps -= SVGA_CAP_GBOBJECTS;       // Linux, Windows (XPDM) & Windows (WDDM)
@@ -3712,13 +3687,11 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_CAP2:
-    // ret = 389119;
     cap2 = 0xffffffff;
     ret = cap2;
     VPRINT("SVGA_REG_CAP2 register %u with the return of %u\n", s->index, ret);
     break;
   case SVGA_REG_MEM_START: {
-    // ret = -75497472;
     struct pci_vmsvga_state_s *pci_vmsvga =
         container_of(s, struct pci_vmsvga_state_s, chip);
     ret = pci_get_bar_addr(PCI_DEVICE(pci_vmsvga), 2);
@@ -3727,54 +3700,45 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     break;
   };
   case SVGA_REG_MEM_SIZE:
-    // ret = 262144;
     ret = s->fifo_size;
     VPRINT("SVGA_REG_MEM_SIZE register %u with the return of %u\n", s->index,
            ret);
     break;
   case SVGA_REG_CONFIG_DONE:
-    // ret = 0;
     ret = s->config;
     VPRINT("SVGA_REG_CONFIG_DONE register %u with the return of "
            "%u\n",
            s->index, ret);
     break;
   case SVGA_REG_SYNC:
-    // ret = 0;
     ret = s->sync;
     VPRINT("SVGA_REG_SYNC register %u with the return of %u\n", s->index, ret);
     break;
   case SVGA_REG_BUSY:
-    // ret = 0;
     ret = s->sync;
     VPRINT("SVGA_REG_BUSY register %u with the return of %u\n", s->index, ret);
     break;
   case SVGA_REG_GUEST_ID:
-    // ret = 0;
     ret = s->guest;
     VPRINT("SVGA_REG_GUEST_ID register %u with the return of %u\n", s->index,
            ret);
     break;
   case SVGA_REG_CURSOR_ID:
-    // ret = 0;
     ret = s->cursor;
     VPRINT("SVGA_REG_CURSOR_ID register %u with the return of %u\n", s->index,
            ret);
     break;
   case SVGA_REG_CURSOR_X:
-    // ret = 0;
     ret = s->fifo[SVGA_FIFO_CURSOR_X];
     VPRINT("SVGA_REG_CURSOR_X register %u with the return of %u\n", s->index,
            ret);
     break;
   case SVGA_REG_CURSOR_Y:
-    // ret = 0;
     ret = s->fifo[SVGA_FIFO_CURSOR_Y];
     VPRINT("SVGA_REG_CURSOR_Y register %u with the return of %u\n", s->index,
            ret);
     break;
   case SVGA_REG_CURSOR_ON:
-    // ret = 0;
     if ((s->fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_SHOW) ||
         (s->fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_RESTORE_TO_FB)) {
       ret = SVGA_CURSOR_ON_SHOW;
@@ -3785,26 +3749,23 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            ret);
     break;
   case SVGA_REG_SCRATCH_SIZE:
-    // ret = 64;
     ret = s->scratch_size;
     VPRINT("SVGA_REG_SCRATCH_SIZE register %u with the return of "
            "%u\n",
            s->index, ret);
     break;
   case SVGA_REG_MEM_REGS:
-    ret = 291;
+    ret = SVGA_FIFO_NUM_REGS;
     VPRINT("SVGA_REG_MEM_REGS register %u with the return of %u\n", s->index,
            ret);
     break;
   case SVGA_REG_NUM_DISPLAYS:
-    // ret = 10;
     ret = 1;
     VPRINT("SVGA_REG_NUM_DISPLAYS register %u with the return of "
            "%u\n",
            s->index, ret);
     break;
   case SVGA_REG_PITCHLOCK:
-    // ret = 0;
     if (s->pitchlock >= 1) {
       ret = s->pitchlock;
     } else {
@@ -3814,47 +3775,40 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            ret);
     break;
   case SVGA_REG_IRQMASK:
-    // ret = 0;
     ret = s->irq_mask;
     VPRINT("SVGA_REG_IRQMASK register %u with the return of %u\n", s->index,
            ret);
     break;
   case SVGA_REG_NUM_GUEST_DISPLAYS:
-    // ret = 0;
     ret = 1;
     VPRINT("SVGA_REG_NUM_GUEST_DISPLAYS register %u with the "
            "return of %u\n",
            s->index, ret);
     break;
   case SVGA_REG_DISPLAY_ID:
-    // ret = 0;
     ret = s->display_id;
     VPRINT("SVGA_REG_DISPLAY_ID register %u with the return of %u\n", s->index,
            ret);
     break;
   case SVGA_REG_DISPLAY_IS_PRIMARY:
-    // ret = 0;
     ret = s->disp_prim;
     VPRINT("SVGA_REG_DISPLAY_IS_PRIMARY register %u with the "
            "return of %u\n",
            s->index, ret);
     break;
   case SVGA_REG_DISPLAY_POSITION_X:
-    // ret = 0;
     ret = s->disp_x;
     VPRINT("SVGA_REG_DISPLAY_POSITION_X register %u with the "
            "return of %u\n",
            s->index, ret);
     break;
   case SVGA_REG_DISPLAY_POSITION_Y:
-    // ret = 0;
     ret = s->disp_y;
     VPRINT("SVGA_REG_DISPLAY_POSITION_Y register %u with the "
            "return of %u\n",
            s->index, ret);
     break;
   case SVGA_REG_DISPLAY_WIDTH:
-    // ret = 0;
     if (s->new_width >= 1) {
       ret = s->new_width;
     } else {
@@ -3867,7 +3821,6 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_DISPLAY_HEIGHT:
-    // ret = 0;
     if (s->new_height >= 1) {
       ret = s->new_height;
     } else {
@@ -3880,13 +3833,12 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_GMRS_MAX_PAGES:
-    ret = 65536;
+    ret = 196608;
     VPRINT("SVGA_REG_GMRS_MAX_PAGES register %u with the return "
            "of %u\n",
            s->index, ret);
     break;
   case SVGA_REG_GMR_ID:
-    // ret = 0;
     ret = s->gmrid;
     VPRINT("SVGA_REG_GMR_ID register %u with the return of %u\n", s->index,
            ret);
@@ -3905,20 +3857,17 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_TRACES:
-    // ret = 0;
     ret = s->traces;
     VPRINT("SVGA_REG_TRACES register %u with the return of %u\n", s->index,
            ret);
     break;
   case SVGA_REG_COMMAND_LOW:
-    // ret = 0;
     ret = s->cmd_low;
     VPRINT("SVGA_REG_COMMAND_LOW register %u with the return of "
            "%u\n",
            s->index, ret);
     break;
   case SVGA_REG_COMMAND_HIGH:
-    // ret = 0;
     ret = s->cmd_high;
     VPRINT("SVGA_REG_COMMAND_HIGH register %u with the return of "
            "%u\n",
@@ -3930,7 +3879,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            ret);
     break;
   case SVGA_REG_MEMORY_SIZE:
-    ret = 1073741824;
+    ret = s->vga.vram_size * 2;
     VPRINT("SVGA_REG_MEMORY_SIZE register %u with the return of "
            "%u\n",
            s->index, ret);
@@ -3941,12 +3890,10 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            ret);
     break;
   case SVGA_REG_FENCE:
-    // ret = -99;
     ret = s->fifo[SVGA_FIFO_FENCE];
     VPRINT("SVGA_REG_FENCE register %u with the return of %u\n", s->index, ret);
     break;
   case SVGA_REG_FIFO_CAPS:
-    // ret = 1919;
     ret = s->fc;
     VPRINT("68 register %u with the return of %u\n", s->index, ret);
     break;
@@ -3968,24 +3915,633 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            "%u\n",
            s->index, ret);
     break;
+  case 1029:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1031:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1034:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1035:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1036:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1039:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1041:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1042:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1043:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1045:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1046:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1047:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1048:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1049:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1050:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1051:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1052:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1053:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1054:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1055:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1056:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1057:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1058:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1059:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1060:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1061:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1062:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1063:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1064:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1065:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1066:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1067:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1068:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1069:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1070:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1071:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1073:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1076:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1077:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1079:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1082:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1083:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1084:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1085:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1087:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1088:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1089:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1090:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1091:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1093:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1094:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1095:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1097:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1098:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1100:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1101:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1103:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1104:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1106:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1107:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1108:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1109:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1110:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1111:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1112:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1113:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1114:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1115:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1116:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1117:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1118:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1119:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1120:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1123:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1125:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1126:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1127:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1129:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1130:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1131:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1132:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1135:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1137:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1138:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1139:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1141:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1142:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1143:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1144:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1146:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1147:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1149:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1150:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1151:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1152:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1153:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1154:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1155:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1156:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1158:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1159:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1161:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1162:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1163:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1164:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1165:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1166:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1167:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1168:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1169:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1171:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1172:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1173:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1174:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1175:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1177:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1178:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1179:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1180:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1181:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1183:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1184:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1185:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1186:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1187:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1189:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1190:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1191:
+    ret = 42;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1192:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1193:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1194:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1195:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1196:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1197:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1198:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1199:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1200:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1201:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1202:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1203:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1204:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1205:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1206:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1207:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1208:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1209:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1210:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1211:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1212:
+    ret = 21;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1213:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1214:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1215:
+    ret = 63;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
+  case 1792:
+    ret = 3;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    break;
   default:
     ret = 0;
     VPRINT("default register %u with the return of %u\n", s->index, ret);
     break;
+  };
+  if (s->index >= SVGA_REG_PALETTE_MIN && s->index <= SVGA_REG_PALETTE_MAX) {
+    uint32_t idx = s->index - SVGA_REG_PALETTE_MIN;
+    ret = s->svgapalettebase[idx];
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
   };
   return ret;
 };
 static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
   struct vmsvga_state_s *s = opaque;
   VPRINT("Unknown register %u with the value of %u\n", s->index, value);
-
-  if (s->index >= SVGA_REG_PALETTE_MIN && s->index <= SVGA_REG_PALETTE_MAX) {
-    uint32_t idx = s->index - SVGA_REG_PALETTE_MIN;
-    s->svgapalettebase[idx] = value;
-    VPRINT("SVGA_REG_PALETTE_%u write %u\n", idx, value);
-    return;
-  }
-
   switch (s->index) {
   case SVGA_REG_ID:
     s->svgaid = value;
@@ -4502,6 +5058,12 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
   default:
     VPRINT("default register %u with the value of %u\n", s->index, value);
   };
+  if (s->index >= SVGA_REG_PALETTE_MIN && s->index <= SVGA_REG_PALETTE_MAX) {
+    uint32_t idx = s->index - SVGA_REG_PALETTE_MIN;
+    s->svgapalettebase[idx] = value;
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the value of %u\n", s->index, s->index, value);
+  };
+  return;
 };
 static uint32_t vmsvga_irqstatus_read(void *opaque, uint32_t address) {
   VPRINT("vmsvga_irqstatus_read was just executed\n");
@@ -4634,10 +5196,10 @@ static GraphicHwOps vmsvga_ops = {
 static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
                         MemoryRegion *address_space, MemoryRegion *io) {
   VPRINT("vmsvga_init was just executed\n");
-  s->scratch_size = 64;
+  s->scratch_size = 32;
   s->scratch = g_malloc(s->scratch_size * 4);
   s->vga.con = graphic_console_init(dev, 0, &vmsvga_ops, s);
-  s->fifo_size = 262144;
+  s->fifo_size = 2097152;
   memory_region_init_ram(&s->fifo_ram, NULL, "vmsvga.fifo", s->fifo_size,
                          &error_fatal);
   s->fifo = (uint32_t *)memory_region_get_ram_ptr(&s->fifo_ram);
@@ -4655,8 +5217,8 @@ static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
     s->new_height = 768;
     s->new_depth = 32;
     pthread_t threads[1];
-    s->fc = 0xffffffff;
     s->ff = 0xffffffff;
+    s->fc = 0xffffffff;
 #ifndef EXPCAPS
     s->ff -= SVGA_FIFO_FLAG_ACCELFRONT;     // Windows (XPDM)
     s->fc -= SVGA_FIFO_CAP_SCREEN_OBJECT;   // Windows (WDDM)
@@ -4669,16 +5231,16 @@ static uint64_t vmsvga_io_read(void *opaque, hwaddr addr, unsigned size) {
   VPRINT("vmsvga_io_read was just executed\n");
   struct vmsvga_state_s *s = opaque;
   switch (addr) {
-  case 1 * SVGA_INDEX_PORT:
+  case SVGA_INDEX_PORT:
     VPRINT("vmsvga_io_read SVGA_INDEX_PORT\n");
     return vmsvga_index_read(s, addr);
-  case 1 * SVGA_VALUE_PORT:
+  case SVGA_VALUE_PORT:
     VPRINT("vmsvga_io_read SVGA_VALUE_PORT\n");
     return vmsvga_value_read(s, addr);
-  case 1 * SVGA_BIOS_PORT:
+  case SVGA_BIOS_PORT:
     VPRINT("vmsvga_io_read SVGA_BIOS_PORT\n");
     return vmsvga_bios_read(s, addr);
-  case 1 * SVGA_IRQSTATUS_PORT:
+  case SVGA_IRQSTATUS_PORT:
     VPRINT("vmsvga_io_read SVGA_IRQSTATUS_PORT\n");
     return vmsvga_irqstatus_read(s, addr);
   default:
@@ -4691,19 +5253,19 @@ static void vmsvga_io_write(void *opaque, hwaddr addr, uint64_t data,
   VPRINT("vmsvga_io_write was just executed\n");
   struct vmsvga_state_s *s = opaque;
   switch (addr) {
-  case 1 * SVGA_INDEX_PORT:
+  case SVGA_INDEX_PORT:
     VPRINT("vmsvga_io_write SVGA_INDEX_PORT\n");
     vmsvga_index_write(s, addr, data);
     break;
-  case 1 * SVGA_VALUE_PORT:
+  case SVGA_VALUE_PORT:
     VPRINT("vmsvga_io_write SVGA_VALUE_PORT\n");
     vmsvga_value_write(s, addr, data);
     break;
-  case 1 * SVGA_BIOS_PORT:
+  case SVGA_BIOS_PORT:
     VPRINT("vmsvga_io_write SVGA_BIOS_PORT\n");
     vmsvga_bios_write(s, addr, data);
     break;
-  case 1 * SVGA_IRQSTATUS_PORT:
+  case SVGA_IRQSTATUS_PORT:
     VPRINT("vmsvga_io_write SVGA_IRQSTATUS_PORT\n");
     vmsvga_irqstatus_write(s, addr, data);
     break;
@@ -4715,11 +5277,8 @@ static void vmsvga_io_write(void *opaque, hwaddr addr, uint64_t data,
 static MemoryRegionOps vmsvga_io_ops = {
     .read = vmsvga_io_read,
     .write = vmsvga_io_write,
-    .endianness = DEVICE_LITTLE_ENDIAN,
     .valid =
         {
-            .min_access_size = 4,
-            .max_access_size = 4,
             .unaligned = true,
         },
     .impl =
