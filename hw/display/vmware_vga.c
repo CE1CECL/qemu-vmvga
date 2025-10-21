@@ -3245,12 +3245,12 @@ static void *vmsvga_loop(void *arg) {
     // s->fifo[SVGA_FIFO_STOP] = 4096;
     // s->fifo[SVGA_FIFO_CAPABILITIES] = 1919;
     // s->fifo[SVGA_FIFO_FENCE] = 4294967198;
-    s->fifo[SVGA_FIFO_3D_HWVERSION] = 131073; // SVGA3D_HWVERSION_WS8_B1
-    s->fifo[SVGA_FIFO_RESERVED] = 4294967295; // -1
+    s->fifo[SVGA_FIFO_3D_HWVERSION] = 131073;         // SVGA3D_HWVERSION_WS8_B1
+    s->fifo[SVGA_FIFO_RESERVED] = 4294967295;         // -1
     s->fifo[SVGA_FIFO_CURSOR_SCREEN_ID] = 4294967295; // -1
     // s->fifo[SVGA_FIFO_DEAD] = 2;
     s->fifo[SVGA_FIFO_3D_HWVERSION_REVISED] = 131073; // SVGA3D_HWVERSION_WS8_B1
-    // SVGA_FIFO_3D_CAPS 
+    // SVGA_FIFO_3D_CAPS
     s->fifo[32] = 186;
     s->fifo[33] = 256;
     s->fifo[35] = 1;
@@ -3425,8 +3425,8 @@ static void *vmsvga_loop(void *arg) {
     s->fifo[214] = 90;
     s->fifo[215] = 1092616192;
     s->fifo[216] = 91;
-    s->fifo[217] = 19161088;	
-    // SVGA_FIFO_3D_CAPS 
+    s->fifo[217] = 19161088;
+    // SVGA_FIFO_3D_CAPS
     // s->fifo[SVGA_FIFO_FENCE_GOAL] = 4294967198;
     if (s->pitchlock >= 1) {
       s->fifo[SVGA_FIFO_PITCHLOCK] = s->pitchlock;
@@ -3917,615 +3917,768 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     break;
   case 1029:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1031:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1034:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1035:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1036:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1039:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1041:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1042:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1043:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1045:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1046:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1047:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1048:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1049:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1050:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1051:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1052:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1053:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1054:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1055:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1056:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1057:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1058:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1059:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1060:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1061:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1062:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1063:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1064:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1065:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1066:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1067:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1068:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1069:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1070:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1071:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1073:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1076:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1077:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1079:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1082:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1083:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1084:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1085:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1087:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1088:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1089:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1090:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1091:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1093:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1094:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1095:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1097:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1098:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1100:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1101:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1103:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1104:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1106:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1107:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1108:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1109:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1110:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1111:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1112:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1113:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1114:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1115:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1116:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1117:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1118:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1119:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1120:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1123:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1125:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1126:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1127:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1129:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1130:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1131:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1132:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1135:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1137:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1138:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1139:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1141:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1142:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1143:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1144:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1146:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1147:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1149:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1150:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1151:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1152:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1153:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1154:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1155:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1156:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1158:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1159:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1161:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1162:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1163:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1164:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1165:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1166:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1167:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1168:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1169:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1171:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1172:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1173:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1174:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1175:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1177:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1178:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1179:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1180:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1181:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1183:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1184:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1185:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1186:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1187:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1189:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1190:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1191:
     ret = 42;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1192:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1193:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1194:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1195:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1196:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1197:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1198:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1199:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1200:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1201:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1202:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1203:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1204:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1205:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1206:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1207:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1208:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1209:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1210:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1211:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1212:
     ret = 21;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1213:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1214:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1215:
     ret = 63;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   case 1792:
     ret = 3;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
     break;
   default:
     ret = 0;
@@ -4535,7 +4688,8 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
   if (s->index >= SVGA_REG_PALETTE_MIN && s->index <= SVGA_REG_PALETTE_MAX) {
     uint32_t idx = s->index - SVGA_REG_PALETTE_MIN;
     ret = s->svgapalettebase[idx];
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index, s->index, ret);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the return of %u\n", s->index,
+           s->index, ret);
   };
   return ret;
 };
@@ -5061,7 +5215,8 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
   if (s->index >= SVGA_REG_PALETTE_MIN && s->index <= SVGA_REG_PALETTE_MAX) {
     uint32_t idx = s->index - SVGA_REG_PALETTE_MIN;
     s->svgapalettebase[idx] = value;
-    VPRINT("SVGA_REG_PALETTE_%u register %u with the value of %u\n", s->index, s->index, value);
+    VPRINT("SVGA_REG_PALETTE_%u register %u with the value of %u\n", s->index,
+           s->index, value);
   };
   return;
 };
