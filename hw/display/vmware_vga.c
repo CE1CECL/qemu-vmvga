@@ -349,7 +349,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
   uint32_t fence_arg;
   uint32_t irq_status;
   uint32_t fifo_start;
-  uint32_t rewinded;
   struct vmsvga_cursor_definition_s cursor;
   len = vmsvga_fifo_length(s);
   irq_status = s->irq_status;
@@ -361,7 +360,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_INVALID_CMD:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -372,7 +370,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_UPDATE:
       if (len < 5) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 5;
@@ -387,7 +384,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_UPDATE_VERBOSE:
       if (len < 6) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 6;
@@ -404,7 +400,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_RECT_FILL:
       if (len < 6) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 6;
@@ -422,7 +417,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_RECT_COPY:
       if (len < 7) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 7;
@@ -440,7 +434,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_DEFINE_CURSOR:
       if (len < 8) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 8;
@@ -467,7 +460,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       };
       if (len < args) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= args;
@@ -493,7 +485,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_DEFINE_ALPHA_CURSOR:
       if (len < 6) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 6;
@@ -518,7 +509,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       };
       if (len < args) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= args;
@@ -538,7 +528,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_FENCE:
       if (len < 2) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 2;
@@ -571,7 +560,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_DEFINE_GMR2:
       if (len < 3) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 3;
@@ -584,7 +572,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_REMAP_GMR2:
       if (len < 5) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 5;
@@ -608,7 +595,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_RECT_ROP_COPY:
       if (len < 8) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 8;
@@ -629,7 +615,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_ESCAPE:
       if (len < 4) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 4;
@@ -643,7 +628,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_DEFINE_SCREEN:
       if (len < 10) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 10;
@@ -666,7 +650,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_DISPLAY_CURSOR:
       if (len < 3) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 3;
@@ -680,7 +663,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_DESTROY_SCREEN:
       if (len < 2) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 2;
@@ -692,7 +674,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_DEFINE_GMRFB:
       if (len < 6) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 6;
@@ -710,7 +691,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_BLIT_GMRFB_TO_SCREEN:
       if (len < 8) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 8;
@@ -731,7 +711,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_BLIT_SCREEN_TO_GMRFB:
       if (len < 8) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 8;
@@ -752,7 +731,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_ANNOTATION_FILL:
       if (len < 4) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 4;
@@ -767,7 +745,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_ANNOTATION_COPY:
       if (len < 4) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 4;
@@ -782,7 +759,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_MOVE_CURSOR:
       if (len < 3) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 3;
@@ -795,7 +771,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_FRONT_ROP_FILL:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -806,7 +781,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_DEAD:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -815,7 +789,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_DEAD_2:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -824,7 +797,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_NOP:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -833,7 +805,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_NOP_ERROR:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -842,7 +813,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_CMD_MAX:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -851,7 +821,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_LEGACY_BASE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -862,7 +831,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SURFACE_DEFINE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -873,7 +841,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SURFACE_DESTROY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -884,7 +851,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SURFACE_COPY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -895,7 +861,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SURFACE_STRETCHBLT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -907,7 +872,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SURFACE_DMA:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -918,7 +882,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_CONTEXT_DEFINE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -929,7 +892,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_CONTEXT_DESTROY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -940,7 +902,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SETTRANSFORM:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -951,7 +912,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SETZRANGE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -962,7 +922,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SETRENDERSTATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -973,7 +932,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SETRENDERTARGET:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -984,7 +942,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SETTEXTURESTATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -995,7 +952,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SETMATERIAL:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1006,7 +962,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SETLIGHTDATA:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1017,7 +972,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SETLIGHTENABLED:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1028,7 +982,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SETVIEWPORT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1039,7 +992,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SETCLIPPLANE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1050,7 +1002,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_CLEAR:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1059,7 +1010,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_PRESENT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1068,7 +1018,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SHADER_DEFINE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1079,7 +1028,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SHADER_DESTROY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1090,7 +1038,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SET_SHADER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1101,7 +1048,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SET_SHADER_CONST:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1112,7 +1058,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DRAW_PRIMITIVES:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1123,7 +1068,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SETSCISSORRECT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1134,7 +1078,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_BEGIN_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1145,7 +1088,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_END_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1156,7 +1098,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_WAIT_FOR_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1167,7 +1108,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_PRESENT_READBACK:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1178,7 +1118,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1189,7 +1128,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SURFACE_DEFINE_V2:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1201,7 +1139,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_GENERATE_MIPMAPS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1212,7 +1149,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD4:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1221,7 +1157,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD5:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1230,7 +1165,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD6:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1239,7 +1173,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD7:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1248,7 +1181,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD8:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1257,7 +1189,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD9:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1266,7 +1197,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD10:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1275,7 +1205,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD11:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1284,7 +1213,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_ACTIVATE_SURFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1295,7 +1223,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEACTIVATE_SURFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1307,7 +1234,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SCREEN_DMA:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1318,7 +1244,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD1:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1327,7 +1252,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD2:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1336,7 +1260,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD12:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1345,7 +1268,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD13:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1354,7 +1276,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD14:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1363,7 +1284,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD15:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1372,7 +1292,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD16:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1381,7 +1300,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD17:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1390,7 +1308,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SET_OTABLE_BASE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1401,7 +1318,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_READBACK_OTABLE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1412,7 +1328,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEFINE_GB_MOB:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1423,7 +1338,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DESTROY_GB_MOB:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1434,7 +1348,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEAD3:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1443,7 +1356,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_UPDATE_GB_MOB_MAPPING:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1455,7 +1367,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEFINE_GB_SURFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1467,7 +1378,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DESTROY_GB_SURFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1479,7 +1389,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_BIND_GB_SURFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1490,7 +1399,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_COND_BIND_GB_SURFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1502,7 +1410,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_UPDATE_GB_IMAGE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1513,7 +1420,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_UPDATE_GB_SURFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1525,7 +1431,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_READBACK_GB_IMAGE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1537,7 +1442,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_READBACK_GB_SURFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1549,7 +1453,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_INVALIDATE_GB_IMAGE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1561,7 +1464,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_INVALIDATE_GB_SURFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1573,7 +1475,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEFINE_GB_CONTEXT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1585,7 +1486,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DESTROY_GB_CONTEXT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1597,7 +1497,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_BIND_GB_CONTEXT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1608,7 +1507,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_READBACK_GB_CONTEXT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1620,7 +1518,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_INVALIDATE_GB_CONTEXT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1632,7 +1529,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEFINE_GB_SHADER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1643,7 +1539,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DESTROY_GB_SHADER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1655,7 +1550,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_BIND_GB_SHADER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1666,7 +1560,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SET_OTABLE_BASE64:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1678,7 +1571,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_BEGIN_GB_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1689,7 +1581,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_END_GB_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1700,7 +1591,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_WAIT_FOR_GB_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1712,7 +1602,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_NOP:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1721,7 +1610,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_ENABLE_GART:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1732,7 +1620,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DISABLE_GART:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1743,7 +1630,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_MAP_MOB_INTO_GART:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1755,7 +1641,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_UNMAP_GART_RANGE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1766,7 +1651,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEFINE_GB_SCREENTARGET:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1777,7 +1661,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DESTROY_GB_SCREENTARGET:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1789,7 +1672,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_BIND_GB_SCREENTARGET:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1801,7 +1683,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_UPDATE_GB_SCREENTARGET:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1812,7 +1693,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_READBACK_GB_IMAGE_PARTIAL:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1824,7 +1704,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_INVALIDATE_GB_IMAGE_PARTIAL:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1836,7 +1715,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SET_GB_SHADERCONSTS_INLINE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1848,7 +1726,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_GB_SCREEN_DMA:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1859,7 +1736,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_BIND_GB_SURFACE_WITH_PITCH:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1871,7 +1747,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_GB_MOB_FENCE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1882,7 +1757,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEFINE_GB_SURFACE_V2:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1894,7 +1768,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEFINE_GB_MOB64:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1905,7 +1778,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_REDEFINE_GB_MOB64:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1917,7 +1789,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_NOP_ERROR:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1928,7 +1799,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SET_VERTEX_STREAMS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1940,7 +1810,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SET_VERTEX_DECLS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1951,7 +1820,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SET_VERTEX_DIVISORS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1963,7 +1831,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DRAW:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1972,7 +1839,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DRAW_INDEXED:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1983,7 +1849,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_CONTEXT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -1995,7 +1860,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_CONTEXT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2007,7 +1871,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_BIND_CONTEXT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2018,7 +1881,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_READBACK_CONTEXT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2030,7 +1892,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_INVALIDATE_CONTEXT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2042,7 +1903,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_SINGLE_CONSTANT_BUFFER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2054,7 +1914,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_SHADER_RESOURCES:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2066,7 +1925,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_SHADER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2077,7 +1935,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_SAMPLERS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2088,7 +1945,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DRAW:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2097,7 +1953,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DRAW_INDEXED:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2108,7 +1963,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DRAW_INSTANCED:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2120,7 +1974,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2132,7 +1985,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DRAW_AUTO:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2143,7 +1995,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_INPUT_LAYOUT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2155,7 +2006,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_VERTEX_BUFFERS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2167,7 +2017,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_INDEX_BUFFER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2179,7 +2028,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_TOPOLOGY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2190,7 +2038,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_RENDERTARGETS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2202,7 +2049,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_BLEND_STATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2214,7 +2060,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_DEPTHSTENCIL_STATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2226,7 +2071,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_RASTERIZER_STATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2238,7 +2082,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2249,7 +2092,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2260,7 +2102,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_BIND_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2271,7 +2112,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_QUERY_OFFSET:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2283,7 +2123,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_BEGIN_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2294,7 +2133,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_END_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2305,7 +2143,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_READBACK_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2317,7 +2154,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_PREDICATION:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2329,7 +2165,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_SOTARGETS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2340,7 +2175,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_VIEWPORTS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2351,7 +2185,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_SCISSORRECTS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2363,7 +2196,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_CLEAR_RENDERTARGET_VIEW:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2375,7 +2207,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_CLEAR_DEPTHSTENCIL_VIEW:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2387,7 +2218,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_PRED_COPY_REGION:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2399,7 +2229,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_PRED_COPY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2410,7 +2239,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_PRESENTBLT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2421,7 +2249,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_GENMIPS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2432,7 +2259,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_UPDATE_SUBRESOURCE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2444,7 +2270,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_READBACK_SUBRESOURCE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2456,7 +2281,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_INVALIDATE_SUBRESOURCE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2468,7 +2292,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_SHADERRESOURCE_VIEW:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2480,7 +2303,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_SHADERRESOURCE_VIEW:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2492,7 +2314,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_RENDERTARGET_VIEW:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2504,7 +2325,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_RENDERTARGET_VIEW:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2516,7 +2336,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2528,7 +2347,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_VIEW:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2540,7 +2358,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_ELEMENTLAYOUT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2552,7 +2369,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_ELEMENTLAYOUT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2564,7 +2380,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_BLEND_STATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2576,7 +2391,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_BLEND_STATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2587,7 +2401,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_STATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2599,7 +2412,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_STATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2611,7 +2423,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_RASTERIZER_STATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2623,7 +2434,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_RASTERIZER_STATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2635,7 +2445,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_SAMPLER_STATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2647,7 +2456,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_SAMPLER_STATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2659,7 +2467,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_SHADER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2670,7 +2477,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_SHADER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2682,7 +2488,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_BIND_SHADER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2693,7 +2498,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2704,7 +2508,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_STREAMOUTPUT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2716,7 +2519,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_STREAMOUTPUT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2728,7 +2530,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_COTABLE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2739,7 +2540,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_READBACK_COTABLE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2751,7 +2551,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_BUFFER_COPY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2762,7 +2561,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_TRANSFER_FROM_BUFFER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2774,7 +2572,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SURFACE_COPY_AND_READBACK:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2786,7 +2583,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_MOVE_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2797,7 +2593,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_BIND_ALL_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2809,7 +2604,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_READBACK_ALL_QUERY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2821,7 +2615,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_PRED_TRANSFER_FROM_BUFFER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2833,7 +2626,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_MOB_FENCE_64:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2844,7 +2636,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_BIND_ALL_SHADER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2856,7 +2647,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_HINT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2865,7 +2655,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_BUFFER_UPDATE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2876,7 +2665,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_VS_CONSTANT_BUFFER_OFFSET:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2888,7 +2676,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_PS_CONSTANT_BUFFER_OFFSET:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2900,7 +2687,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_GS_CONSTANT_BUFFER_OFFSET:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2912,7 +2698,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_HS_CONSTANT_BUFFER_OFFSET:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2924,7 +2709,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_DS_CONSTANT_BUFFER_OFFSET:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2936,7 +2720,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_CS_CONSTANT_BUFFER_OFFSET:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2948,7 +2731,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_COND_BIND_ALL_SHADER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2960,7 +2742,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SCREEN_COPY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2971,7 +2752,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_GROW_OTABLE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2982,7 +2762,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_GROW_COTABLE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -2993,7 +2772,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_INTRA_SURFACE_COPY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3005,7 +2783,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEFINE_GB_SURFACE_V3:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3017,7 +2794,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_RESOLVE_COPY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3028,7 +2804,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_PRED_RESOLVE_COPY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3040,7 +2815,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_PRED_CONVERT_REGION:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3051,7 +2825,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_PRED_CONVERT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3062,7 +2835,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_WHOLE_SURFACE_COPY:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3074,7 +2846,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_UA_VIEW:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3086,7 +2857,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DESTROY_UA_VIEW:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3098,7 +2868,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_CLEAR_UA_VIEW_UINT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3110,7 +2879,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_CLEAR_UA_VIEW_FLOAT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3121,7 +2889,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_COPY_STRUCTURE_COUNT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3133,7 +2900,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_UA_VIEWS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3144,7 +2910,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED_INDIRECT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3156,7 +2921,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DRAW_INSTANCED_INDIRECT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3168,7 +2932,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DISPATCH:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3179,7 +2942,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DISPATCH_INDIRECT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3191,7 +2953,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_WRITE_ZERO_SURFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3203,7 +2964,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_HINT_ZERO_SURFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3215,7 +2975,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_TRANSFER_TO_BUFFER:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3227,7 +2986,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_STRUCTURE_COUNT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3238,7 +2996,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_LOGICOPS_BITBLT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3249,7 +3006,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_LOGICOPS_TRANSBLT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3261,7 +3017,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_LOGICOPS_STRETCHBLT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3273,7 +3028,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_LOGICOPS_COLORFILL:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3285,7 +3039,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_LOGICOPS_ALPHABLEND:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3297,7 +3050,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_LOGICOPS_CLEARTYPEBLEND:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3309,7 +3061,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DEFINE_GB_SURFACE_V4:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3321,7 +3072,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_CS_UA_VIEWS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3333,7 +3083,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_MIN_LOD:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3344,7 +3093,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW_V2:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3356,7 +3104,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT_WITH_MOB:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3368,7 +3115,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_SET_SHADER_IFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3380,7 +3126,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_BIND_STREAMOUTPUT:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3392,7 +3137,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_SURFACE_STRETCHBLT_NON_MS_TO_MS:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3404,7 +3148,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_DX_BIND_SHADER_IFACE:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3416,7 +3159,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_MAX:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3425,7 +3167,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     case SVGA_3D_CMD_FUTURE_MAX:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3436,7 +3177,6 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
     default:
       if (len < 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
-        rewinded = 1;
         break;
       };
       len -= 1;
@@ -3457,12 +3197,10 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
           container_of(s, struct pci_vmsvga_state_s, chip);
 #endif
       s->irq_status = irq_status;
-      if (rewinded < 1) {
-        VPRINT("FIFO: Pci_set_irq=1\n");
+      VPRINT("FIFO: Pci_set_irq=1\n");
 #ifndef RAISE_IRQ_OFF
-        pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
+      pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
 #endif
-      };
     };
   };
   s->sync = 0;
