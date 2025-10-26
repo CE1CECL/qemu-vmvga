@@ -351,10 +351,10 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
   uint32_t fifo_start;
   struct vmsvga_cursor_definition_s cursor;
   len = vmsvga_fifo_length(s);
-  irq_status = s->irq_status;
   while (len >= 1) {
     cmd = vmsvga_fifo_read(s);
     fifo_start = s->fifo_stop;
+    irq_status = 0;
     // VPRINT("Unknown command %u in SVGA command FIFO\n", cmd);
     switch (cmd) {
     case SVGA_CMD_INVALID_CMD:
@@ -531,31 +531,30 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 2;
-      uint32_t offFifoMin = s->fifo[SVGA_FIFO_MIN];
       fence_arg = vmsvga_fifo_read(s);
       s->fifo[SVGA_FIFO_FENCE] = fence_arg;
-      if (VMSVGA_IS_VALID_FIFO_REG(SVGA_FIFO_FENCE, offFifoMin)) {
+      if (VMSVGA_IS_VALID_FIFO_REG(SVGA_FIFO_FENCE, s->fifo[SVGA_FIFO_MIN])) {
         VPRINT("FIFO: VMSVGA_IS_VALID_FIFO_REG SVGA_FIFO_FENCE "
                "1\n");
-        if ((s->irq_mask) & (SVGA_IRQFLAG_ANY_FENCE)) {
+        if (((VMSVGA_IS_VALID_FIFO_REG(SVGA_FIFO_FENCE_GOAL,
+                                       s->fifo[SVGA_FIFO_MIN]))) &&
+            ((s->irq_mask) & (SVGA_IRQFLAG_FENCE_GOAL)) &&
+            (fence_arg == s->fifo[SVGA_FIFO_FENCE_GOAL])) {
+          VPRINT("FIFO: irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
+          irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
+        } else if ((s->irq_mask) & (SVGA_IRQFLAG_ANY_FENCE)) {
           VPRINT("FIFO: irq_status |= SVGA_IRQFLAG_ANY_FENCE\n");
 #ifndef ANY_FENCE_OFF
           irq_status |= SVGA_IRQFLAG_ANY_FENCE;
 #endif
-        } else if (((VMSVGA_IS_VALID_FIFO_REG(SVGA_FIFO_FENCE_GOAL,
-                                              offFifoMin))) &&
-                   ((s->irq_mask) & (SVGA_IRQFLAG_FENCE_GOAL)) &&
-                   (fence_arg == s->fifo[SVGA_FIFO_FENCE_GOAL])) {
-          VPRINT("FIFO: irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
-          irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
+        } else {
+          VPRINT("FIFO: VMSVGA_IS_VALID_FIFO_REG SVGA_FIFO_FENCE "
+                 "0\n");
         };
-      } else {
-        VPRINT("FIFO: VMSVGA_IS_VALID_FIFO_REG SVGA_FIFO_FENCE "
-               "0\n");
       };
       VPRINT("SVGA_CMD_FENCE command %u in SVGA command FIFO %u "
              "%u %u %u\n",
-             cmd, s->irq_mask, irq_status, fence_arg, offFifoMin);
+             cmd, s->irq_mask, irq_status, fence_arg, s->fifo[SVGA_FIFO_MIN]);
       break;
     case SVGA_CMD_DEFINE_GMR2:
       if (len < 3) {
@@ -3183,24 +3182,24 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       VPRINT("default command %u in SVGA command FIFO\n", cmd);
       break;
     };
-  };
-  if ((irq_status) || ((s->irq_mask) & (SVGA_IRQFLAG_FIFO_PROGRESS))) {
-    VPRINT("FIFO: irq_status || s -> irq_mask & "
-           "SVGA_IRQFLAG_FIFO_PROGRESS\n");
-    if ((s->irq_mask) & (SVGA_IRQFLAG_FIFO_PROGRESS)) {
-      VPRINT("FIFO: irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS\n");
-      irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
-    };
-    if ((s->irq_mask) & (irq_status)) {
+    if ((irq_status) || ((s->irq_mask) & (SVGA_IRQFLAG_FIFO_PROGRESS))) {
+      VPRINT("FIFO: irq_status || s -> irq_mask & "
+             "SVGA_IRQFLAG_FIFO_PROGRESS\n");
+      if ((s->irq_mask) & (SVGA_IRQFLAG_FIFO_PROGRESS)) {
+        VPRINT("FIFO: irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS\n");
+        irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
+      };
+      if ((s->irq_mask) & (irq_status)) {
 #ifndef RAISE_IRQ_OFF
-      struct pci_vmsvga_state_s *pci_vmsvga =
-          container_of(s, struct pci_vmsvga_state_s, chip);
+        struct pci_vmsvga_state_s *pci_vmsvga =
+            container_of(s, struct pci_vmsvga_state_s, chip);
 #endif
-      s->irq_status = irq_status;
-      VPRINT("FIFO: Pci_set_irq=1\n");
+        s->irq_status = irq_status;
+        VPRINT("FIFO: Pci_set_irq=1\n");
 #ifndef RAISE_IRQ_OFF
-      pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
+        pci_set_irq(PCI_DEVICE(pci_vmsvga), 1);
 #endif
+      };
     };
   };
   s->sync = 0;
@@ -4701,6 +4700,8 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
 static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
   // VPRINT("vmsvga_value_write was just executed\n");
   struct vmsvga_state_s *s = opaque;
+  uint32_t irq_status;
+  irq_status = 0;
   // VPRINT("Unknown register %u with the value of %u\n", s->index, value);
   switch (s->index) {
   case SVGA_REG_ID:
@@ -4830,17 +4831,16 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
         container_of(s, struct pci_vmsvga_state_s, chip);
     PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
 #endif
-    uint32_t offFifoMin = s->fifo[SVGA_FIFO_MIN];
-    uint32_t irq_status = s->irq_status;
-    if ((value) & (SVGA_IRQFLAG_ANY_FENCE)) {
+    if (((VMSVGA_IS_VALID_FIFO_REG(SVGA_FIFO_FENCE_GOAL,
+                                   s->fifo[SVGA_FIFO_MIN]))) &&
+        ((value) & (SVGA_IRQFLAG_FENCE_GOAL))) {
+      VPRINT("REG: irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
+      irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
+    } else if ((value) & (SVGA_IRQFLAG_ANY_FENCE)) {
       VPRINT("REG: irq_status |= SVGA_IRQFLAG_ANY_FENCE\n");
 #ifndef ANY_FENCE_OFF
       irq_status |= SVGA_IRQFLAG_ANY_FENCE;
 #endif
-    } else if (((VMSVGA_IS_VALID_FIFO_REG(SVGA_FIFO_FENCE_GOAL, offFifoMin))) &&
-               ((value) & (SVGA_IRQFLAG_FENCE_GOAL))) {
-      VPRINT("REG: irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
-      irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
     };
     if ((irq_status) || ((value) & (SVGA_IRQFLAG_FIFO_PROGRESS))) {
       VPRINT("REG: irq_status || value & SVGA_IRQFLAG_FIFO_PROGRESS\n");
