@@ -4769,9 +4769,12 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
            value);
     break;
   case SVGA_REG_SYNC:
-    if (s->sync < 1) {
-      s->sync = 1;
-      vmsvga_fifo_run(s);
+    if ((s->enable >= 1 || s->config >= 1) &&
+        (s->new_width >= 1 && s->new_height >= 1 && s->new_depth >= 1)) {
+      if (s->sync < 1) {
+        s->sync = 1;
+        vmsvga_fifo_run(s);
+      };
     };
     // VPRINT("SVGA_REG_SYNC register %u with the value of %u\n", s->index,
     // value);
