@@ -351,9 +351,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
   uint32_t fifo_start;
   struct vmsvga_cursor_definition_s cursor;
   len = vmsvga_fifo_length(s);
+  fifo_start = s->fifo_stop;
   while (len >= 1) {
     cmd = vmsvga_fifo_read(s);
-    fifo_start = s->fifo_stop;
     irq_status = 0;
     // VPRINT("Unknown command %u in SVGA command FIFO\n", cmd);
     switch (cmd) {
