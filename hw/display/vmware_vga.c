@@ -3455,6 +3455,8 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
   uint32_t caps;
   uint32_t cap2;
   struct vmsvga_state_s *s = opaque;
+  struct pci_vmsvga_state_s *pci_vmsvga =
+      container_of(s, struct pci_vmsvga_state_s, chip);
   // VPRINT("Unknown register %u\n", s->index);
   switch (s->index) {
   case SVGA_REG_FENCE_GOAL:
@@ -3605,14 +3607,11 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            "of %u\n",
            s->index, ret);
     break;
-  case SVGA_REG_FB_START: {
-    struct pci_vmsvga_state_s *pci_vmsvga =
-        container_of(s, struct pci_vmsvga_state_s, chip);
+  case SVGA_REG_FB_START:
     ret = pci_get_bar_addr(PCI_DEVICE(pci_vmsvga), 1);
     VPRINT("SVGA_REG_FB_START register %u with the return of %u\n", s->index,
            ret);
     break;
-  };
   case SVGA_REG_FB_OFFSET:
     ret = 0;
     VPRINT("SVGA_REG_FB_OFFSET register %u with the return of %u\n", s->index,
@@ -3693,14 +3692,11 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
     ret = cap2;
     VPRINT("SVGA_REG_CAP2 register %u with the return of %u\n", s->index, ret);
     break;
-  case SVGA_REG_MEM_START: {
-    struct pci_vmsvga_state_s *pci_vmsvga =
-        container_of(s, struct pci_vmsvga_state_s, chip);
+  case SVGA_REG_MEM_START:
     ret = pci_get_bar_addr(PCI_DEVICE(pci_vmsvga), 2);
     VPRINT("SVGA_REG_MEM_START register %u with the return of %u\n", s->index,
            ret);
     break;
-  };
   case SVGA_REG_MEM_SIZE:
     ret = s->fifo_size;
     VPRINT("SVGA_REG_MEM_SIZE register %u with the return of %u\n", s->index,
