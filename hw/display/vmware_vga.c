@@ -273,6 +273,23 @@ static inline uint32_t vmsvga_fifo_read(struct vmsvga_state_s *s) {
     (_s)->fifo[SVGA_FIFO_STOP] = cpu_to_le32((_s)->fifo_stop);                 \
   } while (0)
 
+typedef struct {
+  uint32_t pixel;
+  uint32_t destX;
+  uint32_t destY;
+  uint32_t width;
+  uint32_t height;
+} SVGAFifoCmdRectFill;
+
+typedef struct {
+  uint32_t id;
+  uint32_t state;
+} SVGAFifoCmdDisplayCursor;
+
+typedef struct {
+  SVGASignedPoint pos;
+} SVGAFifoCmdMoveCursor;
+
 static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
   // VPRINT("vmsvga_fifo_run was just executed\n");
   uint32_t UnknownCommandA;
@@ -351,10 +368,10 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
   uint32_t fifo_start;
   struct vmsvga_cursor_definition_s cursor;
   len = vmsvga_fifo_length(s);
-  fifo_start = s->fifo_stop;
   while (len >= 1) {
     cmd = vmsvga_fifo_read(s);
     irq_status = 0;
+    fifo_start = s->fifo_stop;
     // VPRINT("Unknown command %u in SVGA command FIFO\n", cmd);
     switch (cmd) {
     case SVGA_CMD_INVALID_CMD:
@@ -368,11 +385,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       //        cmd);
       break;
     case SVGA_CMD_UPDATE:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdUpdate) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 5;
+      len -= sizeof(SVGAFifoCmdUpdate) / sizeof(uint32_t) + 1;
       x = vmsvga_fifo_read(s);
       y = vmsvga_fifo_read(s);
       width = vmsvga_fifo_read(s);
@@ -382,11 +399,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, x, y, width, height);
       break;
     case SVGA_CMD_UPDATE_VERBOSE:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdUpdateVerbose) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 6;
+      len -= sizeof(SVGAFifoCmdUpdateVerbose) / sizeof(uint32_t) + 1;
       x = vmsvga_fifo_read(s);
       y = vmsvga_fifo_read(s);
       width = vmsvga_fifo_read(s);
@@ -398,11 +415,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, x, y, width, height, z);
       break;
     case SVGA_CMD_RECT_FILL:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdRectFill) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 6;
+      len -= sizeof(SVGAFifoCmdRectFill) / sizeof(uint32_t) + 1;
       UnknownCommandAQ = vmsvga_fifo_read(s);
       UnknownCommandAR = vmsvga_fifo_read(s);
       UnknownCommandAS = vmsvga_fifo_read(s);
@@ -415,11 +432,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              UnknownCommandAT, UnknownCommandAU);
       break;
     case SVGA_CMD_RECT_COPY:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdRectCopy) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 7;
+      len -= sizeof(SVGAFifoCmdRectCopy) / sizeof(uint32_t) + 1;
       x = vmsvga_fifo_read(s);
       y = vmsvga_fifo_read(s);
       dx = vmsvga_fifo_read(s);
@@ -432,11 +449,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, x, y, dx, dy, width, height);
       break;
     case SVGA_CMD_DEFINE_CURSOR:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdDefineCursor) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 8;
+      len -= sizeof(SVGAFifoCmdDefineCursor) / sizeof(uint32_t) + 1;
       cursor.id = vmsvga_fifo_read(s);
       cursor.hot_x = vmsvga_fifo_read(s);
       cursor.hot_y = vmsvga_fifo_read(s);
@@ -458,7 +475,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
         break;
       };
-      if (len < 1) {
+      if (len < args) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
@@ -483,11 +500,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
       break;
     case SVGA_CMD_DEFINE_ALPHA_CURSOR:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdDefineAlphaCursor) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 6;
+      len -= sizeof(SVGAFifoCmdDefineAlphaCursor) / sizeof(uint32_t) + 1;
       cursor.id = vmsvga_fifo_read(s);
       cursor.hot_x = vmsvga_fifo_read(s);
       cursor.hot_y = vmsvga_fifo_read(s);
@@ -507,7 +524,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
         break;
       };
-      if (len < 1) {
+      if (len < args) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
@@ -526,11 +543,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
       break;
     case SVGA_CMD_FENCE:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdFence) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 2;
+      len -= sizeof(SVGAFifoCmdFence) / sizeof(uint32_t) + 1;
       fence_arg = vmsvga_fifo_read(s);
       s->fifo[SVGA_FIFO_FENCE] = fence_arg;
       if (VMSVGA_IS_VALID_FIFO_REG(SVGA_FIFO_FENCE, s->fifo[SVGA_FIFO_MIN])) {
@@ -557,11 +574,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, s->irq_mask, irq_status, fence_arg, s->fifo[SVGA_FIFO_MIN]);
       break;
     case SVGA_CMD_DEFINE_GMR2:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdDefineGMR2) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 3;
+      len -= sizeof(SVGAFifoCmdDefineGMR2) / sizeof(uint32_t) + 1;
       UnknownCommandAW = vmsvga_fifo_read(s);
       UnknownCommandAX = vmsvga_fifo_read(s);
       VPRINT("SVGA_CMD_DEFINE_GMR2 command %u in SVGA command "
@@ -569,11 +586,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, UnknownCommandAW, UnknownCommandAX);
       break;
     case SVGA_CMD_REMAP_GMR2:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdRemapGMR2) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 5;
+      len -= sizeof(SVGAFifoCmdRemapGMR2) / sizeof(uint32_t) + 1;
       gmrIdCMD = vmsvga_fifo_read(s);
       flags = vmsvga_fifo_read(s);
       offsetPages = vmsvga_fifo_read(s);
@@ -592,11 +609,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, gmrIdCMD, flags, offsetPages, num_pages);
       break;
     case SVGA_CMD_RECT_ROP_COPY:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdRectRopCopy) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 8;
+      len -= sizeof(SVGAFifoCmdRectRopCopy) / sizeof(uint32_t) + 1;
       UnknownCommandAY = vmsvga_fifo_read(s);
       UnknownCommandAZ = vmsvga_fifo_read(s);
       UnknownCommandBA = vmsvga_fifo_read(s);
@@ -612,11 +629,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              UnknownCommandM);
       break;
     case SVGA_CMD_ESCAPE:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdEscape) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 4;
+      len -= sizeof(SVGAFifoCmdEscape) / sizeof(uint32_t) + 1;
       UnknownCommandA = vmsvga_fifo_read(s);
       UnknownCommandB = vmsvga_fifo_read(s);
       UnknownCommandAV = vmsvga_fifo_read(s);
@@ -625,11 +642,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, UnknownCommandA, UnknownCommandB, UnknownCommandAV);
       break;
     case SVGA_CMD_DEFINE_SCREEN:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdDefineScreen) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 10;
+      len -= sizeof(SVGAFifoCmdDefineScreen) / sizeof(uint32_t) + 1;
       UnknownCommandD = vmsvga_fifo_read(s);
       UnknownCommandE = vmsvga_fifo_read(s);
       UnknownCommandF = vmsvga_fifo_read(s);
@@ -647,11 +664,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              UnknownCommandK, UnknownCommandL);
       break;
     case SVGA_CMD_DISPLAY_CURSOR:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdDisplayCursor) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 3;
+      len -= sizeof(SVGAFifoCmdDisplayCursor) / sizeof(uint32_t) + 1;
       UnknownCommandC = vmsvga_fifo_read(s);
       UnknownCommandN = vmsvga_fifo_read(s);
       VPRINT("SVGA_CMD_DISPLAY_CURSOR command %u in SVGA command "
@@ -660,22 +677,22 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, UnknownCommandC, UnknownCommandN);
       break;
     case SVGA_CMD_DESTROY_SCREEN:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdDestroyScreen) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 2;
+      len -= sizeof(SVGAFifoCmdDestroyScreen) / sizeof(uint32_t) + 1;
       UnknownCommandO = vmsvga_fifo_read(s);
       VPRINT("SVGA_CMD_DESTROY_SCREEN command %u in SVGA command "
              "FIFO %u\n",
              cmd, UnknownCommandO);
       break;
     case SVGA_CMD_DEFINE_GMRFB:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdDefineGMRFB) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 6;
+      len -= sizeof(SVGAFifoCmdDefineGMRFB) / sizeof(uint32_t) + 1;
       UnknownCommandP = vmsvga_fifo_read(s);
       UnknownCommandQ = vmsvga_fifo_read(s);
       UnknownCommandR = vmsvga_fifo_read(s);
@@ -688,11 +705,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              UnknownCommandS, UnknownCommandT);
       break;
     case SVGA_CMD_BLIT_GMRFB_TO_SCREEN:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdBlitGMRFBToScreen) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 8;
+      len -= sizeof(SVGAFifoCmdBlitGMRFBToScreen) / sizeof(uint32_t) + 1;
       UnknownCommandU = vmsvga_fifo_read(s);
       UnknownCommandV = vmsvga_fifo_read(s);
       UnknownCommandW = vmsvga_fifo_read(s);
@@ -708,11 +725,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              UnknownCommandAA);
       break;
     case SVGA_CMD_BLIT_SCREEN_TO_GMRFB:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdBlitScreenToGMRFB) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 8;
+      len -= sizeof(SVGAFifoCmdBlitScreenToGMRFB) / sizeof(uint32_t) + 1;
       UnknownCommandAB = vmsvga_fifo_read(s);
       UnknownCommandAC = vmsvga_fifo_read(s);
       UnknownCommandAD = vmsvga_fifo_read(s);
@@ -728,11 +745,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              UnknownCommandAH);
       break;
     case SVGA_CMD_ANNOTATION_FILL:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdAnnotationFill) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 4;
+      len -= sizeof(SVGAFifoCmdAnnotationFill) / sizeof(uint32_t) + 1;
       UnknownCommandAI = vmsvga_fifo_read(s);
       UnknownCommandAJ = vmsvga_fifo_read(s);
       UnknownCommandAK = vmsvga_fifo_read(s);
@@ -742,11 +759,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, UnknownCommandAI, UnknownCommandAJ, UnknownCommandAK);
       break;
     case SVGA_CMD_ANNOTATION_COPY:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdAnnotationCopy) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 4;
+      len -= sizeof(SVGAFifoCmdAnnotationCopy) / sizeof(uint32_t) + 1;
       UnknownCommandAL = vmsvga_fifo_read(s);
       UnknownCommandAM = vmsvga_fifo_read(s);
       UnknownCommandAN = vmsvga_fifo_read(s);
@@ -756,11 +773,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, UnknownCommandAL, UnknownCommandAM, UnknownCommandAN);
       break;
     case SVGA_CMD_MOVE_CURSOR:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdMoveCursor) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 3;
+      len -= sizeof(SVGAFifoCmdMoveCursor) / sizeof(uint32_t) + 1;
       UnknownCommandAO = vmsvga_fifo_read(s);
       UnknownCommandAP = vmsvga_fifo_read(s);
       VPRINT("SVGA_CMD_MOVE_CURSOR command %u in SVGA command "
@@ -768,11 +785,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd, UnknownCommandAO, UnknownCommandAP);
       break;
     case SVGA_CMD_FRONT_ROP_FILL:
-      if (len < 1) {
+      if (len < (sizeof(SVGAFifoCmdFrontRopFill) / sizeof(uint32_t)) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 1;
+      len -= sizeof(SVGAFifoCmdFrontRopFill) / sizeof(uint32_t) + 1;
       VPRINT("SVGA_CMD_FRONT_ROP_FILL command %u in SVGA command "
              "FIFO\n",
              cmd);
