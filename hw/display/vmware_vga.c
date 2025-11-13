@@ -272,7 +272,6 @@ static inline uint32_t vmsvga_fifo_read(struct vmsvga_state_s *s) {
     (_s)->fifo_stop = fifo_start;                                              \
     (_s)->fifo[SVGA_FIFO_STOP] = cpu_to_le32((_s)->fifo_stop);                 \
   } while (0)
-
 typedef struct {
   uint32_t pixel;
   uint32_t destX;
@@ -280,89 +279,19 @@ typedef struct {
   uint32_t width;
   uint32_t height;
 } SVGAFifoCmdRectFill;
-
 typedef struct {
   uint32_t id;
   uint32_t state;
 } SVGAFifoCmdDisplayCursor;
-
 typedef struct {
   SVGASignedPoint pos;
 } SVGAFifoCmdMoveCursor;
-
 static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
   // VPRINT("vmsvga_fifo_run was just executed\n");
-  uint32_t UnknownCommandA;
-  uint32_t UnknownCommandB;
-  uint32_t UnknownCommandC;
-  uint32_t UnknownCommandD;
-  uint32_t UnknownCommandE;
-  uint32_t UnknownCommandF;
-  uint32_t UnknownCommandG;
-  uint32_t UnknownCommandH;
-  uint32_t UnknownCommandI;
-  uint32_t UnknownCommandJ;
-  uint32_t UnknownCommandK;
-  uint32_t UnknownCommandL;
-  uint32_t UnknownCommandM;
-  uint32_t UnknownCommandN;
-  uint32_t UnknownCommandO;
-  uint32_t UnknownCommandP;
-  uint32_t UnknownCommandQ;
-  uint32_t UnknownCommandR;
-  uint32_t UnknownCommandS;
-  uint32_t UnknownCommandT;
-  uint32_t UnknownCommandU;
-  uint32_t UnknownCommandV;
-  uint32_t UnknownCommandW;
-  uint32_t UnknownCommandX;
-  uint32_t UnknownCommandY;
-  uint32_t UnknownCommandZ;
-  uint32_t UnknownCommandAA;
-  uint32_t UnknownCommandAB;
-  uint32_t UnknownCommandAC;
-  uint32_t UnknownCommandAD;
-  uint32_t UnknownCommandAE;
-  uint32_t UnknownCommandAF;
-  uint32_t UnknownCommandAG;
-  uint32_t UnknownCommandAH;
-  uint32_t UnknownCommandAI;
-  uint32_t UnknownCommandAJ;
-  uint32_t UnknownCommandAK;
-  uint32_t UnknownCommandAL;
-  uint32_t UnknownCommandAM;
-  uint32_t UnknownCommandAN;
-  uint32_t UnknownCommandAO;
-  uint32_t UnknownCommandAP;
-  uint32_t UnknownCommandAQ;
-  uint32_t UnknownCommandAR;
-  uint32_t UnknownCommandAS;
-  uint32_t UnknownCommandAT;
-  uint32_t UnknownCommandAU;
-  uint32_t UnknownCommandAV;
-  uint32_t UnknownCommandAW;
-  uint32_t UnknownCommandAX;
-  uint32_t UnknownCommandAY;
-  uint32_t UnknownCommandAZ;
-  uint32_t UnknownCommandBA;
-  uint32_t UnknownCommandBB;
-  uint32_t UnknownCommandBC;
-  uint32_t UnknownCommandBD;
-  uint32_t gmrIdCMD;
-  uint32_t offsetPages;
-  uint32_t width;
-  uint32_t height;
-  uint32_t dx;
-  uint32_t dy;
-  uint32_t x;
-  uint32_t y;
-  uint32_t z;
   uint32_t args;
   uint32_t len;
   uint32_t cmd;
   uint32_t i;
-  uint32_t flags;
-  uint32_t num_pages;
   uint32_t fence_arg;
   uint32_t irq_status;
   uint32_t fifo_start;
@@ -390,13 +319,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdUpdate) / sizeof(uint32_t) + 1;
-      x = vmsvga_fifo_read(s);
-      y = vmsvga_fifo_read(s);
-      width = vmsvga_fifo_read(s);
-      height = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_UPDATE command %u in SVGA command FIFO %u "
-             "%u %u %u\n",
-             cmd, x, y, width, height);
+      uint32_t SVGAFifoCmdUpdate;
+      SVGAFifoCmdUpdate = sizeof(SVGAFifoCmdUpdate) / sizeof(uint32_t);
+      while (--SVGAFifoCmdUpdate >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_UPDATE command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_UPDATE_VERBOSE:
       if (len < (sizeof(SVGAFifoCmdUpdateVerbose) / sizeof(uint32_t)) + 1) {
@@ -404,15 +332,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdUpdateVerbose) / sizeof(uint32_t) + 1;
-      x = vmsvga_fifo_read(s);
-      y = vmsvga_fifo_read(s);
-      width = vmsvga_fifo_read(s);
-      height = vmsvga_fifo_read(s);
-      z = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_UPDATE_VERBOSE command %u in SVGA command "
-             "FIFO %u "
-             "%u %u %u %u\n",
-             cmd, x, y, width, height, z);
+      uint32_t SVGAFifoCmdUpdateVerbose;
+      SVGAFifoCmdUpdateVerbose =
+          sizeof(SVGAFifoCmdUpdateVerbose) / sizeof(uint32_t);
+      while (--SVGAFifoCmdUpdateVerbose >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_UPDATE_VERBOSE command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_RECT_FILL:
       if (len < (sizeof(SVGAFifoCmdRectFill) / sizeof(uint32_t)) + 1) {
@@ -420,16 +346,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdRectFill) / sizeof(uint32_t) + 1;
-      UnknownCommandAQ = vmsvga_fifo_read(s);
-      UnknownCommandAR = vmsvga_fifo_read(s);
-      UnknownCommandAS = vmsvga_fifo_read(s);
-      UnknownCommandAT = vmsvga_fifo_read(s);
-      UnknownCommandAU = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_RECT_FILL command %u in SVGA command FIFO "
-             "%u %u %u "
-             "%u %u\n",
-             cmd, UnknownCommandAQ, UnknownCommandAR, UnknownCommandAS,
-             UnknownCommandAT, UnknownCommandAU);
+      uint32_t SVGAFifoCmdRectFill;
+      SVGAFifoCmdRectFill = sizeof(SVGAFifoCmdRectFill) / sizeof(uint32_t);
+      while (--SVGAFifoCmdRectFill >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_RECT_FILL command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_RECT_COPY:
       if (len < (sizeof(SVGAFifoCmdRectCopy) / sizeof(uint32_t)) + 1) {
@@ -437,16 +359,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdRectCopy) / sizeof(uint32_t) + 1;
-      x = vmsvga_fifo_read(s);
-      y = vmsvga_fifo_read(s);
-      dx = vmsvga_fifo_read(s);
-      dy = vmsvga_fifo_read(s);
-      width = vmsvga_fifo_read(s);
-      height = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_RECT_COPY command %u in SVGA command FIFO "
-             "%u %u %u "
-             "%u %u %u\n",
-             cmd, x, y, dx, dy, width, height);
+      uint32_t SVGAFifoCmdRectCopy;
+      SVGAFifoCmdRectCopy = sizeof(SVGAFifoCmdRectCopy) / sizeof(uint32_t);
+      while (--SVGAFifoCmdRectCopy >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_RECT_COPY command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_DEFINE_CURSOR:
       if (len < (sizeof(SVGAFifoCmdDefineCursor) / sizeof(uint32_t)) + 1) {
@@ -493,9 +411,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         VPRINT("cursor.xor_mask[args] %u\n", cursor.xor_mask[args]);
       };
       vmsvga_cursor_define(s, &cursor);
-      VPRINT("SVGA_CMD_DEFINE_CURSOR command %u in SVGA command "
-             "FIFO %u %u "
-             "%u %u %u %u %u\n",
+      VPRINT("SVGA_CMD_DEFINE_CURSOR command %u in SVGA command FIFO %u %u %u "
+             "%u %u %u %u\n",
              cmd, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width,
              cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
       break;
@@ -536,9 +453,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         // VPRINT("rgba %u\n", rgba);
       };
       vmsvga_rgba_cursor_define(s, &cursor);
-      VPRINT("SVGA_CMD_DEFINE_ALPHA_CURSOR command %u in SVGA "
-             "command FIFO "
-             "%u %u %u %u %u %u %u\n",
+      VPRINT("SVGA_CMD_DEFINE_ALPHA_CURSOR command %u in SVGA command FIFO %u "
+             "%u %u %u %u %u %u\n",
              cmd, cursor.id, cursor.hot_x, cursor.hot_y, cursor.width,
              cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
       break;
@@ -569,9 +485,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
                  "0\n");
         };
       };
-      VPRINT("SVGA_CMD_FENCE command %u in SVGA command FIFO %u "
-             "%u %u %u\n",
-             cmd, s->irq_mask, irq_status, fence_arg, s->fifo[SVGA_FIFO_MIN]);
+      VPRINT("SVGA_CMD_FENCE command %u in SVGA command FIFO %u\n", cmd,
+             fence_arg);
       break;
     case SVGA_CMD_DEFINE_GMR2:
       if (len < (sizeof(SVGAFifoCmdDefineGMR2) / sizeof(uint32_t)) + 1) {
@@ -579,11 +494,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdDefineGMR2) / sizeof(uint32_t) + 1;
-      UnknownCommandAW = vmsvga_fifo_read(s);
-      UnknownCommandAX = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_DEFINE_GMR2 command %u in SVGA command "
-             "FIFO %u %u\n",
-             cmd, UnknownCommandAW, UnknownCommandAX);
+      uint32_t SVGAFifoCmdDefineGMR2;
+      SVGAFifoCmdDefineGMR2 = sizeof(SVGAFifoCmdDefineGMR2) / sizeof(uint32_t);
+      while (--SVGAFifoCmdDefineGMR2 >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_DEFINE_GMR2 command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_REMAP_GMR2:
       if (len < (sizeof(SVGAFifoCmdRemapGMR2) / sizeof(uint32_t)) + 1) {
@@ -591,22 +507,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdRemapGMR2) / sizeof(uint32_t) + 1;
-      gmrIdCMD = vmsvga_fifo_read(s);
-      flags = vmsvga_fifo_read(s);
-      offsetPages = vmsvga_fifo_read(s);
-      num_pages = vmsvga_fifo_read(s);
-      if (flags & SVGA_REMAP_GMR2_VIA_GMR) {
-        args = 2;
-      } else {
-        args = (flags & SVGA_REMAP_GMR2_SINGLE_PPN) ? 1 : num_pages;
-        if (flags & SVGA_REMAP_GMR2_PPN64) {
-          args *= 2;
-        };
+      uint32_t SVGAFifoCmdRemapGMR2;
+      SVGAFifoCmdRemapGMR2 = sizeof(SVGAFifoCmdRemapGMR2) / sizeof(uint32_t);
+      while (--SVGAFifoCmdRemapGMR2 >= 1) {
+        vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_CMD_REMAP_GMR2 command %u in SVGA command "
-             "FIFO %u %u %u "
-             "%u\n",
-             cmd, gmrIdCMD, flags, offsetPages, num_pages);
+      VPRINT("SVGA_CMD_REMAP_GMR2 command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_RECT_ROP_COPY:
       if (len < (sizeof(SVGAFifoCmdRectRopCopy) / sizeof(uint32_t)) + 1) {
@@ -614,19 +520,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdRectRopCopy) / sizeof(uint32_t) + 1;
-      UnknownCommandAY = vmsvga_fifo_read(s);
-      UnknownCommandAZ = vmsvga_fifo_read(s);
-      UnknownCommandBA = vmsvga_fifo_read(s);
-      UnknownCommandBB = vmsvga_fifo_read(s);
-      UnknownCommandBC = vmsvga_fifo_read(s);
-      UnknownCommandBD = vmsvga_fifo_read(s);
-      UnknownCommandM = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_RECT_ROP_COPY command %u in SVGA command "
-             "FIFO %u %u "
-             "%u %u %u %u %u\n",
-             cmd, UnknownCommandAY, UnknownCommandAZ, UnknownCommandBA,
-             UnknownCommandBB, UnknownCommandBC, UnknownCommandBD,
-             UnknownCommandM);
+      uint32_t SVGAFifoCmdRectRopCopy;
+      SVGAFifoCmdRectRopCopy =
+          sizeof(SVGAFifoCmdRectRopCopy) / sizeof(uint32_t);
+      while (--SVGAFifoCmdRectRopCopy >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_RECT_ROP_COPY command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_ESCAPE:
       if (len < (sizeof(SVGAFifoCmdEscape) / sizeof(uint32_t)) + 1) {
@@ -634,12 +534,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdEscape) / sizeof(uint32_t) + 1;
-      UnknownCommandA = vmsvga_fifo_read(s);
-      UnknownCommandB = vmsvga_fifo_read(s);
-      UnknownCommandAV = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_ESCAPE command %u in SVGA command FIFO %u "
-             "%u %u\n",
-             cmd, UnknownCommandA, UnknownCommandB, UnknownCommandAV);
+      uint32_t SVGAFifoCmdEscape;
+      SVGAFifoCmdEscape = sizeof(SVGAFifoCmdEscape) / sizeof(uint32_t);
+      while (--SVGAFifoCmdEscape >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_ESCAPE command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_DEFINE_SCREEN:
       if (len < (sizeof(SVGAFifoCmdDefineScreen) / sizeof(uint32_t)) + 1) {
@@ -647,21 +547,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdDefineScreen) / sizeof(uint32_t) + 1;
-      UnknownCommandD = vmsvga_fifo_read(s);
-      UnknownCommandE = vmsvga_fifo_read(s);
-      UnknownCommandF = vmsvga_fifo_read(s);
-      UnknownCommandG = vmsvga_fifo_read(s);
-      UnknownCommandH = vmsvga_fifo_read(s);
-      UnknownCommandI = vmsvga_fifo_read(s);
-      UnknownCommandJ = vmsvga_fifo_read(s);
-      UnknownCommandK = vmsvga_fifo_read(s);
-      UnknownCommandL = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_DEFINE_SCREEN command %u in SVGA command "
-             "FIFO %u %u "
-             "%u %u %u %u %u %u %u\n",
-             cmd, UnknownCommandD, UnknownCommandE, UnknownCommandF,
-             UnknownCommandG, UnknownCommandH, UnknownCommandI, UnknownCommandJ,
-             UnknownCommandK, UnknownCommandL);
+      uint32_t SVGAFifoCmdDefineScreen;
+      SVGAFifoCmdDefineScreen =
+          sizeof(SVGAFifoCmdDefineScreen) / sizeof(uint32_t);
+      while (--SVGAFifoCmdDefineScreen >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_DEFINE_SCREEN command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_DISPLAY_CURSOR:
       if (len < (sizeof(SVGAFifoCmdDisplayCursor) / sizeof(uint32_t)) + 1) {
@@ -669,12 +561,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdDisplayCursor) / sizeof(uint32_t) + 1;
-      UnknownCommandC = vmsvga_fifo_read(s);
-      UnknownCommandN = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_DISPLAY_CURSOR command %u in SVGA command "
-             "FIFO %u "
-             "%u\n",
-             cmd, UnknownCommandC, UnknownCommandN);
+      uint32_t SVGAFifoCmdDisplayCursor;
+      SVGAFifoCmdDisplayCursor =
+          sizeof(SVGAFifoCmdDisplayCursor) / sizeof(uint32_t);
+      while (--SVGAFifoCmdDisplayCursor >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_DISPLAY_CURSOR command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_DESTROY_SCREEN:
       if (len < (sizeof(SVGAFifoCmdDestroyScreen) / sizeof(uint32_t)) + 1) {
@@ -682,10 +575,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdDestroyScreen) / sizeof(uint32_t) + 1;
-      UnknownCommandO = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_DESTROY_SCREEN command %u in SVGA command "
-             "FIFO %u\n",
-             cmd, UnknownCommandO);
+      uint32_t SVGAFifoCmdDestroyScreen;
+      SVGAFifoCmdDestroyScreen =
+          sizeof(SVGAFifoCmdDestroyScreen) / sizeof(uint32_t);
+      while (--SVGAFifoCmdDestroyScreen >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_DESTROY_SCREEN command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_DEFINE_GMRFB:
       if (len < (sizeof(SVGAFifoCmdDefineGMRFB) / sizeof(uint32_t)) + 1) {
@@ -693,16 +589,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdDefineGMRFB) / sizeof(uint32_t) + 1;
-      UnknownCommandP = vmsvga_fifo_read(s);
-      UnknownCommandQ = vmsvga_fifo_read(s);
-      UnknownCommandR = vmsvga_fifo_read(s);
-      UnknownCommandS = vmsvga_fifo_read(s);
-      UnknownCommandT = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_DEFINE_GMRFB command %u in SVGA command "
-             "FIFO %u %u "
-             "%u %u %u\n",
-             cmd, UnknownCommandP, UnknownCommandQ, UnknownCommandR,
-             UnknownCommandS, UnknownCommandT);
+      uint32_t SVGAFifoCmdDefineGMRFB;
+      SVGAFifoCmdDefineGMRFB =
+          sizeof(SVGAFifoCmdDefineGMRFB) / sizeof(uint32_t);
+      while (--SVGAFifoCmdDefineGMRFB >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_DEFINE_GMRFB command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_BLIT_GMRFB_TO_SCREEN:
       if (len < (sizeof(SVGAFifoCmdBlitGMRFBToScreen) / sizeof(uint32_t)) + 1) {
@@ -710,19 +603,14 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdBlitGMRFBToScreen) / sizeof(uint32_t) + 1;
-      UnknownCommandU = vmsvga_fifo_read(s);
-      UnknownCommandV = vmsvga_fifo_read(s);
-      UnknownCommandW = vmsvga_fifo_read(s);
-      UnknownCommandX = vmsvga_fifo_read(s);
-      UnknownCommandY = vmsvga_fifo_read(s);
-      UnknownCommandZ = vmsvga_fifo_read(s);
-      UnknownCommandAA = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_BLIT_GMRFB_TO_SCREEN command %u in SVGA "
-             "command "
-             "FIFO %u %u %u %u %u %u %u\n",
-             cmd, UnknownCommandU, UnknownCommandV, UnknownCommandW,
-             UnknownCommandX, UnknownCommandY, UnknownCommandZ,
-             UnknownCommandAA);
+      uint32_t SVGAFifoCmdBlitGMRFBToScreen;
+      SVGAFifoCmdBlitGMRFBToScreen =
+          sizeof(SVGAFifoCmdBlitGMRFBToScreen) / sizeof(uint32_t);
+      while (--SVGAFifoCmdBlitGMRFBToScreen >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_BLIT_GMRFB_TO_SCREEN command %u in SVGA command FIFO\n",
+             cmd);
       break;
     case SVGA_CMD_BLIT_SCREEN_TO_GMRFB:
       if (len < (sizeof(SVGAFifoCmdBlitScreenToGMRFB) / sizeof(uint32_t)) + 1) {
@@ -730,19 +618,14 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdBlitScreenToGMRFB) / sizeof(uint32_t) + 1;
-      UnknownCommandAB = vmsvga_fifo_read(s);
-      UnknownCommandAC = vmsvga_fifo_read(s);
-      UnknownCommandAD = vmsvga_fifo_read(s);
-      UnknownCommandAE = vmsvga_fifo_read(s);
-      UnknownCommandAF = vmsvga_fifo_read(s);
-      UnknownCommandAG = vmsvga_fifo_read(s);
-      UnknownCommandAH = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_BLIT_SCREEN_TO_GMRFB command %u in SVGA "
-             "command "
-             "FIFO %u %u %u %u %u %u %u\n",
-             cmd, UnknownCommandAB, UnknownCommandAC, UnknownCommandAD,
-             UnknownCommandAE, UnknownCommandAF, UnknownCommandAG,
-             UnknownCommandAH);
+      uint32_t SVGAFifoCmdBlitScreenToGMRFB;
+      SVGAFifoCmdBlitScreenToGMRFB =
+          sizeof(SVGAFifoCmdBlitScreenToGMRFB) / sizeof(uint32_t);
+      while (--SVGAFifoCmdBlitScreenToGMRFB >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_BLIT_SCREEN_TO_GMRFB command %u in SVGA command FIFO\n",
+             cmd);
       break;
     case SVGA_CMD_ANNOTATION_FILL:
       if (len < (sizeof(SVGAFifoCmdAnnotationFill) / sizeof(uint32_t)) + 1) {
@@ -750,13 +633,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdAnnotationFill) / sizeof(uint32_t) + 1;
-      UnknownCommandAI = vmsvga_fifo_read(s);
-      UnknownCommandAJ = vmsvga_fifo_read(s);
-      UnknownCommandAK = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_ANNOTATION_FILL command %u in SVGA "
-             "command FIFO %u "
-             "%u %u\n",
-             cmd, UnknownCommandAI, UnknownCommandAJ, UnknownCommandAK);
+      uint32_t SVGAFifoCmdAnnotationFill;
+      SVGAFifoCmdAnnotationFill =
+          sizeof(SVGAFifoCmdAnnotationFill) / sizeof(uint32_t);
+      while (--SVGAFifoCmdAnnotationFill >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_ANNOTATION_FILL command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_ANNOTATION_COPY:
       if (len < (sizeof(SVGAFifoCmdAnnotationCopy) / sizeof(uint32_t)) + 1) {
@@ -764,13 +647,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdAnnotationCopy) / sizeof(uint32_t) + 1;
-      UnknownCommandAL = vmsvga_fifo_read(s);
-      UnknownCommandAM = vmsvga_fifo_read(s);
-      UnknownCommandAN = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_ANNOTATION_COPY command %u in SVGA "
-             "command FIFO %u "
-             "%u %u\n",
-             cmd, UnknownCommandAL, UnknownCommandAM, UnknownCommandAN);
+      uint32_t SVGAFifoCmdAnnotationCopy;
+      SVGAFifoCmdAnnotationCopy =
+          sizeof(SVGAFifoCmdAnnotationCopy) / sizeof(uint32_t);
+      while (--SVGAFifoCmdAnnotationCopy >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_ANNOTATION_COPY command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_MOVE_CURSOR:
       if (len < (sizeof(SVGAFifoCmdMoveCursor) / sizeof(uint32_t)) + 1) {
@@ -778,11 +661,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdMoveCursor) / sizeof(uint32_t) + 1;
-      UnknownCommandAO = vmsvga_fifo_read(s);
-      UnknownCommandAP = vmsvga_fifo_read(s);
-      VPRINT("SVGA_CMD_MOVE_CURSOR command %u in SVGA command "
-             "FIFO %u %u\n",
-             cmd, UnknownCommandAO, UnknownCommandAP);
+      uint32_t SVGAFifoCmdMoveCursor;
+      SVGAFifoCmdMoveCursor = sizeof(SVGAFifoCmdMoveCursor) / sizeof(uint32_t);
+      while (--SVGAFifoCmdMoveCursor >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_MOVE_CURSOR command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_FRONT_ROP_FILL:
       if (len < (sizeof(SVGAFifoCmdFrontRopFill) / sizeof(uint32_t)) + 1) {
@@ -790,9 +674,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdFrontRopFill) / sizeof(uint32_t) + 1;
-      VPRINT("SVGA_CMD_FRONT_ROP_FILL command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      uint32_t SVGAFifoCmdFrontRopFill;
+      SVGAFifoCmdFrontRopFill =
+          sizeof(SVGAFifoCmdFrontRopFill) / sizeof(uint32_t);
+      while (--SVGAFifoCmdFrontRopFill >= 1) {
+        vmsvga_fifo_read(s);
+      };
+      VPRINT("SVGA_CMD_FRONT_ROP_FILL command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_DEAD:
       if (len < 1) {
@@ -840,9 +728,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_LEGACY_BASE command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_LEGACY_BASE command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_SURFACE_DEFINE:
       if (len < sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) + 1) {
@@ -856,8 +742,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDefineSurface >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SURFACE_DEFINE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SURFACE_DEFINE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SURFACE_DESTROY:
@@ -872,8 +757,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDestroySurface >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SURFACE_DESTROY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SURFACE_DESTROY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SURFACE_COPY:
@@ -887,9 +771,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSurfaceCopy >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SURFACE_COPY command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_SURFACE_COPY command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_SURFACE_STRETCHBLT:
       if (len < sizeof(SVGA3dCmdSurfaceStretchBlt) / sizeof(uint32_t) + 1) {
@@ -903,9 +785,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSurfaceStretchBlt >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SURFACE_STRETCHBLT command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_SURFACE_STRETCHBLT command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SURFACE_DMA:
@@ -919,9 +799,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSurfaceDMA >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SURFACE_DMA command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_SURFACE_DMA command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_CONTEXT_DEFINE:
       if (len < sizeof(SVGA3dCmdDefineContext) / sizeof(uint32_t) + 1) {
@@ -935,8 +813,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDefineContext >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_CONTEXT_DEFINE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_CONTEXT_DEFINE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_CONTEXT_DESTROY:
@@ -951,8 +828,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDestroyContext >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_CONTEXT_DESTROY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_CONTEXT_DESTROY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SETTRANSFORM:
@@ -966,9 +842,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetTransform >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SETTRANSFORM command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_SETTRANSFORM command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_SETZRANGE:
       if (len < sizeof(SVGA3dCmdSetZRange) / sizeof(uint32_t) + 1) {
@@ -981,9 +855,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetZRange >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SETZRANGE command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_SETZRANGE command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_SETRENDERSTATE:
       if (len < sizeof(SVGA3dCmdSetRenderState) / sizeof(uint32_t) + 1) {
@@ -997,8 +869,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetRenderState >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SETRENDERSTATE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SETRENDERSTATE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SETRENDERTARGET:
@@ -1013,8 +884,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetRenderTarget >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SETRENDERTARGET command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SETRENDERTARGET command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SETTEXTURESTATE:
@@ -1029,8 +899,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetTextureState >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SETTEXTURESTATE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SETTEXTURESTATE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SETMATERIAL:
@@ -1044,9 +913,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetMaterial >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SETMATERIAL command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_SETMATERIAL command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_SETLIGHTDATA:
       if (len < sizeof(SVGA3dCmdSetLightData) / sizeof(uint32_t) + 1) {
@@ -1059,9 +926,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetLightData >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SETLIGHTDATA command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_SETLIGHTDATA command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_SETLIGHTENABLED:
       if (len < sizeof(SVGA3dCmdSetLightEnabled) / sizeof(uint32_t) + 1) {
@@ -1075,8 +940,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetLightEnabled >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SETLIGHTENABLED command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SETLIGHTENABLED command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SETVIEWPORT:
@@ -1090,9 +954,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetViewport >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SETVIEWPORT command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_SETVIEWPORT command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_SETCLIPPLANE:
       if (len < sizeof(SVGA3dCmdSetClipPlane) / sizeof(uint32_t) + 1) {
@@ -1105,9 +967,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetClipPlane >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SETCLIPPLANE command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_SETCLIPPLANE command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_CLEAR:
       if (len < sizeof(SVGA3dCmdClear) / sizeof(uint32_t) + 1) {
@@ -1146,8 +1006,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDefineShader >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SHADER_DEFINE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SHADER_DEFINE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SHADER_DESTROY:
@@ -1162,8 +1021,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDestroyShader >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SHADER_DESTROY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SHADER_DESTROY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SET_SHADER:
@@ -1177,9 +1035,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetShader >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SET_SHADER command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_SET_SHADER command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_SET_SHADER_CONST:
       if (len < sizeof(SVGA3dCmdSetShaderConst) / sizeof(uint32_t) + 1) {
@@ -1193,8 +1049,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetShaderConst >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SET_SHADER_CONST command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SET_SHADER_CONST command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DRAW_PRIMITIVES:
@@ -1203,8 +1058,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DRAW_PRIMITIVES command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DRAW_PRIMITIVES command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SETSCISSORRECT:
@@ -1219,8 +1073,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetScissorRect >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SETSCISSORRECT command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SETSCISSORRECT command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_BEGIN_QUERY:
@@ -1234,9 +1087,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdBeginQuery >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_BEGIN_QUERY command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_BEGIN_QUERY command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_END_QUERY:
       if (len < sizeof(SVGA3dCmdEndQuery) / sizeof(uint32_t) + 1) {
@@ -1249,9 +1100,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdEndQuery >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_END_QUERY command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_END_QUERY command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_WAIT_FOR_QUERY:
       if (len < sizeof(SVGA3dCmdWaitForQuery) / sizeof(uint32_t) + 1) {
@@ -1264,8 +1113,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdWaitForQuery >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_WAIT_FOR_QUERY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_WAIT_FOR_QUERY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_PRESENT_READBACK:
@@ -1274,8 +1122,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_PRESENT_READBACK command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_PRESENT_READBACK command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN:
@@ -1290,8 +1137,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdBlitSurfaceToScreen >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SURFACE_DEFINE_V2:
@@ -1300,9 +1147,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_SURFACE_DEFINE_V2 command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_SURFACE_DEFINE_V2 command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_GENERATE_MIPMAPS:
@@ -1317,8 +1162,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdGenerateMipmaps >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_GENERATE_MIPMAPS command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_GENERATE_MIPMAPS command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DEAD4:
@@ -1397,8 +1241,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdActivateSurface >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_ACTIVATE_SURFACE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_ACTIVATE_SURFACE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DEACTIVATE_SURFACE:
@@ -1413,9 +1256,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDeactivateSurface >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_DEACTIVATE_SURFACE command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DEACTIVATE_SURFACE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SCREEN_DMA:
@@ -1429,9 +1270,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdScreenDMA >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SCREEN_DMA command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_SCREEN_DMA command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_DEAD1:
       if (len < 1) {
@@ -1509,8 +1348,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetOTableBase >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SET_OTABLE_BASE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SET_OTABLE_BASE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_READBACK_OTABLE:
@@ -1525,8 +1363,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdReadbackOTable >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_READBACK_OTABLE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_READBACK_OTABLE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DEFINE_GB_MOB:
@@ -1540,8 +1377,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDefineGBMob >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_DEFINE_GB_MOB command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DEFINE_GB_MOB command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DESTROY_GB_MOB:
@@ -1555,8 +1391,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDestroyGBMob >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_DESTROY_GB_MOB command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DESTROY_GB_MOB command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DEAD3:
@@ -1579,10 +1414,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdUpdateGBMobMapping >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_UPDATE_GB_MOB_MAPPING command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_UPDATE_GB_MOB_MAPPING command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DEFINE_GB_SURFACE:
       if (len < sizeof(SVGA3dCmdDefineGBSurface) / sizeof(uint32_t) + 1) {
@@ -1596,9 +1430,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDefineGBSurface >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_DEFINE_GB_SURFACE command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DEFINE_GB_SURFACE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DESTROY_GB_SURFACE:
@@ -1613,9 +1445,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDestroyGBSurface >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_DESTROY_GB_SURFACE command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DESTROY_GB_SURFACE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_BIND_GB_SURFACE:
@@ -1630,8 +1460,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdBindGBSurface >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_BIND_GB_SURFACE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_BIND_GB_SURFACE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_COND_BIND_GB_SURFACE:
@@ -1646,10 +1475,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdCondBindGBSurface >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_COND_BIND_GB_SURFACE command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_COND_BIND_GB_SURFACE command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_UPDATE_GB_IMAGE:
       if (len < sizeof(SVGA3dCmdUpdateGBImage) / sizeof(uint32_t) + 1) {
@@ -1663,8 +1491,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdUpdateGBImage >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_UPDATE_GB_IMAGE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_UPDATE_GB_IMAGE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_UPDATE_GB_SURFACE:
@@ -1679,9 +1506,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdUpdateGBSurface >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_UPDATE_GB_SURFACE command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_UPDATE_GB_SURFACE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_READBACK_GB_IMAGE:
@@ -1696,9 +1521,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdReadbackGBImage >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_READBACK_GB_IMAGE command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_READBACK_GB_IMAGE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_READBACK_GB_SURFACE:
@@ -1713,10 +1536,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdReadbackGBSurface >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_READBACK_GB_SURFACE command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_READBACK_GB_SURFACE command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_INVALIDATE_GB_IMAGE:
       if (len < sizeof(SVGA3dCmdInvalidateGBImage) / sizeof(uint32_t) + 1) {
@@ -1730,10 +1552,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdInvalidateGBImage >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_INVALIDATE_GB_IMAGE command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_INVALIDATE_GB_IMAGE command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_INVALIDATE_GB_SURFACE:
       if (len < sizeof(SVGA3dCmdInvalidateGBSurface) / sizeof(uint32_t) + 1) {
@@ -1747,10 +1568,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdInvalidateGBSurface >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_INVALIDATE_GB_SURFACE command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_INVALIDATE_GB_SURFACE command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DEFINE_GB_CONTEXT:
       if (len < sizeof(SVGA3dCmdDefineGBContext) / sizeof(uint32_t) + 1) {
@@ -1764,9 +1584,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDefineGBContext >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_DEFINE_GB_CONTEXT command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DEFINE_GB_CONTEXT command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DESTROY_GB_CONTEXT:
@@ -1781,9 +1599,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDestroyGBContext >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_DESTROY_GB_CONTEXT command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DESTROY_GB_CONTEXT command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_BIND_GB_CONTEXT:
@@ -1798,8 +1614,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdBindGBContext >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_BIND_GB_CONTEXT command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_BIND_GB_CONTEXT command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_READBACK_GB_CONTEXT:
@@ -1814,10 +1629,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdReadbackGBContext >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_READBACK_GB_CONTEXT command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_READBACK_GB_CONTEXT command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_INVALIDATE_GB_CONTEXT:
       if (len < sizeof(SVGA3dCmdInvalidateGBContext) / sizeof(uint32_t) + 1) {
@@ -1831,10 +1645,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdInvalidateGBContext >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_INVALIDATE_GB_CONTEXT command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_INVALIDATE_GB_CONTEXT command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DEFINE_GB_SHADER:
       if (len < sizeof(SVGA3dCmdDefineGBShader) / sizeof(uint32_t) + 1) {
@@ -1848,8 +1661,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDefineGBShader >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_DEFINE_GB_SHADER command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DEFINE_GB_SHADER command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DESTROY_GB_SHADER:
@@ -1864,9 +1676,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDestroyGBShader >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_DESTROY_GB_SHADER command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DESTROY_GB_SHADER command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_BIND_GB_SHADER:
@@ -1880,8 +1690,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdBindGBShader >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_BIND_GB_SHADER command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_BIND_GB_SHADER command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SET_OTABLE_BASE64:
@@ -1890,9 +1699,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetOTableBase) / sizeof(uint32_t) + 164;
-      VPRINT("SVGA_3D_CMD_SET_OTABLE_BASE64 command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_SET_OTABLE_BASE64 command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_BEGIN_GB_QUERY:
@@ -1906,8 +1713,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdBeginGBQuery >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_BEGIN_GB_QUERY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_BEGIN_GB_QUERY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_END_GB_QUERY:
@@ -1921,9 +1727,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdEndGBQuery >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_END_GB_QUERY command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_END_GB_QUERY command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_WAIT_FOR_GB_QUERY:
       if (len < sizeof(SVGA3dCmdWaitForGBQuery) / sizeof(uint32_t) + 1) {
@@ -1937,9 +1741,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdWaitForGBQuery >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_WAIT_FOR_GB_QUERY command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_WAIT_FOR_GB_QUERY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_NOP:
@@ -1961,9 +1763,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdEnableGart >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_ENABLE_GART command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_ENABLE_GART command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_DISABLE_GART:
       if (len < 1) {
@@ -1971,9 +1771,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DISABLE_GART command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_DISABLE_GART command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_MAP_MOB_INTO_GART:
       if (len < sizeof(SVGA3dCmdMapMobIntoGart) / sizeof(uint32_t) + 1) {
@@ -1987,9 +1785,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdMapMobIntoGart >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_MAP_MOB_INTO_GART command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_MAP_MOB_INTO_GART command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_UNMAP_GART_RANGE:
@@ -2004,8 +1800,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdUnmapGartRange >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_UNMAP_GART_RANGE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_UNMAP_GART_RANGE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DEFINE_GB_SCREENTARGET:
@@ -2020,8 +1815,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDefineGBScreenTarget >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_DEFINE_GB_SCREENTARGET command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DEFINE_GB_SCREENTARGET command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DESTROY_GB_SCREENTARGET:
@@ -2036,9 +1831,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdDestroyGBScreenTarget >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_DESTROY_GB_SCREENTARGET command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DESTROY_GB_SCREENTARGET command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_BIND_GB_SCREENTARGET:
@@ -2053,10 +1847,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdBindGBScreenTarget >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_BIND_GB_SCREENTARGET command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_BIND_GB_SCREENTARGET command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_UPDATE_GB_SCREENTARGET:
       if (len < sizeof(SVGA3dCmdUpdateGBScreenTarget) / sizeof(uint32_t) + 1) {
@@ -2070,8 +1863,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdUpdateGBScreenTarget >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_UPDATE_GB_SCREENTARGET command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_UPDATE_GB_SCREENTARGET command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_READBACK_GB_IMAGE_PARTIAL:
@@ -2080,9 +1873,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_READBACK_GB_IMAGE_PARTIAL command %u "
-             "in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_READBACK_GB_IMAGE_PARTIAL command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_INVALIDATE_GB_IMAGE_PARTIAL:
@@ -2091,8 +1883,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_INVALIDATE_GB_IMAGE_PARTIAL command %u "
-             "in SVGA "
+      VPRINT("SVGA_3D_CMD_INVALIDATE_GB_IMAGE_PARTIAL command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2109,8 +1900,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdSetGBShaderConstInline >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SET_GB_SHADERCONSTS_INLINE command %u "
-             "in SVGA "
+      VPRINT("SVGA_3D_CMD_SET_GB_SHADERCONSTS_INLINE command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2125,8 +1915,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdGBScreenDMA >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_GB_SCREEN_DMA command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_GB_SCREEN_DMA command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_BIND_GB_SURFACE_WITH_PITCH:
@@ -2135,8 +1924,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_BIND_GB_SURFACE_WITH_PITCH command %u "
-             "in SVGA "
+      VPRINT("SVGA_3D_CMD_BIND_GB_SURFACE_WITH_PITCH command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2151,9 +1939,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdGBMobFence >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_GB_MOB_FENCE command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_GB_MOB_FENCE command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_DEFINE_GB_SURFACE_V2:
       if (len < 1) {
@@ -2161,10 +1947,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DEFINE_GB_SURFACE_V2 command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DEFINE_GB_SURFACE_V2 command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DEFINE_GB_MOB64:
       if (len < sizeof(SVGA3dCmdDefineGBMob) / sizeof(uint32_t) + 164) {
@@ -2172,8 +1957,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDefineGBMob) / sizeof(uint32_t) + 164;
-      VPRINT("SVGA_3D_CMD_DEFINE_GB_MOB64 command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DEFINE_GB_MOB64 command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_REDEFINE_GB_MOB64:
@@ -2188,9 +1972,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdRedefineGBMob64 >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_REDEFINE_GB_MOB64 command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_REDEFINE_GB_MOB64 command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_NOP_ERROR:
@@ -2199,9 +1981,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_NOP_ERROR command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_NOP_ERROR command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_SET_VERTEX_STREAMS:
       if (len < 1) {
@@ -2209,9 +1989,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_SET_VERTEX_STREAMS command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_SET_VERTEX_STREAMS command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SET_VERTEX_DECLS:
@@ -2220,8 +1998,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_SET_VERTEX_DECLS command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SET_VERTEX_DECLS command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SET_VERTEX_DIVISORS:
@@ -2230,10 +2007,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_SET_VERTEX_DIVISORS command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_SET_VERTEX_DIVISORS command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DRAW:
       if (len < 1) {
@@ -2249,9 +2025,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DRAW_INDEXED command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_DRAW_INDEXED command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_DX_DEFINE_CONTEXT:
       if (len < 1) {
@@ -2259,9 +2033,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_CONTEXT command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_CONTEXT command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DESTROY_CONTEXT:
@@ -2270,9 +2042,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_CONTEXT command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_CONTEXT command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_BIND_CONTEXT:
@@ -2281,8 +2051,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_BIND_CONTEXT command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_BIND_CONTEXT command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_READBACK_CONTEXT:
@@ -2291,10 +2060,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_READBACK_CONTEXT command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_READBACK_CONTEXT command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_INVALIDATE_CONTEXT:
       if (len < 1) {
@@ -2302,10 +2070,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_INVALIDATE_CONTEXT command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_INVALIDATE_CONTEXT command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_SET_SINGLE_CONSTANT_BUFFER:
       if (len < 1) {
@@ -2313,8 +2080,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_SINGLE_CONSTANT_BUFFER command "
-             "%u in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_SET_SINGLE_CONSTANT_BUFFER command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2324,9 +2090,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_SHADER_RESOURCES command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_SHADER_RESOURCES command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_SHADER:
@@ -2335,8 +2100,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_SHADER command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_SHADER command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_SAMPLERS:
@@ -2345,8 +2109,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_SAMPLERS command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_SAMPLERS command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DRAW:
@@ -2363,8 +2126,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DRAW_INDEXED command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DRAW_INDEXED command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DRAW_INSTANCED:
@@ -2373,9 +2135,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DRAW_INSTANCED command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DRAW_INSTANCED command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED:
@@ -2384,9 +2144,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED command %u "
-             "in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DRAW_AUTO:
@@ -2395,9 +2154,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DRAW_AUTO command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_DX_DRAW_AUTO command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_DX_SET_INPUT_LAYOUT:
       if (len < 1) {
@@ -2405,10 +2162,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_INPUT_LAYOUT command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_SET_INPUT_LAYOUT command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_SET_VERTEX_BUFFERS:
       if (len < 1) {
@@ -2416,10 +2172,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_VERTEX_BUFFERS command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_SET_VERTEX_BUFFERS command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_SET_INDEX_BUFFER:
       if (len < 1) {
@@ -2427,10 +2182,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_INDEX_BUFFER command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_SET_INDEX_BUFFER command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_SET_TOPOLOGY:
       if (len < 1) {
@@ -2438,8 +2192,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_TOPOLOGY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_TOPOLOGY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_RENDERTARGETS:
@@ -2448,10 +2201,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_RENDERTARGETS command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_SET_RENDERTARGETS command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_SET_BLEND_STATE:
       if (len < 1) {
@@ -2459,9 +2211,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_BLEND_STATE command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_BLEND_STATE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_DEPTHSTENCIL_STATE:
@@ -2470,9 +2220,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_DEPTHSTENCIL_STATE command %u "
-             "in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_DEPTHSTENCIL_STATE command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_RASTERIZER_STATE:
@@ -2481,9 +2230,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_RASTERIZER_STATE command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_RASTERIZER_STATE command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DEFINE_QUERY:
@@ -2492,8 +2240,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_QUERY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_QUERY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DESTROY_QUERY:
@@ -2502,8 +2249,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_QUERY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_QUERY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_BIND_QUERY:
@@ -2512,8 +2258,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_BIND_QUERY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_BIND_QUERY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_QUERY_OFFSET:
@@ -2522,10 +2267,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_QUERY_OFFSET command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_SET_QUERY_OFFSET command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_BEGIN_QUERY:
       if (len < 1) {
@@ -2533,8 +2277,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_BEGIN_QUERY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_BEGIN_QUERY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_END_QUERY:
@@ -2543,9 +2286,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_END_QUERY command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_DX_END_QUERY command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_DX_READBACK_QUERY:
       if (len < 1) {
@@ -2553,9 +2294,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_READBACK_QUERY command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_READBACK_QUERY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_PREDICATION:
@@ -2564,9 +2303,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_PREDICATION command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_PREDICATION command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_SOTARGETS:
@@ -2575,8 +2312,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_SOTARGETS command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_SOTARGETS command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_VIEWPORTS:
@@ -2585,8 +2321,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_VIEWPORTS command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_VIEWPORTS command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_SCISSORRECTS:
@@ -2595,10 +2330,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_SCISSORRECTS command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_SET_SCISSORRECTS command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_CLEAR_RENDERTARGET_VIEW:
       if (len < 1) {
@@ -2606,8 +2340,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_CLEAR_RENDERTARGET_VIEW command %u "
-             "in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_CLEAR_RENDERTARGET_VIEW command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2617,8 +2350,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_CLEAR_DEPTHSTENCIL_VIEW command %u "
-             "in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_CLEAR_DEPTHSTENCIL_VIEW command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2628,10 +2360,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_PRED_COPY_REGION command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_PRED_COPY_REGION command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_PRED_COPY:
       if (len < 1) {
@@ -2639,9 +2370,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_PRED_COPY command %u in SVGA "
-             "command FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_DX_PRED_COPY command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_DX_PRESENTBLT:
       if (len < 1) {
@@ -2649,8 +2378,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_PRESENTBLT command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_PRESENTBLT command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_GENMIPS:
@@ -2659,9 +2387,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_GENMIPS command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_DX_GENMIPS command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_DX_UPDATE_SUBRESOURCE:
       if (len < 1) {
@@ -2669,10 +2395,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_UPDATE_SUBRESOURCE command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_UPDATE_SUBRESOURCE command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_READBACK_SUBRESOURCE:
       if (len < 1) {
@@ -2680,9 +2405,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_READBACK_SUBRESOURCE command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_READBACK_SUBRESOURCE command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_INVALIDATE_SUBRESOURCE:
@@ -2691,9 +2415,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_INVALIDATE_SUBRESOURCE command %u "
-             "in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_INVALIDATE_SUBRESOURCE command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DEFINE_SHADERRESOURCE_VIEW:
@@ -2702,8 +2425,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_SHADERRESOURCE_VIEW command "
-             "%u in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_SHADERRESOURCE_VIEW command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2713,9 +2435,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_SHADERRESOURCE_VIEW command "
-             "%u in "
-             "SVGA command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_SHADERRESOURCE_VIEW command %u in SVGA "
+             "command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DEFINE_RENDERTARGET_VIEW:
@@ -2724,8 +2445,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_RENDERTARGET_VIEW command %u "
-             "in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_RENDERTARGET_VIEW command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2735,8 +2455,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_RENDERTARGET_VIEW command "
-             "%u in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_RENDERTARGET_VIEW command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2746,8 +2465,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW command %u "
-             "in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2757,8 +2475,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_VIEW command "
-             "%u in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_VIEW command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2768,9 +2485,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_ELEMENTLAYOUT command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_ELEMENTLAYOUT command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DESTROY_ELEMENTLAYOUT:
@@ -2779,9 +2495,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_ELEMENTLAYOUT command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_ELEMENTLAYOUT command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DEFINE_BLEND_STATE:
@@ -2790,10 +2505,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_BLEND_STATE command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_DEFINE_BLEND_STATE command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_DESTROY_BLEND_STATE:
       if (len < 1) {
@@ -2801,8 +2515,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_BLEND_STATE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_BLEND_STATE command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_STATE:
@@ -2811,8 +2525,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_STATE command "
-             "%u in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_STATE command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2822,8 +2535,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_STATE command "
-             "%u in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_DEPTHSTENCIL_STATE command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2833,8 +2545,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_RASTERIZER_STATE command %u "
-             "in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_RASTERIZER_STATE command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2844,8 +2555,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_RASTERIZER_STATE command %u "
-             "in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_RASTERIZER_STATE command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2855,9 +2565,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_SAMPLER_STATE command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_SAMPLER_STATE command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DESTROY_SAMPLER_STATE:
@@ -2866,9 +2575,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_SAMPLER_STATE command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_SAMPLER_STATE command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DEFINE_SHADER:
@@ -2877,8 +2585,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_SHADER command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_SHADER command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DESTROY_SHADER:
@@ -2887,9 +2594,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_SHADER command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_SHADER command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_BIND_SHADER:
@@ -2898,8 +2603,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_BIND_SHADER command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_BIND_SHADER command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT:
@@ -2908,8 +2612,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DESTROY_STREAMOUTPUT:
@@ -2918,9 +2622,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_STREAMOUTPUT command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_STREAMOUTPUT command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_STREAMOUTPUT:
@@ -2929,10 +2632,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_STREAMOUTPUT command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_SET_STREAMOUTPUT command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_SET_COTABLE:
       if (len < 1) {
@@ -2940,8 +2642,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_COTABLE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_COTABLE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_READBACK_COTABLE:
@@ -2950,10 +2651,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_READBACK_COTABLE command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_READBACK_COTABLE command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_BUFFER_COPY:
       if (len < 1) {
@@ -2961,8 +2661,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_BUFFER_COPY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_BUFFER_COPY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_TRANSFER_FROM_BUFFER:
@@ -2971,9 +2670,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_TRANSFER_FROM_BUFFER command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_TRANSFER_FROM_BUFFER command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SURFACE_COPY_AND_READBACK:
@@ -2982,8 +2680,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SURFACE_COPY_AND_READBACK command "
-             "%u in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_SURFACE_COPY_AND_READBACK command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -2993,8 +2690,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_MOVE_QUERY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_MOVE_QUERY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_BIND_ALL_QUERY:
@@ -3003,9 +2699,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_BIND_ALL_QUERY command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_BIND_ALL_QUERY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_READBACK_ALL_QUERY:
@@ -3014,10 +2708,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_READBACK_ALL_QUERY command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_READBACK_ALL_QUERY command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_PRED_TRANSFER_FROM_BUFFER:
       if (len < 1) {
@@ -3025,8 +2718,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_PRED_TRANSFER_FROM_BUFFER command "
-             "%u in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_PRED_TRANSFER_FROM_BUFFER command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -3036,8 +2728,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_MOB_FENCE_64 command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_MOB_FENCE_64 command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_BIND_ALL_SHADER:
@@ -3046,9 +2737,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_BIND_ALL_SHADER command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_BIND_ALL_SHADER command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_HINT:
@@ -3065,8 +2754,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_BUFFER_UPDATE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_BUFFER_UPDATE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_VS_CONSTANT_BUFFER_OFFSET:
@@ -3075,9 +2763,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_VS_CONSTANT_BUFFER_OFFSET "
-             "command %u in "
-             "SVGA command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_VS_CONSTANT_BUFFER_OFFSET command %u in SVGA "
+             "command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_PS_CONSTANT_BUFFER_OFFSET:
@@ -3086,9 +2773,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_PS_CONSTANT_BUFFER_OFFSET "
-             "command %u in "
-             "SVGA command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_PS_CONSTANT_BUFFER_OFFSET command %u in SVGA "
+             "command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_GS_CONSTANT_BUFFER_OFFSET:
@@ -3097,9 +2783,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_GS_CONSTANT_BUFFER_OFFSET "
-             "command %u in "
-             "SVGA command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_GS_CONSTANT_BUFFER_OFFSET command %u in SVGA "
+             "command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_HS_CONSTANT_BUFFER_OFFSET:
@@ -3108,9 +2793,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_HS_CONSTANT_BUFFER_OFFSET "
-             "command %u in "
-             "SVGA command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_HS_CONSTANT_BUFFER_OFFSET command %u in SVGA "
+             "command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_DS_CONSTANT_BUFFER_OFFSET:
@@ -3119,9 +2803,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_DS_CONSTANT_BUFFER_OFFSET "
-             "command %u in "
-             "SVGA command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_DS_CONSTANT_BUFFER_OFFSET command %u in SVGA "
+             "command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_CS_CONSTANT_BUFFER_OFFSET:
@@ -3130,9 +2813,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_CS_CONSTANT_BUFFER_OFFSET "
-             "command %u in "
-             "SVGA command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_CS_CONSTANT_BUFFER_OFFSET command %u in SVGA "
+             "command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_COND_BIND_ALL_SHADER:
@@ -3141,9 +2823,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_COND_BIND_ALL_SHADER command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_COND_BIND_ALL_SHADER command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SCREEN_COPY:
@@ -3157,9 +2838,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdScreenCopy >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_SCREEN_COPY command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_SCREEN_COPY command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_GROW_OTABLE:
       if (len < sizeof(SVGA3dCmdGrowOTable) / sizeof(uint32_t) + 1) {
@@ -3172,9 +2851,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdGrowOTable >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_GROW_OTABLE command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_GROW_OTABLE command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_DX_GROW_COTABLE:
       if (len < 1) {
@@ -3182,8 +2859,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_GROW_COTABLE command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_GROW_COTABLE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_INTRA_SURFACE_COPY:
@@ -3198,9 +2874,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdIntraSurfaceCopy >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_INTRA_SURFACE_COPY command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_INTRA_SURFACE_COPY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DEFINE_GB_SURFACE_V3:
@@ -3209,10 +2883,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DEFINE_GB_SURFACE_V3 command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DEFINE_GB_SURFACE_V3 command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_RESOLVE_COPY:
       if (len < 1) {
@@ -3220,8 +2893,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_RESOLVE_COPY command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_RESOLVE_COPY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_PRED_RESOLVE_COPY:
@@ -3230,10 +2902,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_PRED_RESOLVE_COPY command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_PRED_RESOLVE_COPY command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_PRED_CONVERT_REGION:
       if (len < 1) {
@@ -3241,8 +2912,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_PRED_CONVERT_REGION command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_PRED_CONVERT_REGION command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_PRED_CONVERT:
@@ -3251,8 +2922,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_PRED_CONVERT command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_PRED_CONVERT command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_WHOLE_SURFACE_COPY:
@@ -3261,9 +2931,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_WHOLE_SURFACE_COPY command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_WHOLE_SURFACE_COPY command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DEFINE_UA_VIEW:
@@ -3272,9 +2940,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_UA_VIEW command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_UA_VIEW command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DESTROY_UA_VIEW:
@@ -3283,9 +2949,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DESTROY_UA_VIEW command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DESTROY_UA_VIEW command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_CLEAR_UA_VIEW_UINT:
@@ -3294,10 +2958,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_CLEAR_UA_VIEW_UINT command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_CLEAR_UA_VIEW_UINT command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_CLEAR_UA_VIEW_FLOAT:
       if (len < 1) {
@@ -3305,8 +2968,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_CLEAR_UA_VIEW_FLOAT command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_CLEAR_UA_VIEW_FLOAT command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_COPY_STRUCTURE_COUNT:
@@ -3315,9 +2978,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_COPY_STRUCTURE_COUNT command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_COPY_STRUCTURE_COUNT command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_UA_VIEWS:
@@ -3326,8 +2988,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_UA_VIEWS command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_UA_VIEWS command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED_INDIRECT:
@@ -3336,8 +2997,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED_INDIRECT "
-             "command %u in "
+      VPRINT("SVGA_3D_CMD_DX_DRAW_INDEXED_INSTANCED_INDIRECT command %u in "
              "SVGA command FIFO\n",
              cmd);
       break;
@@ -3347,8 +3007,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DRAW_INSTANCED_INDIRECT command %u "
-             "in SVGA "
+      VPRINT("SVGA_3D_CMD_DX_DRAW_INSTANCED_INDIRECT command %u in SVGA "
              "command FIFO\n",
              cmd);
       break;
@@ -3358,9 +3017,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DISPATCH command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_DX_DISPATCH command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_DX_DISPATCH_INDIRECT:
       if (len < 1) {
@@ -3368,10 +3025,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DISPATCH_INDIRECT command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_DISPATCH_INDIRECT command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_WRITE_ZERO_SURFACE:
       if (len < 1) {
@@ -3379,9 +3035,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_WRITE_ZERO_SURFACE command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_WRITE_ZERO_SURFACE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_HINT_ZERO_SURFACE:
@@ -3390,9 +3044,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_HINT_ZERO_SURFACE command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_HINT_ZERO_SURFACE command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_TRANSFER_TO_BUFFER:
@@ -3401,10 +3053,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_TRANSFER_TO_BUFFER command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_TRANSFER_TO_BUFFER command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_SET_STRUCTURE_COUNT:
       if (len < 1) {
@@ -3412,8 +3063,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_STRUCTURE_COUNT command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_STRUCTURE_COUNT command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_LOGICOPS_BITBLT:
@@ -3428,8 +3079,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdLogicOpsBitBlt >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_LOGICOPS_BITBLT command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_LOGICOPS_BITBLT command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_LOGICOPS_TRANSBLT:
@@ -3444,9 +3094,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdLogicOpsTransBlt >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_LOGICOPS_TRANSBLT command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_LOGICOPS_TRANSBLT command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_LOGICOPS_STRETCHBLT:
@@ -3461,10 +3109,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdLogicOpsStretchBlt >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_LOGICOPS_STRETCHBLT command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_LOGICOPS_STRETCHBLT command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_LOGICOPS_COLORFILL:
       if (len < sizeof(SVGA3dCmdLogicOpsColorFill) / sizeof(uint32_t) + 1) {
@@ -3478,9 +3125,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdLogicOpsColorFill >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_LOGICOPS_COLORFILL command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_LOGICOPS_COLORFILL command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_LOGICOPS_ALPHABLEND:
@@ -3495,10 +3140,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdLogicOpsAlphaBlend >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_LOGICOPS_ALPHABLEND command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_LOGICOPS_ALPHABLEND command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_LOGICOPS_CLEARTYPEBLEND:
       if (len <
@@ -3513,9 +3157,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (--SVGA3dCmdLogicOpsClearTypeBlend >= 1) {
         vmsvga_fifo_read(s);
       };
-      VPRINT("SVGA_3D_CMD_LOGICOPS_CLEARTYPEBLEND command %u in "
-             "SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_LOGICOPS_CLEARTYPEBLEND command %u in SVGA command "
+             "FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DEFINE_GB_SURFACE_V4:
@@ -3524,10 +3167,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DEFINE_GB_SURFACE_V4 command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DEFINE_GB_SURFACE_V4 command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_SET_CS_UA_VIEWS:
       if (len < 1) {
@@ -3535,9 +3177,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_CS_UA_VIEWS command %u in SVGA "
-             "command "
-             "FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_CS_UA_VIEWS command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_MIN_LOD:
@@ -3546,8 +3186,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_MIN_LOD command %u in SVGA "
-             "command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_SET_MIN_LOD command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW_V2:
@@ -3556,9 +3195,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW_V2 command "
-             "%u in "
-             "SVGA command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_DEPTHSTENCIL_VIEW_V2 command %u in SVGA "
+             "command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT_WITH_MOB:
@@ -3567,9 +3205,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT_WITH_MOB "
-             "command %u in "
-             "SVGA command FIFO\n",
+      VPRINT("SVGA_3D_CMD_DX_DEFINE_STREAMOUTPUT_WITH_MOB command %u in SVGA "
+             "command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_SET_SHADER_IFACE:
@@ -3578,10 +3215,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_SET_SHADER_IFACE command %u in SVGA "
-             "command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_SET_SHADER_IFACE command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_DX_BIND_STREAMOUTPUT:
       if (len < 1) {
@@ -3589,10 +3225,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_BIND_STREAMOUTPUT command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_BIND_STREAMOUTPUT command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_SURFACE_STRETCHBLT_NON_MS_TO_MS:
       if (len < 1) {
@@ -3600,9 +3235,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_SURFACE_STRETCHBLT_NON_MS_TO_MS "
-             "command %u in "
-             "SVGA command FIFO\n",
+      VPRINT("SVGA_3D_CMD_SURFACE_STRETCHBLT_NON_MS_TO_MS command %u in SVGA "
+             "command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_DX_BIND_SHADER_IFACE:
@@ -3611,10 +3245,9 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_DX_BIND_SHADER_IFACE command %u in "
-             "SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT(
+          "SVGA_3D_CMD_DX_BIND_SHADER_IFACE command %u in SVGA command FIFO\n",
+          cmd);
       break;
     case SVGA_3D_CMD_MAX:
       if (len < 1) {
@@ -3630,9 +3263,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= 1;
-      VPRINT("SVGA_3D_CMD_FUTURE_MAX command %u in SVGA command "
-             "FIFO\n",
-             cmd);
+      VPRINT("SVGA_3D_CMD_FUTURE_MAX command %u in SVGA command FIFO\n", cmd);
       break;
     default:
       if (len < 1) {
@@ -3644,8 +3275,8 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       break;
     };
     if ((irq_status) || ((s->irq_mask) & (SVGA_IRQFLAG_FIFO_PROGRESS))) {
-      VPRINT("FIFO: irq_status || s -> irq_mask & "
-             "SVGA_IRQFLAG_FIFO_PROGRESS\n");
+      VPRINT(
+          "FIFO: irq_status || s -> irq_mask & SVGA_IRQFLAG_FIFO_PROGRESS\n");
       if ((s->irq_mask) & (SVGA_IRQFLAG_FIFO_PROGRESS)) {
         VPRINT("FIFO: irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS\n");
         irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
