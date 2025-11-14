@@ -243,13 +243,14 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s *s) {
   } else {
     num = (((s->fifo_max) - (s->fifo_min)) + ((s->fifo_next) - (s->fifo_stop)));
   };
-  VPRINT("fifo_min: %u, fifo_max: "
-         "%u, fifo_next: "
-         "%u, fifo_stop: %u, num: %u, fifo_min: %u, fifo_max: %u, fifo_next: "
-         "%u, fifo_stop: %u\n",
-         s->fifo_min, s->fifo_max, s->fifo_next, s->fifo_stop, num,
-         s->fifo[SVGA_FIFO_MIN], s->fifo[SVGA_FIFO_MAX],
-         s->fifo[SVGA_FIFO_NEXT_CMD], s->fifo[SVGA_FIFO_STOP]);
+  // VPRINT("fifo_min: %u, fifo_max: "
+  //        "%u, fifo_next: "
+  //        "%u, fifo_stop: %u, num: %u, fifo_min: %u, fifo_max: %u, fifo_next:
+  //        "
+  //        "%u, fifo_stop: %u\n",
+  //        s->fifo_min, s->fifo_max, s->fifo_next, s->fifo_stop, num,
+  //        s->fifo[SVGA_FIFO_MIN], s->fifo[SVGA_FIFO_MAX],
+  //        s->fifo[SVGA_FIFO_NEXT_CMD], s->fifo[SVGA_FIFO_STOP]);
   return (num >> 2);
 };
 static inline uint32_t vmsvga_fifo_read_raw(struct vmsvga_state_s *s) {
@@ -319,10 +320,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdUpdate) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdUpdate;
-      SVGAFifoCmdUpdate = sizeof(SVGAFifoCmdUpdate) / sizeof(uint32_t);
-      while (--SVGAFifoCmdUpdate >= 1) {
+      uint32_t SizeOfSVGAFifoCmdUpdate;
+      SizeOfSVGAFifoCmdUpdate = sizeof(SVGAFifoCmdUpdate) / sizeof(uint32_t);
+      while (SizeOfSVGAFifoCmdUpdate >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdUpdate -= 1;
       };
       VPRINT("SVGA_CMD_UPDATE command %u in SVGA command FIFO\n", cmd);
       break;
@@ -332,11 +334,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdUpdateVerbose) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdUpdateVerbose;
-      SVGAFifoCmdUpdateVerbose =
+      uint32_t SizeOfSVGAFifoCmdUpdateVerbose;
+      SizeOfSVGAFifoCmdUpdateVerbose =
           sizeof(SVGAFifoCmdUpdateVerbose) / sizeof(uint32_t);
-      while (--SVGAFifoCmdUpdateVerbose >= 1) {
+      while (SizeOfSVGAFifoCmdUpdateVerbose >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdUpdateVerbose -= 1;
       };
       VPRINT("SVGA_CMD_UPDATE_VERBOSE command %u in SVGA command FIFO\n", cmd);
       break;
@@ -346,10 +349,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdRectFill) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdRectFill;
-      SVGAFifoCmdRectFill = sizeof(SVGAFifoCmdRectFill) / sizeof(uint32_t);
-      while (--SVGAFifoCmdRectFill >= 1) {
+      uint32_t SizeOfSVGAFifoCmdRectFill;
+      SizeOfSVGAFifoCmdRectFill =
+          sizeof(SVGAFifoCmdRectFill) / sizeof(uint32_t);
+      while (SizeOfSVGAFifoCmdRectFill >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdRectFill -= 1;
       };
       VPRINT("SVGA_CMD_RECT_FILL command %u in SVGA command FIFO\n", cmd);
       break;
@@ -359,10 +364,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdRectCopy) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdRectCopy;
-      SVGAFifoCmdRectCopy = sizeof(SVGAFifoCmdRectCopy) / sizeof(uint32_t);
-      while (--SVGAFifoCmdRectCopy >= 1) {
+      uint32_t SizeOfSVGAFifoCmdRectCopy;
+      SizeOfSVGAFifoCmdRectCopy =
+          sizeof(SVGAFifoCmdRectCopy) / sizeof(uint32_t);
+      while (SizeOfSVGAFifoCmdRectCopy >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdRectCopy -= 1;
       };
       VPRINT("SVGA_CMD_RECT_COPY command %u in SVGA command FIFO\n", cmd);
       break;
@@ -372,13 +379,25 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdDefineCursor) / sizeof(uint32_t) + 1;
-      cursor.id = vmsvga_fifo_read(s);
-      cursor.hot_x = vmsvga_fifo_read(s);
-      cursor.hot_y = vmsvga_fifo_read(s);
-      cursor.width = vmsvga_fifo_read(s);
-      cursor.height = vmsvga_fifo_read(s);
-      cursor.and_mask_bpp = vmsvga_fifo_read(s);
-      cursor.xor_mask_bpp = vmsvga_fifo_read(s);
+      uint32_t SizeOfSVGAFifoCmdDefineCursor;
+      SizeOfSVGAFifoCmdDefineCursor =
+          sizeof(SVGAFifoCmdDefineCursor) / sizeof(uint32_t);
+      while (SizeOfSVGAFifoCmdDefineCursor >= 1) {
+        cursor.id = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineCursor -= 1;
+        cursor.hot_x = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineCursor -= 1;
+        cursor.hot_y = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineCursor -= 1;
+        cursor.width = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineCursor -= 1;
+        cursor.height = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineCursor -= 1;
+        cursor.and_mask_bpp = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineCursor -= 1;
+        cursor.xor_mask_bpp = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineCursor -= 1;
+      };
       args =
           (SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.and_mask_bpp) +
            SVGA_PIXMAP_SIZE(cursor.width, cursor.height, cursor.xor_mask_bpp));
@@ -422,11 +441,21 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdDefineAlphaCursor) / sizeof(uint32_t) + 1;
-      cursor.id = vmsvga_fifo_read(s);
-      cursor.hot_x = vmsvga_fifo_read(s);
-      cursor.hot_y = vmsvga_fifo_read(s);
-      cursor.width = vmsvga_fifo_read(s);
-      cursor.height = vmsvga_fifo_read(s);
+      uint32_t SizeOfSVGAFifoCmdDefineAlphaCursor;
+      SizeOfSVGAFifoCmdDefineAlphaCursor =
+          sizeof(SVGAFifoCmdDefineAlphaCursor) / sizeof(uint32_t);
+      while (SizeOfSVGAFifoCmdDefineAlphaCursor >= 1) {
+        cursor.id = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineAlphaCursor -= 1;
+        cursor.hot_x = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineAlphaCursor -= 1;
+        cursor.hot_y = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineAlphaCursor -= 1;
+        cursor.width = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineAlphaCursor -= 1;
+        cursor.height = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineAlphaCursor -= 1;
+      };
       cursor.and_mask_bpp = 32;
       cursor.xor_mask_bpp = 32;
       args = ((cursor.width) * (cursor.height));
@@ -464,7 +493,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdFence) / sizeof(uint32_t) + 1;
-      fence_arg = vmsvga_fifo_read(s);
+      uint32_t SizeOfSVGAFifoCmdFence;
+      SizeOfSVGAFifoCmdFence = sizeof(SVGAFifoCmdFence) / sizeof(uint32_t);
+      while (SizeOfSVGAFifoCmdFence >= 1) {
+        fence_arg = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdFence -= 1;
+      };
       s->fifo[SVGA_FIFO_FENCE] = fence_arg;
       if (VMSVGA_IS_VALID_FIFO_REG(SVGA_FIFO_FENCE, s->fifo[SVGA_FIFO_MIN])) {
         VPRINT("FIFO: VMSVGA_IS_VALID_FIFO_REG SVGA_FIFO_FENCE "
@@ -494,10 +528,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdDefineGMR2) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdDefineGMR2;
-      SVGAFifoCmdDefineGMR2 = sizeof(SVGAFifoCmdDefineGMR2) / sizeof(uint32_t);
-      while (--SVGAFifoCmdDefineGMR2 >= 1) {
+      uint32_t SizeOfSVGAFifoCmdDefineGMR2;
+      SizeOfSVGAFifoCmdDefineGMR2 =
+          sizeof(SVGAFifoCmdDefineGMR2) / sizeof(uint32_t);
+      while (SizeOfSVGAFifoCmdDefineGMR2 >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineGMR2 -= 1;
       };
       VPRINT("SVGA_CMD_DEFINE_GMR2 command %u in SVGA command FIFO\n", cmd);
       break;
@@ -507,10 +543,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdRemapGMR2) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdRemapGMR2;
-      SVGAFifoCmdRemapGMR2 = sizeof(SVGAFifoCmdRemapGMR2) / sizeof(uint32_t);
-      while (--SVGAFifoCmdRemapGMR2 >= 1) {
+      uint32_t SizeOfSVGAFifoCmdRemapGMR2;
+      SizeOfSVGAFifoCmdRemapGMR2 =
+          sizeof(SVGAFifoCmdRemapGMR2) / sizeof(uint32_t);
+      while (SizeOfSVGAFifoCmdRemapGMR2 >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdRemapGMR2 -= 1;
       };
       VPRINT("SVGA_CMD_REMAP_GMR2 command %u in SVGA command FIFO\n", cmd);
       break;
@@ -520,11 +558,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdRectRopCopy) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdRectRopCopy;
-      SVGAFifoCmdRectRopCopy =
+      uint32_t SizeOfSVGAFifoCmdRectRopCopy;
+      SizeOfSVGAFifoCmdRectRopCopy =
           sizeof(SVGAFifoCmdRectRopCopy) / sizeof(uint32_t);
-      while (--SVGAFifoCmdRectRopCopy >= 1) {
+      while (SizeOfSVGAFifoCmdRectRopCopy >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdRectRopCopy -= 1;
       };
       VPRINT("SVGA_CMD_RECT_ROP_COPY command %u in SVGA command FIFO\n", cmd);
       break;
@@ -534,10 +573,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdEscape) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdEscape;
-      SVGAFifoCmdEscape = sizeof(SVGAFifoCmdEscape) / sizeof(uint32_t);
-      while (--SVGAFifoCmdEscape >= 1) {
+      uint32_t SizeOfSVGAFifoCmdEscape;
+      SizeOfSVGAFifoCmdEscape = sizeof(SVGAFifoCmdEscape) / sizeof(uint32_t);
+      while (SizeOfSVGAFifoCmdEscape >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdEscape -= 1;
       };
       VPRINT("SVGA_CMD_ESCAPE command %u in SVGA command FIFO\n", cmd);
       break;
@@ -547,11 +587,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdDefineScreen) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdDefineScreen;
-      SVGAFifoCmdDefineScreen =
+      uint32_t SizeOfSVGAFifoCmdDefineScreen;
+      SizeOfSVGAFifoCmdDefineScreen =
           sizeof(SVGAFifoCmdDefineScreen) / sizeof(uint32_t);
-      while (--SVGAFifoCmdDefineScreen >= 1) {
+      while (SizeOfSVGAFifoCmdDefineScreen >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineScreen -= 1;
       };
       VPRINT("SVGA_CMD_DEFINE_SCREEN command %u in SVGA command FIFO\n", cmd);
       break;
@@ -561,11 +602,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdDisplayCursor) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdDisplayCursor;
-      SVGAFifoCmdDisplayCursor =
+      uint32_t SizeOfSVGAFifoCmdDisplayCursor;
+      SizeOfSVGAFifoCmdDisplayCursor =
           sizeof(SVGAFifoCmdDisplayCursor) / sizeof(uint32_t);
-      while (--SVGAFifoCmdDisplayCursor >= 1) {
+      while (SizeOfSVGAFifoCmdDisplayCursor >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDisplayCursor -= 1;
       };
       VPRINT("SVGA_CMD_DISPLAY_CURSOR command %u in SVGA command FIFO\n", cmd);
       break;
@@ -575,11 +617,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdDestroyScreen) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdDestroyScreen;
-      SVGAFifoCmdDestroyScreen =
+      uint32_t SizeOfSVGAFifoCmdDestroyScreen;
+      SizeOfSVGAFifoCmdDestroyScreen =
           sizeof(SVGAFifoCmdDestroyScreen) / sizeof(uint32_t);
-      while (--SVGAFifoCmdDestroyScreen >= 1) {
+      while (SizeOfSVGAFifoCmdDestroyScreen >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDestroyScreen -= 1;
       };
       VPRINT("SVGA_CMD_DESTROY_SCREEN command %u in SVGA command FIFO\n", cmd);
       break;
@@ -589,11 +632,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdDefineGMRFB) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdDefineGMRFB;
-      SVGAFifoCmdDefineGMRFB =
+      uint32_t SizeOfSVGAFifoCmdDefineGMRFB;
+      SizeOfSVGAFifoCmdDefineGMRFB =
           sizeof(SVGAFifoCmdDefineGMRFB) / sizeof(uint32_t);
-      while (--SVGAFifoCmdDefineGMRFB >= 1) {
+      while (SizeOfSVGAFifoCmdDefineGMRFB >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdDefineGMRFB -= 1;
       };
       VPRINT("SVGA_CMD_DEFINE_GMRFB command %u in SVGA command FIFO\n", cmd);
       break;
@@ -603,11 +647,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdBlitGMRFBToScreen) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdBlitGMRFBToScreen;
-      SVGAFifoCmdBlitGMRFBToScreen =
+      uint32_t SizeOfSVGAFifoCmdBlitGMRFBToScreen;
+      SizeOfSVGAFifoCmdBlitGMRFBToScreen =
           sizeof(SVGAFifoCmdBlitGMRFBToScreen) / sizeof(uint32_t);
-      while (--SVGAFifoCmdBlitGMRFBToScreen >= 1) {
+      while (SizeOfSVGAFifoCmdBlitGMRFBToScreen >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdBlitGMRFBToScreen -= 1;
       };
       VPRINT("SVGA_CMD_BLIT_GMRFB_TO_SCREEN command %u in SVGA command FIFO\n",
              cmd);
@@ -618,11 +663,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdBlitScreenToGMRFB) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdBlitScreenToGMRFB;
-      SVGAFifoCmdBlitScreenToGMRFB =
+      uint32_t SizeOfSVGAFifoCmdBlitScreenToGMRFB;
+      SizeOfSVGAFifoCmdBlitScreenToGMRFB =
           sizeof(SVGAFifoCmdBlitScreenToGMRFB) / sizeof(uint32_t);
-      while (--SVGAFifoCmdBlitScreenToGMRFB >= 1) {
+      while (SizeOfSVGAFifoCmdBlitScreenToGMRFB >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdBlitScreenToGMRFB -= 1;
       };
       VPRINT("SVGA_CMD_BLIT_SCREEN_TO_GMRFB command %u in SVGA command FIFO\n",
              cmd);
@@ -633,11 +679,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdAnnotationFill) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdAnnotationFill;
-      SVGAFifoCmdAnnotationFill =
+      uint32_t SizeOfSVGAFifoCmdAnnotationFill;
+      SizeOfSVGAFifoCmdAnnotationFill =
           sizeof(SVGAFifoCmdAnnotationFill) / sizeof(uint32_t);
-      while (--SVGAFifoCmdAnnotationFill >= 1) {
+      while (SizeOfSVGAFifoCmdAnnotationFill >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdAnnotationFill -= 1;
       };
       VPRINT("SVGA_CMD_ANNOTATION_FILL command %u in SVGA command FIFO\n", cmd);
       break;
@@ -647,11 +694,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdAnnotationCopy) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdAnnotationCopy;
-      SVGAFifoCmdAnnotationCopy =
+      uint32_t SizeOfSVGAFifoCmdAnnotationCopy;
+      SizeOfSVGAFifoCmdAnnotationCopy =
           sizeof(SVGAFifoCmdAnnotationCopy) / sizeof(uint32_t);
-      while (--SVGAFifoCmdAnnotationCopy >= 1) {
+      while (SizeOfSVGAFifoCmdAnnotationCopy >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdAnnotationCopy -= 1;
       };
       VPRINT("SVGA_CMD_ANNOTATION_COPY command %u in SVGA command FIFO\n", cmd);
       break;
@@ -661,10 +709,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdMoveCursor) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdMoveCursor;
-      SVGAFifoCmdMoveCursor = sizeof(SVGAFifoCmdMoveCursor) / sizeof(uint32_t);
-      while (--SVGAFifoCmdMoveCursor >= 1) {
+      uint32_t SizeOfSVGAFifoCmdMoveCursor;
+      SizeOfSVGAFifoCmdMoveCursor =
+          sizeof(SVGAFifoCmdMoveCursor) / sizeof(uint32_t);
+      while (SizeOfSVGAFifoCmdMoveCursor >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdMoveCursor -= 1;
       };
       VPRINT("SVGA_CMD_MOVE_CURSOR command %u in SVGA command FIFO\n", cmd);
       break;
@@ -674,11 +724,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGAFifoCmdFrontRopFill) / sizeof(uint32_t) + 1;
-      uint32_t SVGAFifoCmdFrontRopFill;
-      SVGAFifoCmdFrontRopFill =
+      uint32_t SizeOfSVGAFifoCmdFrontRopFill;
+      SizeOfSVGAFifoCmdFrontRopFill =
           sizeof(SVGAFifoCmdFrontRopFill) / sizeof(uint32_t);
-      while (--SVGAFifoCmdFrontRopFill >= 1) {
+      while (SizeOfSVGAFifoCmdFrontRopFill >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdFrontRopFill -= 1;
       };
       VPRINT("SVGA_CMD_FRONT_ROP_FILL command %u in SVGA command FIFO\n", cmd);
       break;
@@ -736,11 +787,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDefineSurface;
-      SVGA3dCmdDefineSurface =
+      uint32_t SizeOfSVGA3dCmdDefineSurface;
+      SizeOfSVGA3dCmdDefineSurface =
           sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t);
-      while (--SVGA3dCmdDefineSurface >= 1) {
+      while (SizeOfSVGA3dCmdDefineSurface >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineSurface -= 1;
       };
       VPRINT("SVGA_3D_CMD_SURFACE_DEFINE command %u in SVGA command FIFO\n",
              cmd);
@@ -751,11 +803,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDestroySurface) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDestroySurface;
-      SVGA3dCmdDestroySurface =
+      uint32_t SizeOfSVGA3dCmdDestroySurface;
+      SizeOfSVGA3dCmdDestroySurface =
           sizeof(SVGA3dCmdDestroySurface) / sizeof(uint32_t);
-      while (--SVGA3dCmdDestroySurface >= 1) {
+      while (SizeOfSVGA3dCmdDestroySurface >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDestroySurface -= 1;
       };
       VPRINT("SVGA_3D_CMD_SURFACE_DESTROY command %u in SVGA command FIFO\n",
              cmd);
@@ -766,10 +819,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSurfaceCopy) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSurfaceCopy;
-      SVGA3dCmdSurfaceCopy = sizeof(SVGA3dCmdSurfaceCopy) / sizeof(uint32_t);
-      while (--SVGA3dCmdSurfaceCopy >= 1) {
+      uint32_t SizeOfSVGA3dCmdSurfaceCopy;
+      SizeOfSVGA3dCmdSurfaceCopy =
+          sizeof(SVGA3dCmdSurfaceCopy) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdSurfaceCopy >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSurfaceCopy -= 1;
       };
       VPRINT("SVGA_3D_CMD_SURFACE_COPY command %u in SVGA command FIFO\n", cmd);
       break;
@@ -779,11 +834,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSurfaceStretchBlt) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSurfaceStretchBlt;
-      SVGA3dCmdSurfaceStretchBlt =
+      uint32_t SizeOfSVGA3dCmdSurfaceStretchBlt;
+      SizeOfSVGA3dCmdSurfaceStretchBlt =
           sizeof(SVGA3dCmdSurfaceStretchBlt) / sizeof(uint32_t);
-      while (--SVGA3dCmdSurfaceStretchBlt >= 1) {
+      while (SizeOfSVGA3dCmdSurfaceStretchBlt >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSurfaceStretchBlt -= 1;
       };
       VPRINT("SVGA_3D_CMD_SURFACE_STRETCHBLT command %u in SVGA command FIFO\n",
              cmd);
@@ -794,10 +850,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSurfaceDMA) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSurfaceDMA;
-      SVGA3dCmdSurfaceDMA = sizeof(SVGA3dCmdSurfaceDMA) / sizeof(uint32_t);
-      while (--SVGA3dCmdSurfaceDMA >= 1) {
+      uint32_t SizeOfSVGA3dCmdSurfaceDMA;
+      SizeOfSVGA3dCmdSurfaceDMA =
+          sizeof(SVGA3dCmdSurfaceDMA) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdSurfaceDMA >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSurfaceDMA -= 1;
       };
       VPRINT("SVGA_3D_CMD_SURFACE_DMA command %u in SVGA command FIFO\n", cmd);
       break;
@@ -807,11 +865,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDefineContext) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDefineContext;
-      SVGA3dCmdDefineContext =
+      uint32_t SizeOfSVGA3dCmdDefineContext;
+      SizeOfSVGA3dCmdDefineContext =
           sizeof(SVGA3dCmdDefineContext) / sizeof(uint32_t);
-      while (--SVGA3dCmdDefineContext >= 1) {
+      while (SizeOfSVGA3dCmdDefineContext >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineContext -= 1;
       };
       VPRINT("SVGA_3D_CMD_CONTEXT_DEFINE command %u in SVGA command FIFO\n",
              cmd);
@@ -822,11 +881,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDestroyContext) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDestroyContext;
-      SVGA3dCmdDestroyContext =
+      uint32_t SizeOfSVGA3dCmdDestroyContext;
+      SizeOfSVGA3dCmdDestroyContext =
           sizeof(SVGA3dCmdDestroyContext) / sizeof(uint32_t);
-      while (--SVGA3dCmdDestroyContext >= 1) {
+      while (SizeOfSVGA3dCmdDestroyContext >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDestroyContext -= 1;
       };
       VPRINT("SVGA_3D_CMD_CONTEXT_DESTROY command %u in SVGA command FIFO\n",
              cmd);
@@ -837,10 +897,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetTransform) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetTransform;
-      SVGA3dCmdSetTransform = sizeof(SVGA3dCmdSetTransform) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetTransform >= 1) {
+      uint32_t SizeOfSVGA3dCmdSetTransform;
+      SizeOfSVGA3dCmdSetTransform =
+          sizeof(SVGA3dCmdSetTransform) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdSetTransform >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetTransform -= 1;
       };
       VPRINT("SVGA_3D_CMD_SETTRANSFORM command %u in SVGA command FIFO\n", cmd);
       break;
@@ -850,10 +912,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetZRange) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetZRange;
-      SVGA3dCmdSetZRange = sizeof(SVGA3dCmdSetZRange) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetZRange >= 1) {
+      uint32_t SizeOfSVGA3dCmdSetZRange;
+      SizeOfSVGA3dCmdSetZRange = sizeof(SVGA3dCmdSetZRange) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdSetZRange >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetZRange -= 1;
       };
       VPRINT("SVGA_3D_CMD_SETZRANGE command %u in SVGA command FIFO\n", cmd);
       break;
@@ -863,11 +926,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetRenderState) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetRenderState;
-      SVGA3dCmdSetRenderState =
+      uint32_t SizeOfSVGA3dCmdSetRenderState;
+      SizeOfSVGA3dCmdSetRenderState =
           sizeof(SVGA3dCmdSetRenderState) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetRenderState >= 1) {
+      while (SizeOfSVGA3dCmdSetRenderState >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetRenderState -= 1;
       };
       VPRINT("SVGA_3D_CMD_SETRENDERSTATE command %u in SVGA command FIFO\n",
              cmd);
@@ -878,11 +942,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetRenderTarget) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetRenderTarget;
-      SVGA3dCmdSetRenderTarget =
+      uint32_t SizeOfSVGA3dCmdSetRenderTarget;
+      SizeOfSVGA3dCmdSetRenderTarget =
           sizeof(SVGA3dCmdSetRenderTarget) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetRenderTarget >= 1) {
+      while (SizeOfSVGA3dCmdSetRenderTarget >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetRenderTarget -= 1;
       };
       VPRINT("SVGA_3D_CMD_SETRENDERTARGET command %u in SVGA command FIFO\n",
              cmd);
@@ -893,11 +958,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetTextureState) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetTextureState;
-      SVGA3dCmdSetTextureState =
+      uint32_t SizeOfSVGA3dCmdSetTextureState;
+      SizeOfSVGA3dCmdSetTextureState =
           sizeof(SVGA3dCmdSetTextureState) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetTextureState >= 1) {
+      while (SizeOfSVGA3dCmdSetTextureState >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetTextureState -= 1;
       };
       VPRINT("SVGA_3D_CMD_SETTEXTURESTATE command %u in SVGA command FIFO\n",
              cmd);
@@ -908,10 +974,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetMaterial) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetMaterial;
-      SVGA3dCmdSetMaterial = sizeof(SVGA3dCmdSetMaterial) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetMaterial >= 1) {
+      uint32_t SizeOfSVGA3dCmdSetMaterial;
+      SizeOfSVGA3dCmdSetMaterial =
+          sizeof(SVGA3dCmdSetMaterial) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdSetMaterial >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetMaterial -= 1;
       };
       VPRINT("SVGA_3D_CMD_SETMATERIAL command %u in SVGA command FIFO\n", cmd);
       break;
@@ -921,10 +989,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetLightData) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetLightData;
-      SVGA3dCmdSetLightData = sizeof(SVGA3dCmdSetLightData) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetLightData >= 1) {
+      uint32_t SizeOfSVGA3dCmdSetLightData;
+      SizeOfSVGA3dCmdSetLightData =
+          sizeof(SVGA3dCmdSetLightData) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdSetLightData >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetLightData -= 1;
       };
       VPRINT("SVGA_3D_CMD_SETLIGHTDATA command %u in SVGA command FIFO\n", cmd);
       break;
@@ -934,11 +1004,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetLightEnabled) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetLightEnabled;
-      SVGA3dCmdSetLightEnabled =
+      uint32_t SizeOfSVGA3dCmdSetLightEnabled;
+      SizeOfSVGA3dCmdSetLightEnabled =
           sizeof(SVGA3dCmdSetLightEnabled) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetLightEnabled >= 1) {
+      while (SizeOfSVGA3dCmdSetLightEnabled >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetLightEnabled -= 1;
       };
       VPRINT("SVGA_3D_CMD_SETLIGHTENABLED command %u in SVGA command FIFO\n",
              cmd);
@@ -949,10 +1020,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetViewport) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetViewport;
-      SVGA3dCmdSetViewport = sizeof(SVGA3dCmdSetViewport) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetViewport >= 1) {
+      uint32_t SizeOfSVGA3dCmdSetViewport;
+      SizeOfSVGA3dCmdSetViewport =
+          sizeof(SVGA3dCmdSetViewport) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdSetViewport >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetViewport -= 1;
       };
       VPRINT("SVGA_3D_CMD_SETVIEWPORT command %u in SVGA command FIFO\n", cmd);
       break;
@@ -962,10 +1035,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetClipPlane) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetClipPlane;
-      SVGA3dCmdSetClipPlane = sizeof(SVGA3dCmdSetClipPlane) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetClipPlane >= 1) {
+      uint32_t SizeOfSVGA3dCmdSetClipPlane;
+      SizeOfSVGA3dCmdSetClipPlane =
+          sizeof(SVGA3dCmdSetClipPlane) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdSetClipPlane >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetClipPlane -= 1;
       };
       VPRINT("SVGA_3D_CMD_SETCLIPPLANE command %u in SVGA command FIFO\n", cmd);
       break;
@@ -975,10 +1050,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdClear) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdClear;
-      SVGA3dCmdClear = sizeof(SVGA3dCmdClear) / sizeof(uint32_t);
-      while (--SVGA3dCmdClear >= 1) {
+      uint32_t SizeOfSVGA3dCmdClear;
+      SizeOfSVGA3dCmdClear = sizeof(SVGA3dCmdClear) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdClear >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdClear -= 1;
       };
       VPRINT("SVGA_3D_CMD_CLEAR command %u in SVGA command FIFO\n", cmd);
       break;
@@ -988,10 +1064,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdPresent) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdPresent;
-      SVGA3dCmdPresent = sizeof(SVGA3dCmdPresent) / sizeof(uint32_t);
-      while (--SVGA3dCmdPresent >= 1) {
+      uint32_t SizeOfSVGA3dCmdPresent;
+      SizeOfSVGA3dCmdPresent = sizeof(SVGA3dCmdPresent) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdPresent >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdPresent -= 1;
       };
       VPRINT("SVGA_3D_CMD_PRESENT command %u in SVGA command FIFO\n", cmd);
       break;
@@ -1001,10 +1078,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDefineShader) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDefineShader;
-      SVGA3dCmdDefineShader = sizeof(SVGA3dCmdDefineShader) / sizeof(uint32_t);
-      while (--SVGA3dCmdDefineShader >= 1) {
+      uint32_t SizeOfSVGA3dCmdDefineShader;
+      SizeOfSVGA3dCmdDefineShader =
+          sizeof(SVGA3dCmdDefineShader) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdDefineShader >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineShader -= 1;
       };
       VPRINT("SVGA_3D_CMD_SHADER_DEFINE command %u in SVGA command FIFO\n",
              cmd);
@@ -1015,11 +1094,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDestroyShader) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDestroyShader;
-      SVGA3dCmdDestroyShader =
+      uint32_t SizeOfSVGA3dCmdDestroyShader;
+      SizeOfSVGA3dCmdDestroyShader =
           sizeof(SVGA3dCmdDestroyShader) / sizeof(uint32_t);
-      while (--SVGA3dCmdDestroyShader >= 1) {
+      while (SizeOfSVGA3dCmdDestroyShader >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDestroyShader -= 1;
       };
       VPRINT("SVGA_3D_CMD_SHADER_DESTROY command %u in SVGA command FIFO\n",
              cmd);
@@ -1030,10 +1110,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetShader) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetShader;
-      SVGA3dCmdSetShader = sizeof(SVGA3dCmdSetShader) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetShader >= 1) {
+      uint32_t SizeOfSVGA3dCmdSetShader;
+      SizeOfSVGA3dCmdSetShader = sizeof(SVGA3dCmdSetShader) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdSetShader >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetShader -= 1;
       };
       VPRINT("SVGA_3D_CMD_SET_SHADER command %u in SVGA command FIFO\n", cmd);
       break;
@@ -1043,11 +1124,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetShaderConst) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetShaderConst;
-      SVGA3dCmdSetShaderConst =
+      uint32_t SizeOfSVGA3dCmdSetShaderConst;
+      SizeOfSVGA3dCmdSetShaderConst =
           sizeof(SVGA3dCmdSetShaderConst) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetShaderConst >= 1) {
+      while (SizeOfSVGA3dCmdSetShaderConst >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetShaderConst -= 1;
       };
       VPRINT("SVGA_3D_CMD_SET_SHADER_CONST command %u in SVGA command FIFO\n",
              cmd);
@@ -1067,11 +1149,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetScissorRect) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetScissorRect;
-      SVGA3dCmdSetScissorRect =
+      uint32_t SizeOfSVGA3dCmdSetScissorRect;
+      SizeOfSVGA3dCmdSetScissorRect =
           sizeof(SVGA3dCmdSetScissorRect) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetScissorRect >= 1) {
+      while (SizeOfSVGA3dCmdSetScissorRect >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetScissorRect -= 1;
       };
       VPRINT("SVGA_3D_CMD_SETSCISSORRECT command %u in SVGA command FIFO\n",
              cmd);
@@ -1082,10 +1165,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdBeginQuery) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdBeginQuery;
-      SVGA3dCmdBeginQuery = sizeof(SVGA3dCmdBeginQuery) / sizeof(uint32_t);
-      while (--SVGA3dCmdBeginQuery >= 1) {
+      uint32_t SizeOfSVGA3dCmdBeginQuery;
+      SizeOfSVGA3dCmdBeginQuery =
+          sizeof(SVGA3dCmdBeginQuery) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdBeginQuery >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdBeginQuery -= 1;
       };
       VPRINT("SVGA_3D_CMD_BEGIN_QUERY command %u in SVGA command FIFO\n", cmd);
       break;
@@ -1095,10 +1180,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdEndQuery) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdEndQuery;
-      SVGA3dCmdEndQuery = sizeof(SVGA3dCmdEndQuery) / sizeof(uint32_t);
-      while (--SVGA3dCmdEndQuery >= 1) {
+      uint32_t SizeOfSVGA3dCmdEndQuery;
+      SizeOfSVGA3dCmdEndQuery = sizeof(SVGA3dCmdEndQuery) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdEndQuery >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdEndQuery -= 1;
       };
       VPRINT("SVGA_3D_CMD_END_QUERY command %u in SVGA command FIFO\n", cmd);
       break;
@@ -1108,10 +1194,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdWaitForQuery) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdWaitForQuery;
-      SVGA3dCmdWaitForQuery = sizeof(SVGA3dCmdWaitForQuery) / sizeof(uint32_t);
-      while (--SVGA3dCmdWaitForQuery >= 1) {
+      uint32_t SizeOfSVGA3dCmdWaitForQuery;
+      SizeOfSVGA3dCmdWaitForQuery =
+          sizeof(SVGA3dCmdWaitForQuery) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdWaitForQuery >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdWaitForQuery -= 1;
       };
       VPRINT("SVGA_3D_CMD_WAIT_FOR_QUERY command %u in SVGA command FIFO\n",
              cmd);
@@ -1131,11 +1219,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdBlitSurfaceToScreen) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdBlitSurfaceToScreen;
-      SVGA3dCmdBlitSurfaceToScreen =
+      uint32_t SizeOfSVGA3dCmdBlitSurfaceToScreen;
+      SizeOfSVGA3dCmdBlitSurfaceToScreen =
           sizeof(SVGA3dCmdBlitSurfaceToScreen) / sizeof(uint32_t);
-      while (--SVGA3dCmdBlitSurfaceToScreen >= 1) {
+      while (SizeOfSVGA3dCmdBlitSurfaceToScreen >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdBlitSurfaceToScreen -= 1;
       };
       VPRINT("SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN command %u in SVGA command "
              "FIFO\n",
@@ -1156,11 +1245,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdGenerateMipmaps) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdGenerateMipmaps;
-      SVGA3dCmdGenerateMipmaps =
+      uint32_t SizeOfSVGA3dCmdGenerateMipmaps;
+      SizeOfSVGA3dCmdGenerateMipmaps =
           sizeof(SVGA3dCmdGenerateMipmaps) / sizeof(uint32_t);
-      while (--SVGA3dCmdGenerateMipmaps >= 1) {
+      while (SizeOfSVGA3dCmdGenerateMipmaps >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdGenerateMipmaps -= 1;
       };
       VPRINT("SVGA_3D_CMD_GENERATE_MIPMAPS command %u in SVGA command FIFO\n",
              cmd);
@@ -1235,11 +1325,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdActivateSurface) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdActivateSurface;
-      SVGA3dCmdActivateSurface =
+      uint32_t SizeOfSVGA3dCmdActivateSurface;
+      SizeOfSVGA3dCmdActivateSurface =
           sizeof(SVGA3dCmdActivateSurface) / sizeof(uint32_t);
-      while (--SVGA3dCmdActivateSurface >= 1) {
+      while (SizeOfSVGA3dCmdActivateSurface >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdActivateSurface -= 1;
       };
       VPRINT("SVGA_3D_CMD_ACTIVATE_SURFACE command %u in SVGA command FIFO\n",
              cmd);
@@ -1250,11 +1341,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDeactivateSurface) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDeactivateSurface;
-      SVGA3dCmdDeactivateSurface =
+      uint32_t SizeOfSVGA3dCmdDeactivateSurface;
+      SizeOfSVGA3dCmdDeactivateSurface =
           sizeof(SVGA3dCmdDeactivateSurface) / sizeof(uint32_t);
-      while (--SVGA3dCmdDeactivateSurface >= 1) {
+      while (SizeOfSVGA3dCmdDeactivateSurface >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDeactivateSurface -= 1;
       };
       VPRINT("SVGA_3D_CMD_DEACTIVATE_SURFACE command %u in SVGA command FIFO\n",
              cmd);
@@ -1265,10 +1357,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdScreenDMA) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdScreenDMA;
-      SVGA3dCmdScreenDMA = sizeof(SVGA3dCmdScreenDMA) / sizeof(uint32_t);
-      while (--SVGA3dCmdScreenDMA >= 1) {
+      uint32_t SizeOfSVGA3dCmdScreenDMA;
+      SizeOfSVGA3dCmdScreenDMA = sizeof(SVGA3dCmdScreenDMA) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdScreenDMA >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdScreenDMA -= 1;
       };
       VPRINT("SVGA_3D_CMD_SCREEN_DMA command %u in SVGA command FIFO\n", cmd);
       break;
@@ -1342,11 +1435,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetOTableBase) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetOTableBase;
-      SVGA3dCmdSetOTableBase =
+      uint32_t SizeOfSVGA3dCmdSetOTableBase;
+      SizeOfSVGA3dCmdSetOTableBase =
           sizeof(SVGA3dCmdSetOTableBase) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetOTableBase >= 1) {
+      while (SizeOfSVGA3dCmdSetOTableBase >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetOTableBase -= 1;
       };
       VPRINT("SVGA_3D_CMD_SET_OTABLE_BASE command %u in SVGA command FIFO\n",
              cmd);
@@ -1357,11 +1451,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdReadbackOTable) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdReadbackOTable;
-      SVGA3dCmdReadbackOTable =
+      uint32_t SizeOfSVGA3dCmdReadbackOTable;
+      SizeOfSVGA3dCmdReadbackOTable =
           sizeof(SVGA3dCmdReadbackOTable) / sizeof(uint32_t);
-      while (--SVGA3dCmdReadbackOTable >= 1) {
+      while (SizeOfSVGA3dCmdReadbackOTable >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdReadbackOTable -= 1;
       };
       VPRINT("SVGA_3D_CMD_READBACK_OTABLE command %u in SVGA command FIFO\n",
              cmd);
@@ -1372,10 +1467,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDefineGBMob) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDefineGBMob;
-      SVGA3dCmdDefineGBMob = sizeof(SVGA3dCmdDefineGBMob) / sizeof(uint32_t);
-      while (--SVGA3dCmdDefineGBMob >= 1) {
+      uint32_t SizeOfSVGA3dCmdDefineGBMob;
+      SizeOfSVGA3dCmdDefineGBMob =
+          sizeof(SVGA3dCmdDefineGBMob) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdDefineGBMob >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineGBMob -= 1;
       };
       VPRINT("SVGA_3D_CMD_DEFINE_GB_MOB command %u in SVGA command FIFO\n",
              cmd);
@@ -1386,10 +1483,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDestroyGBMob) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDestroyGBMob;
-      SVGA3dCmdDestroyGBMob = sizeof(SVGA3dCmdDestroyGBMob) / sizeof(uint32_t);
-      while (--SVGA3dCmdDestroyGBMob >= 1) {
+      uint32_t SizeOfSVGA3dCmdDestroyGBMob;
+      SizeOfSVGA3dCmdDestroyGBMob =
+          sizeof(SVGA3dCmdDestroyGBMob) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdDestroyGBMob >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDestroyGBMob -= 1;
       };
       VPRINT("SVGA_3D_CMD_DESTROY_GB_MOB command %u in SVGA command FIFO\n",
              cmd);
@@ -1408,11 +1507,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdUpdateGBMobMapping) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdUpdateGBMobMapping;
-      SVGA3dCmdUpdateGBMobMapping =
+      uint32_t SizeOfSVGA3dCmdUpdateGBMobMapping;
+      SizeOfSVGA3dCmdUpdateGBMobMapping =
           sizeof(SVGA3dCmdUpdateGBMobMapping) / sizeof(uint32_t);
-      while (--SVGA3dCmdUpdateGBMobMapping >= 1) {
+      while (SizeOfSVGA3dCmdUpdateGBMobMapping >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdUpdateGBMobMapping -= 1;
       };
       VPRINT(
           "SVGA_3D_CMD_UPDATE_GB_MOB_MAPPING command %u in SVGA command FIFO\n",
@@ -1424,11 +1524,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDefineGBSurface) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDefineGBSurface;
-      SVGA3dCmdDefineGBSurface =
+      uint32_t SizeOfSVGA3dCmdDefineGBSurface;
+      SizeOfSVGA3dCmdDefineGBSurface =
           sizeof(SVGA3dCmdDefineGBSurface) / sizeof(uint32_t);
-      while (--SVGA3dCmdDefineGBSurface >= 1) {
+      while (SizeOfSVGA3dCmdDefineGBSurface >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineGBSurface -= 1;
       };
       VPRINT("SVGA_3D_CMD_DEFINE_GB_SURFACE command %u in SVGA command FIFO\n",
              cmd);
@@ -1439,11 +1540,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDestroyGBSurface) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDestroyGBSurface;
-      SVGA3dCmdDestroyGBSurface =
+      uint32_t SizeOfSVGA3dCmdDestroyGBSurface;
+      SizeOfSVGA3dCmdDestroyGBSurface =
           sizeof(SVGA3dCmdDestroyGBSurface) / sizeof(uint32_t);
-      while (--SVGA3dCmdDestroyGBSurface >= 1) {
+      while (SizeOfSVGA3dCmdDestroyGBSurface >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDestroyGBSurface -= 1;
       };
       VPRINT("SVGA_3D_CMD_DESTROY_GB_SURFACE command %u in SVGA command FIFO\n",
              cmd);
@@ -1454,11 +1556,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdBindGBSurface) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdBindGBSurface;
-      SVGA3dCmdBindGBSurface =
+      uint32_t SizeOfSVGA3dCmdBindGBSurface;
+      SizeOfSVGA3dCmdBindGBSurface =
           sizeof(SVGA3dCmdBindGBSurface) / sizeof(uint32_t);
-      while (--SVGA3dCmdBindGBSurface >= 1) {
+      while (SizeOfSVGA3dCmdBindGBSurface >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdBindGBSurface -= 1;
       };
       VPRINT("SVGA_3D_CMD_BIND_GB_SURFACE command %u in SVGA command FIFO\n",
              cmd);
@@ -1469,11 +1572,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdCondBindGBSurface) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdCondBindGBSurface;
-      SVGA3dCmdCondBindGBSurface =
+      uint32_t SizeOfSVGA3dCmdCondBindGBSurface;
+      SizeOfSVGA3dCmdCondBindGBSurface =
           sizeof(SVGA3dCmdCondBindGBSurface) / sizeof(uint32_t);
-      while (--SVGA3dCmdCondBindGBSurface >= 1) {
+      while (SizeOfSVGA3dCmdCondBindGBSurface >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdCondBindGBSurface -= 1;
       };
       VPRINT(
           "SVGA_3D_CMD_COND_BIND_GB_SURFACE command %u in SVGA command FIFO\n",
@@ -1485,11 +1589,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdUpdateGBImage) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdUpdateGBImage;
-      SVGA3dCmdUpdateGBImage =
+      uint32_t SizeOfSVGA3dCmdUpdateGBImage;
+      SizeOfSVGA3dCmdUpdateGBImage =
           sizeof(SVGA3dCmdUpdateGBImage) / sizeof(uint32_t);
-      while (--SVGA3dCmdUpdateGBImage >= 1) {
+      while (SizeOfSVGA3dCmdUpdateGBImage >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdUpdateGBImage -= 1;
       };
       VPRINT("SVGA_3D_CMD_UPDATE_GB_IMAGE command %u in SVGA command FIFO\n",
              cmd);
@@ -1500,11 +1605,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdUpdateGBSurface) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdUpdateGBSurface;
-      SVGA3dCmdUpdateGBSurface =
+      uint32_t SizeOfSVGA3dCmdUpdateGBSurface;
+      SizeOfSVGA3dCmdUpdateGBSurface =
           sizeof(SVGA3dCmdUpdateGBSurface) / sizeof(uint32_t);
-      while (--SVGA3dCmdUpdateGBSurface >= 1) {
+      while (SizeOfSVGA3dCmdUpdateGBSurface >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdUpdateGBSurface -= 1;
       };
       VPRINT("SVGA_3D_CMD_UPDATE_GB_SURFACE command %u in SVGA command FIFO\n",
              cmd);
@@ -1515,11 +1621,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdReadbackGBImage) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdReadbackGBImage;
-      SVGA3dCmdReadbackGBImage =
+      uint32_t SizeOfSVGA3dCmdReadbackGBImage;
+      SizeOfSVGA3dCmdReadbackGBImage =
           sizeof(SVGA3dCmdReadbackGBImage) / sizeof(uint32_t);
-      while (--SVGA3dCmdReadbackGBImage >= 1) {
+      while (SizeOfSVGA3dCmdReadbackGBImage >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdReadbackGBImage -= 1;
       };
       VPRINT("SVGA_3D_CMD_READBACK_GB_IMAGE command %u in SVGA command FIFO\n",
              cmd);
@@ -1530,11 +1637,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdReadbackGBSurface) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdReadbackGBSurface;
-      SVGA3dCmdReadbackGBSurface =
+      uint32_t SizeOfSVGA3dCmdReadbackGBSurface;
+      SizeOfSVGA3dCmdReadbackGBSurface =
           sizeof(SVGA3dCmdReadbackGBSurface) / sizeof(uint32_t);
-      while (--SVGA3dCmdReadbackGBSurface >= 1) {
+      while (SizeOfSVGA3dCmdReadbackGBSurface >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdReadbackGBSurface -= 1;
       };
       VPRINT(
           "SVGA_3D_CMD_READBACK_GB_SURFACE command %u in SVGA command FIFO\n",
@@ -1546,11 +1654,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdInvalidateGBImage) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdInvalidateGBImage;
-      SVGA3dCmdInvalidateGBImage =
+      uint32_t SizeOfSVGA3dCmdInvalidateGBImage;
+      SizeOfSVGA3dCmdInvalidateGBImage =
           sizeof(SVGA3dCmdInvalidateGBImage) / sizeof(uint32_t);
-      while (--SVGA3dCmdInvalidateGBImage >= 1) {
+      while (SizeOfSVGA3dCmdInvalidateGBImage >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdInvalidateGBImage -= 1;
       };
       VPRINT(
           "SVGA_3D_CMD_INVALIDATE_GB_IMAGE command %u in SVGA command FIFO\n",
@@ -1562,11 +1671,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdInvalidateGBSurface) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdInvalidateGBSurface;
-      SVGA3dCmdInvalidateGBSurface =
+      uint32_t SizeOfSVGA3dCmdInvalidateGBSurface;
+      SizeOfSVGA3dCmdInvalidateGBSurface =
           sizeof(SVGA3dCmdInvalidateGBSurface) / sizeof(uint32_t);
-      while (--SVGA3dCmdInvalidateGBSurface >= 1) {
+      while (SizeOfSVGA3dCmdInvalidateGBSurface >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdInvalidateGBSurface -= 1;
       };
       VPRINT(
           "SVGA_3D_CMD_INVALIDATE_GB_SURFACE command %u in SVGA command FIFO\n",
@@ -1578,11 +1688,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDefineGBContext) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDefineGBContext;
-      SVGA3dCmdDefineGBContext =
+      uint32_t SizeOfSVGA3dCmdDefineGBContext;
+      SizeOfSVGA3dCmdDefineGBContext =
           sizeof(SVGA3dCmdDefineGBContext) / sizeof(uint32_t);
-      while (--SVGA3dCmdDefineGBContext >= 1) {
+      while (SizeOfSVGA3dCmdDefineGBContext >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineGBContext -= 1;
       };
       VPRINT("SVGA_3D_CMD_DEFINE_GB_CONTEXT command %u in SVGA command FIFO\n",
              cmd);
@@ -1593,11 +1704,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDestroyGBContext) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDestroyGBContext;
-      SVGA3dCmdDestroyGBContext =
+      uint32_t SizeOfSVGA3dCmdDestroyGBContext;
+      SizeOfSVGA3dCmdDestroyGBContext =
           sizeof(SVGA3dCmdDestroyGBContext) / sizeof(uint32_t);
-      while (--SVGA3dCmdDestroyGBContext >= 1) {
+      while (SizeOfSVGA3dCmdDestroyGBContext >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDestroyGBContext -= 1;
       };
       VPRINT("SVGA_3D_CMD_DESTROY_GB_CONTEXT command %u in SVGA command FIFO\n",
              cmd);
@@ -1608,11 +1720,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdBindGBContext) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdBindGBContext;
-      SVGA3dCmdBindGBContext =
+      uint32_t SizeOfSVGA3dCmdBindGBContext;
+      SizeOfSVGA3dCmdBindGBContext =
           sizeof(SVGA3dCmdBindGBContext) / sizeof(uint32_t);
-      while (--SVGA3dCmdBindGBContext >= 1) {
+      while (SizeOfSVGA3dCmdBindGBContext >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdBindGBContext -= 1;
       };
       VPRINT("SVGA_3D_CMD_BIND_GB_CONTEXT command %u in SVGA command FIFO\n",
              cmd);
@@ -1623,11 +1736,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdReadbackGBContext) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdReadbackGBContext;
-      SVGA3dCmdReadbackGBContext =
+      uint32_t SizeOfSVGA3dCmdReadbackGBContext;
+      SizeOfSVGA3dCmdReadbackGBContext =
           sizeof(SVGA3dCmdReadbackGBContext) / sizeof(uint32_t);
-      while (--SVGA3dCmdReadbackGBContext >= 1) {
+      while (SizeOfSVGA3dCmdReadbackGBContext >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdReadbackGBContext -= 1;
       };
       VPRINT(
           "SVGA_3D_CMD_READBACK_GB_CONTEXT command %u in SVGA command FIFO\n",
@@ -1639,11 +1753,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdInvalidateGBContext) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdInvalidateGBContext;
-      SVGA3dCmdInvalidateGBContext =
+      uint32_t SizeOfSVGA3dCmdInvalidateGBContext;
+      SizeOfSVGA3dCmdInvalidateGBContext =
           sizeof(SVGA3dCmdInvalidateGBContext) / sizeof(uint32_t);
-      while (--SVGA3dCmdInvalidateGBContext >= 1) {
+      while (SizeOfSVGA3dCmdInvalidateGBContext >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdInvalidateGBContext -= 1;
       };
       VPRINT(
           "SVGA_3D_CMD_INVALIDATE_GB_CONTEXT command %u in SVGA command FIFO\n",
@@ -1655,11 +1770,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDefineGBShader) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDefineGBShader;
-      SVGA3dCmdDefineGBShader =
+      uint32_t SizeOfSVGA3dCmdDefineGBShader;
+      SizeOfSVGA3dCmdDefineGBShader =
           sizeof(SVGA3dCmdDefineGBShader) / sizeof(uint32_t);
-      while (--SVGA3dCmdDefineGBShader >= 1) {
+      while (SizeOfSVGA3dCmdDefineGBShader >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineGBShader -= 1;
       };
       VPRINT("SVGA_3D_CMD_DEFINE_GB_SHADER command %u in SVGA command FIFO\n",
              cmd);
@@ -1670,11 +1786,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDestroyGBShader) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDestroyGBShader;
-      SVGA3dCmdDestroyGBShader =
+      uint32_t SizeOfSVGA3dCmdDestroyGBShader;
+      SizeOfSVGA3dCmdDestroyGBShader =
           sizeof(SVGA3dCmdDestroyGBShader) / sizeof(uint32_t);
-      while (--SVGA3dCmdDestroyGBShader >= 1) {
+      while (SizeOfSVGA3dCmdDestroyGBShader >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDestroyGBShader -= 1;
       };
       VPRINT("SVGA_3D_CMD_DESTROY_GB_SHADER command %u in SVGA command FIFO\n",
              cmd);
@@ -1685,20 +1802,22 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdBindGBShader) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdBindGBShader;
-      SVGA3dCmdBindGBShader = sizeof(SVGA3dCmdBindGBShader) / sizeof(uint32_t);
-      while (--SVGA3dCmdBindGBShader >= 1) {
+      uint32_t SizeOfSVGA3dCmdBindGBShader;
+      SizeOfSVGA3dCmdBindGBShader =
+          sizeof(SVGA3dCmdBindGBShader) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdBindGBShader >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdBindGBShader -= 1;
       };
       VPRINT("SVGA_3D_CMD_BIND_GB_SHADER command %u in SVGA command FIFO\n",
              cmd);
       break;
     case SVGA_3D_CMD_SET_OTABLE_BASE64:
-      if (len < sizeof(SVGA3dCmdSetOTableBase) / sizeof(uint32_t) + 164) {
+      if (len < sizeof(SVGA3dCmdSetOTableBase) / sizeof(uint32_t) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= sizeof(SVGA3dCmdSetOTableBase) / sizeof(uint32_t) + 164;
+      len -= sizeof(SVGA3dCmdSetOTableBase) / sizeof(uint32_t) + 1;
       VPRINT("SVGA_3D_CMD_SET_OTABLE_BASE64 command %u in SVGA command FIFO\n",
              cmd);
       break;
@@ -1708,10 +1827,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdBeginGBQuery) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdBeginGBQuery;
-      SVGA3dCmdBeginGBQuery = sizeof(SVGA3dCmdBeginGBQuery) / sizeof(uint32_t);
-      while (--SVGA3dCmdBeginGBQuery >= 1) {
+      uint32_t SizeOfSVGA3dCmdBeginGBQuery;
+      SizeOfSVGA3dCmdBeginGBQuery =
+          sizeof(SVGA3dCmdBeginGBQuery) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdBeginGBQuery >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdBeginGBQuery -= 1;
       };
       VPRINT("SVGA_3D_CMD_BEGIN_GB_QUERY command %u in SVGA command FIFO\n",
              cmd);
@@ -1722,10 +1843,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdEndGBQuery) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdEndGBQuery;
-      SVGA3dCmdEndGBQuery = sizeof(SVGA3dCmdEndGBQuery) / sizeof(uint32_t);
-      while (--SVGA3dCmdEndGBQuery >= 1) {
+      uint32_t SizeOfSVGA3dCmdEndGBQuery;
+      SizeOfSVGA3dCmdEndGBQuery =
+          sizeof(SVGA3dCmdEndGBQuery) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdEndGBQuery >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdEndGBQuery -= 1;
       };
       VPRINT("SVGA_3D_CMD_END_GB_QUERY command %u in SVGA command FIFO\n", cmd);
       break;
@@ -1735,11 +1858,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdWaitForGBQuery) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdWaitForGBQuery;
-      SVGA3dCmdWaitForGBQuery =
+      uint32_t SizeOfSVGA3dCmdWaitForGBQuery;
+      SizeOfSVGA3dCmdWaitForGBQuery =
           sizeof(SVGA3dCmdWaitForGBQuery) / sizeof(uint32_t);
-      while (--SVGA3dCmdWaitForGBQuery >= 1) {
+      while (SizeOfSVGA3dCmdWaitForGBQuery >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdWaitForGBQuery -= 1;
       };
       VPRINT("SVGA_3D_CMD_WAIT_FOR_GB_QUERY command %u in SVGA command FIFO\n",
              cmd);
@@ -1758,10 +1882,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdEnableGart) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdEnableGart;
-      SVGA3dCmdEnableGart = sizeof(SVGA3dCmdEnableGart) / sizeof(uint32_t);
-      while (--SVGA3dCmdEnableGart >= 1) {
+      uint32_t SizeOfSVGA3dCmdEnableGart;
+      SizeOfSVGA3dCmdEnableGart =
+          sizeof(SVGA3dCmdEnableGart) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdEnableGart >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdEnableGart -= 1;
       };
       VPRINT("SVGA_3D_CMD_ENABLE_GART command %u in SVGA command FIFO\n", cmd);
       break;
@@ -1779,11 +1905,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdMapMobIntoGart) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdMapMobIntoGart;
-      SVGA3dCmdMapMobIntoGart =
+      uint32_t SizeOfSVGA3dCmdMapMobIntoGart;
+      SizeOfSVGA3dCmdMapMobIntoGart =
           sizeof(SVGA3dCmdMapMobIntoGart) / sizeof(uint32_t);
-      while (--SVGA3dCmdMapMobIntoGart >= 1) {
+      while (SizeOfSVGA3dCmdMapMobIntoGart >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdMapMobIntoGart -= 1;
       };
       VPRINT("SVGA_3D_CMD_MAP_MOB_INTO_GART command %u in SVGA command FIFO\n",
              cmd);
@@ -1794,11 +1921,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdUnmapGartRange) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdUnmapGartRange;
-      SVGA3dCmdUnmapGartRange =
+      uint32_t SizeOfSVGA3dCmdUnmapGartRange;
+      SizeOfSVGA3dCmdUnmapGartRange =
           sizeof(SVGA3dCmdUnmapGartRange) / sizeof(uint32_t);
-      while (--SVGA3dCmdUnmapGartRange >= 1) {
+      while (SizeOfSVGA3dCmdUnmapGartRange >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdUnmapGartRange -= 1;
       };
       VPRINT("SVGA_3D_CMD_UNMAP_GART_RANGE command %u in SVGA command FIFO\n",
              cmd);
@@ -1809,11 +1937,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDefineGBScreenTarget) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDefineGBScreenTarget;
-      SVGA3dCmdDefineGBScreenTarget =
+      uint32_t SizeOfSVGA3dCmdDefineGBScreenTarget;
+      SizeOfSVGA3dCmdDefineGBScreenTarget =
           sizeof(SVGA3dCmdDefineGBScreenTarget) / sizeof(uint32_t);
-      while (--SVGA3dCmdDefineGBScreenTarget >= 1) {
+      while (SizeOfSVGA3dCmdDefineGBScreenTarget >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineGBScreenTarget -= 1;
       };
       VPRINT("SVGA_3D_CMD_DEFINE_GB_SCREENTARGET command %u in SVGA command "
              "FIFO\n",
@@ -1825,11 +1954,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdDestroyGBScreenTarget) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdDestroyGBScreenTarget;
-      SVGA3dCmdDestroyGBScreenTarget =
+      uint32_t SizeOfSVGA3dCmdDestroyGBScreenTarget;
+      SizeOfSVGA3dCmdDestroyGBScreenTarget =
           sizeof(SVGA3dCmdDestroyGBScreenTarget) / sizeof(uint32_t);
-      while (--SVGA3dCmdDestroyGBScreenTarget >= 1) {
+      while (SizeOfSVGA3dCmdDestroyGBScreenTarget >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDestroyGBScreenTarget -= 1;
       };
       VPRINT("SVGA_3D_CMD_DESTROY_GB_SCREENTARGET command %u in SVGA command "
              "FIFO\n",
@@ -1841,11 +1971,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdBindGBScreenTarget) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdBindGBScreenTarget;
-      SVGA3dCmdBindGBScreenTarget =
+      uint32_t SizeOfSVGA3dCmdBindGBScreenTarget;
+      SizeOfSVGA3dCmdBindGBScreenTarget =
           sizeof(SVGA3dCmdBindGBScreenTarget) / sizeof(uint32_t);
-      while (--SVGA3dCmdBindGBScreenTarget >= 1) {
+      while (SizeOfSVGA3dCmdBindGBScreenTarget >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdBindGBScreenTarget -= 1;
       };
       VPRINT(
           "SVGA_3D_CMD_BIND_GB_SCREENTARGET command %u in SVGA command FIFO\n",
@@ -1857,11 +1988,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdUpdateGBScreenTarget) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdUpdateGBScreenTarget;
-      SVGA3dCmdUpdateGBScreenTarget =
+      uint32_t SizeOfSVGA3dCmdUpdateGBScreenTarget;
+      SizeOfSVGA3dCmdUpdateGBScreenTarget =
           sizeof(SVGA3dCmdUpdateGBScreenTarget) / sizeof(uint32_t);
-      while (--SVGA3dCmdUpdateGBScreenTarget >= 1) {
+      while (SizeOfSVGA3dCmdUpdateGBScreenTarget >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdUpdateGBScreenTarget -= 1;
       };
       VPRINT("SVGA_3D_CMD_UPDATE_GB_SCREENTARGET command %u in SVGA command "
              "FIFO\n",
@@ -1894,11 +2026,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdSetGBShaderConstInline) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdSetGBShaderConstInline;
-      SVGA3dCmdSetGBShaderConstInline =
+      uint32_t SizeOfSVGA3dCmdSetGBShaderConstInline;
+      SizeOfSVGA3dCmdSetGBShaderConstInline =
           sizeof(SVGA3dCmdSetGBShaderConstInline) / sizeof(uint32_t);
-      while (--SVGA3dCmdSetGBShaderConstInline >= 1) {
+      while (SizeOfSVGA3dCmdSetGBShaderConstInline >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdSetGBShaderConstInline -= 1;
       };
       VPRINT("SVGA_3D_CMD_SET_GB_SHADERCONSTS_INLINE command %u in SVGA "
              "command FIFO\n",
@@ -1910,10 +2043,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdGBScreenDMA) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdGBScreenDMA;
-      SVGA3dCmdGBScreenDMA = sizeof(SVGA3dCmdGBScreenDMA) / sizeof(uint32_t);
-      while (--SVGA3dCmdGBScreenDMA >= 1) {
+      uint32_t SizeOfSVGA3dCmdGBScreenDMA;
+      SizeOfSVGA3dCmdGBScreenDMA =
+          sizeof(SVGA3dCmdGBScreenDMA) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdGBScreenDMA >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdGBScreenDMA -= 1;
       };
       VPRINT("SVGA_3D_CMD_GB_SCREEN_DMA command %u in SVGA command FIFO\n",
              cmd);
@@ -1934,10 +2069,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdGBMobFence) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdGBMobFence;
-      SVGA3dCmdGBMobFence = sizeof(SVGA3dCmdGBMobFence) / sizeof(uint32_t);
-      while (--SVGA3dCmdGBMobFence >= 1) {
+      uint32_t SizeOfSVGA3dCmdGBMobFence;
+      SizeOfSVGA3dCmdGBMobFence =
+          sizeof(SVGA3dCmdGBMobFence) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdGBMobFence >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdGBMobFence -= 1;
       };
       VPRINT("SVGA_3D_CMD_GB_MOB_FENCE command %u in SVGA command FIFO\n", cmd);
       break;
@@ -1952,11 +2089,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
           cmd);
       break;
     case SVGA_3D_CMD_DEFINE_GB_MOB64:
-      if (len < sizeof(SVGA3dCmdDefineGBMob) / sizeof(uint32_t) + 164) {
+      if (len < sizeof(SVGA3dCmdDefineGBMob) / sizeof(uint32_t) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= sizeof(SVGA3dCmdDefineGBMob) / sizeof(uint32_t) + 164;
+      len -= sizeof(SVGA3dCmdDefineGBMob) / sizeof(uint32_t) + 1;
       VPRINT("SVGA_3D_CMD_DEFINE_GB_MOB64 command %u in SVGA command FIFO\n",
              cmd);
       break;
@@ -1966,11 +2103,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdRedefineGBMob64) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdRedefineGBMob64;
-      SVGA3dCmdRedefineGBMob64 =
+      uint32_t SizeOfSVGA3dCmdRedefineGBMob64;
+      SizeOfSVGA3dCmdRedefineGBMob64 =
           sizeof(SVGA3dCmdRedefineGBMob64) / sizeof(uint32_t);
-      while (--SVGA3dCmdRedefineGBMob64 >= 1) {
+      while (SizeOfSVGA3dCmdRedefineGBMob64 >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdRedefineGBMob64 -= 1;
       };
       VPRINT("SVGA_3D_CMD_REDEFINE_GB_MOB64 command %u in SVGA command FIFO\n",
              cmd);
@@ -2833,10 +2971,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdScreenCopy) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdScreenCopy;
-      SVGA3dCmdScreenCopy = sizeof(SVGA3dCmdScreenCopy) / sizeof(uint32_t);
-      while (--SVGA3dCmdScreenCopy >= 1) {
+      uint32_t SizeOfSVGA3dCmdScreenCopy;
+      SizeOfSVGA3dCmdScreenCopy =
+          sizeof(SVGA3dCmdScreenCopy) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdScreenCopy >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdScreenCopy -= 1;
       };
       VPRINT("SVGA_3D_CMD_SCREEN_COPY command %u in SVGA command FIFO\n", cmd);
       break;
@@ -2846,10 +2986,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdGrowOTable) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdGrowOTable;
-      SVGA3dCmdGrowOTable = sizeof(SVGA3dCmdGrowOTable) / sizeof(uint32_t);
-      while (--SVGA3dCmdGrowOTable >= 1) {
+      uint32_t SizeOfSVGA3dCmdGrowOTable;
+      SizeOfSVGA3dCmdGrowOTable =
+          sizeof(SVGA3dCmdGrowOTable) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdGrowOTable >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdGrowOTable -= 1;
       };
       VPRINT("SVGA_3D_CMD_GROW_OTABLE command %u in SVGA command FIFO\n", cmd);
       break;
@@ -2868,11 +3010,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdIntraSurfaceCopy) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdIntraSurfaceCopy;
-      SVGA3dCmdIntraSurfaceCopy =
+      uint32_t SizeOfSVGA3dCmdIntraSurfaceCopy;
+      SizeOfSVGA3dCmdIntraSurfaceCopy =
           sizeof(SVGA3dCmdIntraSurfaceCopy) / sizeof(uint32_t);
-      while (--SVGA3dCmdIntraSurfaceCopy >= 1) {
+      while (SizeOfSVGA3dCmdIntraSurfaceCopy >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdIntraSurfaceCopy -= 1;
       };
       VPRINT("SVGA_3D_CMD_INTRA_SURFACE_COPY command %u in SVGA command FIFO\n",
              cmd);
@@ -3073,11 +3216,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdLogicOpsBitBlt) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdLogicOpsBitBlt;
-      SVGA3dCmdLogicOpsBitBlt =
+      uint32_t SizeOfSVGA3dCmdLogicOpsBitBlt;
+      SizeOfSVGA3dCmdLogicOpsBitBlt =
           sizeof(SVGA3dCmdLogicOpsBitBlt) / sizeof(uint32_t);
-      while (--SVGA3dCmdLogicOpsBitBlt >= 1) {
+      while (SizeOfSVGA3dCmdLogicOpsBitBlt >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdLogicOpsBitBlt -= 1;
       };
       VPRINT("SVGA_3D_CMD_LOGICOPS_BITBLT command %u in SVGA command FIFO\n",
              cmd);
@@ -3088,11 +3232,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdLogicOpsTransBlt) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdLogicOpsTransBlt;
-      SVGA3dCmdLogicOpsTransBlt =
+      uint32_t SizeOfSVGA3dCmdLogicOpsTransBlt;
+      SizeOfSVGA3dCmdLogicOpsTransBlt =
           sizeof(SVGA3dCmdLogicOpsTransBlt) / sizeof(uint32_t);
-      while (--SVGA3dCmdLogicOpsTransBlt >= 1) {
+      while (SizeOfSVGA3dCmdLogicOpsTransBlt >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdLogicOpsTransBlt -= 1;
       };
       VPRINT("SVGA_3D_CMD_LOGICOPS_TRANSBLT command %u in SVGA command FIFO\n",
              cmd);
@@ -3103,11 +3248,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdLogicOpsStretchBlt) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdLogicOpsStretchBlt;
-      SVGA3dCmdLogicOpsStretchBlt =
+      uint32_t SizeOfSVGA3dCmdLogicOpsStretchBlt;
+      SizeOfSVGA3dCmdLogicOpsStretchBlt =
           sizeof(SVGA3dCmdLogicOpsStretchBlt) / sizeof(uint32_t);
-      while (--SVGA3dCmdLogicOpsStretchBlt >= 1) {
+      while (SizeOfSVGA3dCmdLogicOpsStretchBlt >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdLogicOpsStretchBlt -= 1;
       };
       VPRINT(
           "SVGA_3D_CMD_LOGICOPS_STRETCHBLT command %u in SVGA command FIFO\n",
@@ -3119,11 +3265,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdLogicOpsColorFill) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdLogicOpsColorFill;
-      SVGA3dCmdLogicOpsColorFill =
+      uint32_t SizeOfSVGA3dCmdLogicOpsColorFill;
+      SizeOfSVGA3dCmdLogicOpsColorFill =
           sizeof(SVGA3dCmdLogicOpsColorFill) / sizeof(uint32_t);
-      while (--SVGA3dCmdLogicOpsColorFill >= 1) {
+      while (SizeOfSVGA3dCmdLogicOpsColorFill >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdLogicOpsColorFill -= 1;
       };
       VPRINT("SVGA_3D_CMD_LOGICOPS_COLORFILL command %u in SVGA command FIFO\n",
              cmd);
@@ -3134,11 +3281,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdLogicOpsAlphaBlend) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdLogicOpsAlphaBlend;
-      SVGA3dCmdLogicOpsAlphaBlend =
+      uint32_t SizeOfSVGA3dCmdLogicOpsAlphaBlend;
+      SizeOfSVGA3dCmdLogicOpsAlphaBlend =
           sizeof(SVGA3dCmdLogicOpsAlphaBlend) / sizeof(uint32_t);
-      while (--SVGA3dCmdLogicOpsAlphaBlend >= 1) {
+      while (SizeOfSVGA3dCmdLogicOpsAlphaBlend >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdLogicOpsAlphaBlend -= 1;
       };
       VPRINT(
           "SVGA_3D_CMD_LOGICOPS_ALPHABLEND command %u in SVGA command FIFO\n",
@@ -3151,11 +3299,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         break;
       };
       len -= sizeof(SVGA3dCmdLogicOpsClearTypeBlend) / sizeof(uint32_t) + 1;
-      uint32_t SVGA3dCmdLogicOpsClearTypeBlend;
-      SVGA3dCmdLogicOpsClearTypeBlend =
+      uint32_t SizeOfSVGA3dCmdLogicOpsClearTypeBlend;
+      SizeOfSVGA3dCmdLogicOpsClearTypeBlend =
           sizeof(SVGA3dCmdLogicOpsClearTypeBlend) / sizeof(uint32_t);
-      while (--SVGA3dCmdLogicOpsClearTypeBlend >= 1) {
+      while (SizeOfSVGA3dCmdLogicOpsClearTypeBlend >= 1) {
         vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdLogicOpsClearTypeBlend -= 1;
       };
       VPRINT("SVGA_3D_CMD_LOGICOPS_CLEARTYPEBLEND command %u in SVGA command "
              "FIFO\n",
