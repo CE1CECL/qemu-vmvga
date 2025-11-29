@@ -551,6 +551,12 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (SizeOfSVGAFifoCmdEscape >= 1) {
         vmsvga_fifo_read(s);
         SizeOfSVGAFifoCmdEscape -= 1;
+        uint32_t SVGAFifoCmdEscapeSize = vmsvga_fifo_read(s);
+        SizeOfSVGAFifoCmdEscape -= 1;
+        while (SVGAFifoCmdEscapeSize >= 1) {
+          vmsvga_fifo_read(s);
+          SVGAFifoCmdEscapeSize -= 1;
+        };
       };
       VPRINT("SVGA_CMD_ESCAPE command %u in SVGA command FIFO\n", cmd);
       break;
@@ -745,13 +751,16 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       VPRINT("SVGA_3D_CMD_LEGACY_BASE command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_SURFACE_DEFINE:
-      if (len < sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) + 1) {
+      if (len < sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) +
+                    SVGA3D_MAX_SURFACE_FACES + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) + 1;
+      len -= sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) +
+             SVGA3D_MAX_SURFACE_FACES + 1;
       uint32_t SizeOfSVGA3dCmdDefineSurface =
-          sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t);
+          sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) +
+          sizeof(SVGA3dSize) / sizeof(uint32_t) + SVGA3D_MAX_SURFACE_FACES;
       while (SizeOfSVGA3dCmdDefineSurface >= 1) {
         vmsvga_fifo_read(s);
         SizeOfSVGA3dCmdDefineSurface -= 1;
@@ -1170,11 +1179,20 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd);
       break;
     case SVGA_3D_CMD_SURFACE_DEFINE_V2:
-      if (len < 1) {
+      if (len < sizeof(SVGA3dCmdDefineSurface_v2) / sizeof(uint32_t) +
+                    SVGA3D_MAX_SURFACE_FACES + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 1;
+      len -= sizeof(SVGA3dCmdDefineSurface_v2) / sizeof(uint32_t) +
+             SVGA3D_MAX_SURFACE_FACES + 1;
+      uint32_t SizeOfSVGA3dCmdDefineSurface_v2 =
+          sizeof(SVGA3dCmdDefineSurface_v2) / sizeof(uint32_t) +
+          sizeof(SVGA3dSize) / sizeof(uint32_t) + SVGA3D_MAX_SURFACE_FACES;
+      while (SizeOfSVGA3dCmdDefineSurface_v2 >= 1) {
+        vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineSurface_v2 -= 1;
+      };
       VPRINT("SVGA_3D_CMD_SURFACE_DEFINE_V2 command %u in SVGA command FIFO\n",
              cmd);
       break;
@@ -1979,11 +1997,17 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       VPRINT("SVGA_3D_CMD_GB_MOB_FENCE command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_DEFINE_GB_SURFACE_V2:
-      if (len < 1) {
+      if (len < sizeof(SVGA3dCmdDefineGBSurface_v2) / sizeof(uint32_t) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 1;
+      len -= sizeof(SVGA3dCmdDefineGBSurface_v2) / sizeof(uint32_t) + 1;
+      uint32_t SizeOfSVGA3dCmdDefineGBSurface_v2 =
+          sizeof(SVGA3dCmdDefineGBSurface_v2) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdDefineGBSurface_v2 >= 1) {
+        vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineGBSurface_v2 -= 1;
+      };
       VPRINT(
           "SVGA_3D_CMD_DEFINE_GB_SURFACE_V2 command %u in SVGA command FIFO\n",
           cmd);
@@ -2917,11 +2941,17 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd);
       break;
     case SVGA_3D_CMD_DEFINE_GB_SURFACE_V3:
-      if (len < 1) {
+      if (len < sizeof(SVGA3dCmdDefineGBSurface_v3) / sizeof(uint32_t) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= 1;
+      len -= sizeof(SVGA3dCmdDefineGBSurface_v3) / sizeof(uint32_t) + 1;
+      uint32_t SizeOfSVGA3dCmdDefineGBSurface_v3 =
+          sizeof(SVGA3dCmdDefineGBSurface_v3) / sizeof(uint32_t);
+      while (SizeOfSVGA3dCmdDefineGBSurface_v3 >= 1) {
+        vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineGBSurface_v3 -= 1;
+      };
       VPRINT(
           "SVGA_3D_CMD_DEFINE_GB_SURFACE_V3 command %u in SVGA command FIFO\n",
           cmd);
