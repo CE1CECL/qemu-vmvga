@@ -144,6 +144,17 @@ struct pci_vmsvga_state_s {
   struct vmsvga_state_s chip;
   MemoryRegion io_bar;
 };
+static void cursor_update_from_fifo(struct vmsvga_state_s *s) {
+  VPRINT("cursor_update_from_fifo was just executed\n");
+  if ((s->fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_SHOW) ||
+      (s->fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_RESTORE_TO_FB)) {
+    dpy_mouse_set(s->vga.con, s->fifo[SVGA_FIFO_CURSOR_X],
+                  s->fifo[SVGA_FIFO_CURSOR_Y], SVGA_CURSOR_ON_SHOW);
+  } else {
+    dpy_mouse_set(s->vga.con, s->fifo[SVGA_FIFO_CURSOR_X],
+                  s->fifo[SVGA_FIFO_CURSOR_Y], SVGA_CURSOR_ON_HIDE);
+  };
+};
 struct vmsvga_cursor_definition_s {
   uint32_t width;
   uint32_t height;
@@ -3605,14 +3616,6 @@ static void *vmsvga_loop(void *arg) {
         s->new_width = (((s->pitchlock) * (8)) / (s->new_depth));
       };
       dpy_gfx_update(s->vga.con, 0, 0, s->new_width, s->new_height);
-      if ((s->fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_SHOW) ||
-          (s->fifo[SVGA_FIFO_CURSOR_ON] == SVGA_CURSOR_ON_RESTORE_TO_FB)) {
-        dpy_mouse_set(s->vga.con, s->fifo[SVGA_FIFO_CURSOR_X],
-                      s->fifo[SVGA_FIFO_CURSOR_Y], SVGA_CURSOR_ON_SHOW);
-      } else {
-        dpy_mouse_set(s->vga.con, s->fifo[SVGA_FIFO_CURSOR_X],
-                      s->fifo[SVGA_FIFO_CURSOR_Y], SVGA_CURSOR_ON_HIDE);
-      };
     };
   };
   return 0;
@@ -5399,6 +5402,7 @@ static void vmsvga_update_display(void *opaque) {
     if (s->sync < 1) {
       s->sync = 1;
       vmsvga_fifo_run(s);
+      cursor_update_from_fifo(s);
     };
   } else {
     s->vcs = s->vga;
