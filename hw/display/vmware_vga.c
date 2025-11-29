@@ -760,7 +760,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              SVGA3D_MAX_SURFACE_FACES + 1;
       uint32_t SizeOfSVGA3dCmdDefineSurface =
           sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) +
-          sizeof(SVGA3dSize) / sizeof(uint32_t) + SVGA3D_MAX_SURFACE_FACES;
+          SVGA3D_MAX_SURFACE_FACES;
       while (SizeOfSVGA3dCmdDefineSurface >= 1) {
         vmsvga_fifo_read(s);
         SizeOfSVGA3dCmdDefineSurface -= 1;
@@ -1188,7 +1188,7 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              SVGA3D_MAX_SURFACE_FACES + 1;
       uint32_t SizeOfSVGA3dCmdDefineSurface_v2 =
           sizeof(SVGA3dCmdDefineSurface_v2) / sizeof(uint32_t) +
-          sizeof(SVGA3dSize) / sizeof(uint32_t) + SVGA3D_MAX_SURFACE_FACES;
+          SVGA3D_MAX_SURFACE_FACES;
       while (SizeOfSVGA3dCmdDefineSurface_v2 >= 1) {
         vmsvga_fifo_read(s);
         SizeOfSVGA3dCmdDefineSurface_v2 -= 1;
