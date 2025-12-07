@@ -564,6 +564,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         SizeOfSVGAFifoCmdEscape -= 1;
         uint32_t SVGAFifoCmdEscapeSize = vmsvga_fifo_read(s);
         SizeOfSVGAFifoCmdEscape -= 1;
+        if (len < SVGAFifoCmdEscapeSize) {
+          VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
+          break;
+        };
+        len -= SVGAFifoCmdEscapeSize;
         while (SVGAFifoCmdEscapeSize >= 1) {
           vmsvga_fifo_read(s);
           SVGAFifoCmdEscapeSize -= 1;
