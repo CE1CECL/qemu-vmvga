@@ -89,11 +89,10 @@
 #define SVGA_REG_PALETTE_MAX (SVGA_REG_PALETTE_MIN + SVGA_PALETTE_SIZE)
 #ifdef VERBOSE
 #define VPRINT(fmt, ...)                                                       \
-  printf("vmsvga (%s): %u - %s: " fmt, __FILE__, (unsigned)time(NULL),         \
+  printf("vmsvga (%s): %u - %s: " fmt, __FILE__, (uint32_t)time(NULL),         \
          __func__, ##__VA_ARGS__)
 #else
-static void vprint_noop(const char *fmt, ...) { (void)fmt; };
-#define VPRINT(fmt, ...) vprint_noop(fmt, ##__VA_ARGS__)
+#define VPRINT(...)
 #endif
 struct vmsvga_state_s {
   uint32_t svgapalettebase[SVGA_PALETTE_SIZE];
@@ -236,10 +235,14 @@ static inline int vmsvga_fifo_length(struct vmsvga_state_s *s) {
   s->fifo_max = le32_to_cpu(s->fifo[SVGA_FIFO_MAX]);
   s->fifo_next = le32_to_cpu(s->fifo[SVGA_FIFO_NEXT_CMD]);
   s->fifo_stop = le32_to_cpu(s->fifo[SVGA_FIFO_STOP]);
-  if ((s->fifo_next) >= (s->fifo_stop)) {
-    num = ((s->fifo_next) - (s->fifo_stop));
+  if (s->fifo_next >= s->fifo_stop) {
+    if (s->fifo_next < s->fifo_max) {
+      num = s->fifo_next - s->fifo_stop;
+    } else {
+      num = s->fifo_max - s->fifo_stop;
+    };
   } else {
-    num = (((s->fifo_max) - (s->fifo_min)) + ((s->fifo_next) - (s->fifo_stop)));
+    num = s->fifo_max - s->fifo_stop;
   };
   VPRINT("fifo_min: %u, fifo_max: %u, fifo_next: %u, fifo_stop: %u, num: %u, "
          "fifo_min: %u, fifo_max: %u, fifo_next: %u, fifo_stop: %u, ret: %u\n",
@@ -256,13 +259,13 @@ static inline uint32_t vmsvga_fifo_read_raw(struct vmsvga_state_s *s) {
     s->fifo_stop = s->fifo_min;
   };
   s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
-  VPRINT("vmsvga_fifo_read_raw: cmd: %d\n", cmd);
+  VPRINT("vmsvga_fifo_read_raw: cmd: %u\n", cmd);
   return cmd;
 };
 static inline uint32_t vmsvga_fifo_read(struct vmsvga_state_s *s) {
   VPRINT("vmsvga_fifo_read was just executed\n");
   uint32_t ret = le32_to_cpu(vmsvga_fifo_read_raw(s));
-  VPRINT("vmsvga_fifo_read: ret: %d\n", ret);
+  VPRINT("vmsvga_fifo_read: ret: %u\n", ret);
   return ret;
 };
 #define VMSVGA_FIFO_REWIND(_s, cmd, fifo_start)                                \
@@ -767,16 +770,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       VPRINT("SVGA_3D_CMD_LEGACY_BASE command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_3D_CMD_SURFACE_DEFINE:
-      if (len < sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) +
-                    SVGA3D_MAX_SURFACE_FACES + 1) {
+      if (len < sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) +
-             SVGA3D_MAX_SURFACE_FACES + 1;
+      len -= sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) + 1;
       uint32_t SizeOfSVGA3dCmdDefineSurface =
-          sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t) +
-          SVGA3D_MAX_SURFACE_FACES;
+          sizeof(SVGA3dCmdDefineSurface) / sizeof(uint32_t);
       while (SizeOfSVGA3dCmdDefineSurface >= 1) {
         vmsvga_fifo_read(s);
         SizeOfSVGA3dCmdDefineSurface -= 1;
@@ -1195,16 +1195,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cmd);
       break;
     case SVGA_3D_CMD_SURFACE_DEFINE_V2:
-      if (len < sizeof(SVGA3dCmdDefineSurface_v2) / sizeof(uint32_t) +
-                    SVGA3D_MAX_SURFACE_FACES + 1) {
+      if (len < sizeof(SVGA3dCmdDefineSurface_v2) / sizeof(uint32_t) + 1) {
         VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
         break;
       };
-      len -= sizeof(SVGA3dCmdDefineSurface_v2) / sizeof(uint32_t) +
-             SVGA3D_MAX_SURFACE_FACES + 1;
+      len -= sizeof(SVGA3dCmdDefineSurface_v2) / sizeof(uint32_t) + 1;
       uint32_t SizeOfSVGA3dCmdDefineSurface_v2 =
-          sizeof(SVGA3dCmdDefineSurface_v2) / sizeof(uint32_t) +
-          SVGA3D_MAX_SURFACE_FACES;
+          sizeof(SVGA3dCmdDefineSurface_v2) / sizeof(uint32_t);
       while (SizeOfSVGA3dCmdDefineSurface_v2 >= 1) {
         vmsvga_fifo_read(s);
         SizeOfSVGA3dCmdDefineSurface_v2 -= 1;
