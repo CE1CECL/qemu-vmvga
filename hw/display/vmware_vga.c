@@ -4,7 +4,7 @@
 
  Copyright (c) 2007 Andrzej Zaborowski <balrog@zabor.org>
 
- Copyright (c) 2023-2025 Christopher Eric Lentocha
+ Copyright (c) 2023-2026 Christopher Eric Lentocha
  <christopherericlentocha@gmail.com>
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
