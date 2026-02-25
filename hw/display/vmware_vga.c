@@ -567,11 +567,11 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         SizeOfSVGAFifoCmdEscape -= 1;
         uint32_t SVGAFifoCmdEscapeSize = vmsvga_fifo_read(s);
         SizeOfSVGAFifoCmdEscape -= 1;
-        if (len < SVGAFifoCmdEscapeSize) {
+        if (len < SVGAFifoCmdEscapeSize + 1) {
           VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
           break;
         };
-        len -= SVGAFifoCmdEscapeSize;
+        len -= SVGAFifoCmdEscapeSize + 1;
         while (SVGAFifoCmdEscapeSize >= 1) {
           vmsvga_fifo_read(s);
           SVGAFifoCmdEscapeSize -= 1;
@@ -780,6 +780,24 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (SizeOfSVGA3dCmdDefineSurface >= 1) {
         vmsvga_fifo_read(s);
         SizeOfSVGA3dCmdDefineSurface -= 1;
+        uint32_t SVGA3dCmdDefineSurfaceSize1 = vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineSurface -= 1;
+        uint32_t SVGA3dCmdDefineSurfaceSize2 = vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineSurface -= 1;
+        uint32_t SVGA3dCmdDefineSurfaceSize3 = vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineSurface -= 1;
+        uint32_t SVGA3dCmdDefineSurfaceSize =
+            (SVGA3dCmdDefineSurfaceSize1 * SVGA3dCmdDefineSurfaceSize2 *
+             SVGA3dCmdDefineSurfaceSize3);
+        if (len < SVGA3dCmdDefineSurfaceSize + 3) {
+          VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
+          break;
+        };
+        len -= SVGA3dCmdDefineSurfaceSize + 3;
+        while (SVGA3dCmdDefineSurfaceSize >= 1) {
+          vmsvga_fifo_read(s);
+          SVGA3dCmdDefineSurfaceSize -= 1;
+        };
       };
       VPRINT("SVGA_3D_CMD_SURFACE_DEFINE command %u in SVGA command FIFO\n",
              cmd);
@@ -1205,6 +1223,24 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       while (SizeOfSVGA3dCmdDefineSurface_v2 >= 1) {
         vmsvga_fifo_read(s);
         SizeOfSVGA3dCmdDefineSurface_v2 -= 1;
+        uint32_t SVGA3dCmdDefineSurface_v2Size1 = vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineSurface_v2 -= 1;
+        uint32_t SVGA3dCmdDefineSurface_v2Size2 = vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineSurface_v2 -= 1;
+        uint32_t SVGA3dCmdDefineSurface_v2Size3 = vmsvga_fifo_read(s);
+        SizeOfSVGA3dCmdDefineSurface_v2 -= 1;
+        uint32_t SVGA3dCmdDefineSurface_v2Size =
+            (SVGA3dCmdDefineSurface_v2Size1 * SVGA3dCmdDefineSurface_v2Size2 *
+             SVGA3dCmdDefineSurface_v2Size3);
+        if (len < SVGA3dCmdDefineSurface_v2Size + 3) {
+          VMSVGA_FIFO_REWIND(s, cmd, fifo_start);
+          break;
+        };
+        len -= SVGA3dCmdDefineSurface_v2Size + 3;
+        while (SVGA3dCmdDefineSurface_v2Size >= 1) {
+          vmsvga_fifo_read(s);
+          SVGA3dCmdDefineSurface_v2Size -= 1;
+        };
       };
       VPRINT("SVGA_3D_CMD_SURFACE_DEFINE_V2 command %u in SVGA command FIFO\n",
              cmd);
