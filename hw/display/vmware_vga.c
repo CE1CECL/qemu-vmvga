@@ -2496,7 +2496,7 @@ static pixman_format_code_t vmsvga_pixman_format(uint32_t bpp) {
   case 32:
     return PIXMAN_FORMAT(32, 2, 0, 8, 8, 8);
   default:
-    return 0;
+    return qemu_default_pixman_format(bpp, true);
   }
 }
 static inline void vmsvga_check_size(struct vmsvga_state_s *s) {
