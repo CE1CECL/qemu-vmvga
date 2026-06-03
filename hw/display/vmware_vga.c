@@ -2515,9 +2515,9 @@ static inline void vmsvga_check_size(struct vmsvga_state_s *s) {
     pixman_format_code_t format = vmsvga_pixman_format(s->new_depth);
     surface = qemu_create_displaysurface_from(
         s->new_width, s->new_height, format, new_stride, s->vga.vram_ptr);
-    VPRINT("vmsvga_check_size: old_width: %d, old_height: %d, old_depth: %d, "
-           "old_format: %d, old_stride: %d, new_width: %d, new_height: %d, "
-           "new_depth: %d, new_format: %d, new_stride: %d\n",
+    VPRINT("vmsvga_check_size: old_width: %u, old_height: %u, old_depth: %u, "
+           "old_format: %u, old_stride: %u, new_width: %u, new_height: %u, "
+           "new_depth: %u, new_format: %u, new_stride: %u\n",
            surface_width(surface), surface_height(surface),
            surface_bits_per_pixel(surface),
            vmsvga_pixman_format(surface_bits_per_pixel(surface)),
