@@ -1044,11 +1044,14 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
         SizeOfSVGAFifoCmdFence -= 1;
       };
       s->fifo[SVGA_FIFO_FENCE] = fence_arg;
-      if (((s->irq_mask) & (SVGA_IRQFLAG_FENCE_GOAL)) &&
-          ((fence_arg) == (s->fifo[SVGA_FIFO_FENCE_GOAL]))) {
+      if ((((fence_arg) & (SVGA_IRQFLAG_FENCE_GOAL)) ||
+           ((s->irq_mask) & (SVGA_IRQFLAG_FENCE_GOAL))) &&
+          (((s->irq_mask) == (s->fifo[SVGA_FIFO_FENCE_GOAL]) ||
+            ((fence_arg) == (s->fifo[SVGA_FIFO_FENCE_GOAL]))))) {
         VPRINT("FIFO: irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
         irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
-      } else if ((s->irq_mask) & (SVGA_IRQFLAG_ANY_FENCE)) {
+      } else if (((s->irq_mask) & (SVGA_IRQFLAG_ANY_FENCE)) ||
+                 ((fence_arg) & (SVGA_IRQFLAG_ANY_FENCE))) {
         VPRINT("FIFO: irq_status |= SVGA_IRQFLAG_ANY_FENCE\n");
 #ifndef ANY_FENCE_OFF
         irq_status |= SVGA_IRQFLAG_ANY_FENCE;
@@ -5394,7 +5397,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_GBOBJECT_MEM_SIZE_KB:
-    ret = 8388608;
+    ret = s->vga.vram_size / 1024;
     VPRINT("SVGA_REG_GBOBJECT_MEM_SIZE_KB register %u with the return of %u\n",
            s->index, ret);
     break;
@@ -5414,7 +5417,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            ret);
     break;
   case SVGA_REG_MAX_PRIMARY_BOUNDING_BOX_MEM:
-    ret = 134217728;
+    ret = s->vga.vram_size;
     VPRINT("SVGA_REG_MAX_PRIMARY_BOUNDING_BOX_MEM register %u with the return "
            "of %u\n",
            s->index, ret);
@@ -5633,7 +5636,7 @@ static uint32_t vmsvga_value_read(void *opaque, uint32_t address) {
            s->index, ret);
     break;
   case SVGA_REG_CURSOR_MAX_BYTE_SIZE:
-    ret = 8388608;
+    ret = s->vga.vram_size;
     VPRINT("SVGA_REG_CURSOR_MAX_BYTE_SIZE register %u with the return of %u\n",
            s->index, ret);
     break;
@@ -6553,29 +6556,35 @@ static void vmsvga_value_write(void *opaque, uint32_t address, uint32_t value) {
         container_of(s, struct pci_vmsvga_state_s, chip);
     PCIDevice *pci_dev = PCI_DEVICE(pci_vmsvga);
 #endif
-    if ((value) & (SVGA_IRQFLAG_FENCE_GOAL)) {
+    if ((((s->irq_mask) & (SVGA_IRQFLAG_FENCE_GOAL) ||
+          ((value) & (SVGA_IRQFLAG_FENCE_GOAL)))) &&
+        (((s->irq_mask) == (s->fifo[SVGA_FIFO_FENCE_GOAL]) ||
+          (value) == (s->fifo[SVGA_FIFO_FENCE_GOAL])))) {
       VPRINT("REG: irq_status |= SVGA_IRQFLAG_FENCE_GOAL\n");
       irq_status |= SVGA_IRQFLAG_FENCE_GOAL;
-    } else if ((value) & (SVGA_IRQFLAG_ANY_FENCE)) {
+    } else if (((value) & (SVGA_IRQFLAG_ANY_FENCE) ||
+                ((s->irq_mask) & (SVGA_IRQFLAG_ANY_FENCE)))) {
       VPRINT("REG: irq_status |= SVGA_IRQFLAG_ANY_FENCE\n");
 #ifndef ANY_FENCE_OFF
       irq_status |= SVGA_IRQFLAG_ANY_FENCE;
 #endif
     };
-    if ((irq_status) || ((value) & (SVGA_IRQFLAG_FIFO_PROGRESS))) {
+    if ((irq_status) || (((value) & (SVGA_IRQFLAG_FIFO_PROGRESS) ||
+                          (s->irq_mask) & (SVGA_IRQFLAG_FIFO_PROGRESS)))) {
       VPRINT("REG: irq_status || value & SVGA_IRQFLAG_FIFO_PROGRESS\n");
-      if ((value) & (SVGA_IRQFLAG_FIFO_PROGRESS)) {
+      if (((value) & (SVGA_IRQFLAG_FIFO_PROGRESS) ||
+           (s->irq_mask) & (SVGA_IRQFLAG_FIFO_PROGRESS))) {
         VPRINT("REG: irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS\n");
         irq_status |= SVGA_IRQFLAG_FIFO_PROGRESS;
       };
-      if ((value) & (irq_status)) {
+      if (((value) & (irq_status) || (s->irq_mask) & (irq_status))) {
         VPRINT("REG: Pci_set_irq=1\n");
         s->irq_status = irq_status;
 #ifndef RAISE_IRQ_OFF
         pci_set_irq(pci_dev, 1);
 #endif
       };
-    } else if ((s->irq_status) & (value)) {
+    } else if (((s->irq_status) & (value) || (s->irq_status) & (s->irq_mask))) {
       VPRINT("REG: Pci_set_irq=1\n");
 #ifndef RAISE_IRQ_OFF
       pci_set_irq(pci_dev, 1);
