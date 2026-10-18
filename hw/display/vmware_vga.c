@@ -936,6 +936,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
       VPRINT("SVGA_CMD_RECT_COPY command %u in SVGA command FIFO\n", cmd);
       break;
     case SVGA_CMD_DEFINE_CURSOR:
+      if (len < (sizeof(SVGAFifoCmdDefineCursor) / sizeof(uint32_t)) + 1) {
+        s->fifo_stop = fifo_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+        len = 0;
+        VPRINT("rewind command %u in SVGA command FIFO\n", cmd);
+        break;
+      };
       len -= sizeof(SVGAFifoCmdDefineCursor) / sizeof(uint32_t) + 1;
       uint32_t SizeOfSVGAFifoCmdDefineCursor =
           sizeof(SVGAFifoCmdDefineCursor) / sizeof(uint32_t);
@@ -991,6 +998,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
       break;
     case SVGA_CMD_DEFINE_ALPHA_CURSOR:
+      if (len < (sizeof(SVGAFifoCmdDefineAlphaCursor) / sizeof(uint32_t)) + 1) {
+        s->fifo_stop = fifo_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+        len = 0;
+        VPRINT("rewind command %u in SVGA command FIFO\n", cmd);
+        break;
+      };
       len -= sizeof(SVGAFifoCmdDefineAlphaCursor) / sizeof(uint32_t) + 1;
       uint32_t SizeOfSVGAFifoCmdDefineAlphaCursor =
           sizeof(SVGAFifoCmdDefineAlphaCursor) / sizeof(uint32_t);
@@ -1036,6 +1050,13 @@ static void vmsvga_fifo_run(struct vmsvga_state_s *s) {
              cursor.height, cursor.and_mask_bpp, cursor.xor_mask_bpp);
       break;
     case SVGA_CMD_FENCE:
+      if (len < (sizeof(SVGAFifoCmdFence) / sizeof(uint32_t)) + 1) {
+        s->fifo_stop = fifo_start;
+        s->fifo[SVGA_FIFO_STOP] = cpu_to_le32(s->fifo_stop);
+        len = 0;
+        VPRINT("rewind command %u in SVGA command FIFO\n", cmd);
+        break;
+      };
       len -= sizeof(SVGAFifoCmdFence) / sizeof(uint32_t) + 1;
       uint32_t SizeOfSVGAFifoCmdFence =
           sizeof(SVGAFifoCmdFence) / sizeof(uint32_t);
@@ -7022,12 +7043,13 @@ static void vmsvga_text_update(void *opaque, console_ch_t *chardata) {
 };
 static int vmsvga_post_load(void *opaque, int version_id) {
   VPRINT("vmsvga_post_load was just executed\n");
+  struct vmsvga_state_s *s = opaque;
+  s->enable = 1;
+  s->config = 1;
   return 0;
 };
 static VMStateDescription vmstate_vmware_vga_internal = {
     .name = "vmware_vga_internal",
-    .version_id = 1,
-    .minimum_version_id = 0,
     .post_load = vmsvga_post_load,
     .fields = (const VMStateField[]){
         VMSTATE_UINT32_ARRAY(svgapalettebase, struct vmsvga_state_s,
@@ -7070,8 +7092,6 @@ static VMStateDescription vmstate_vmware_vga_internal = {
         VMSTATE_END_OF_LIST()}};
 static VMStateDescription vmstate_vmware_vga = {
     .name = "vmware_vga",
-    .version_id = 0,
-    .minimum_version_id = 0,
     .fields = (const VMStateField[]){
         VMSTATE_PCI_DEVICE(parent_obj, struct pci_vmsvga_state_s),
         VMSTATE_STRUCT(chip, struct pci_vmsvga_state_s, 0,
@@ -7085,22 +7105,22 @@ static GraphicHwOps vmsvga_ops = {
 static void vmsvga_init(DeviceState *dev, struct vmsvga_state_s *s,
                         MemoryRegion *address_space, MemoryRegion *io) {
   VPRINT("vmsvga_init was just executed\n");
-  s->scratch_size = 32;
-  s->scratch = g_malloc(s->scratch_size * 4);
-  s->vga.con = graphic_console_init(dev, 0, &vmsvga_ops, s);
-  s->fifo_size = 2097152;
-  memory_region_init_ram(&s->fifo_ram, NULL, "vmsvga.fifo", s->fifo_size,
-                         &error_fatal);
-  s->fifo = (uint32_t *)memory_region_get_ram_ptr(&s->fifo_ram);
-  vga_common_init(&s->vga, OBJECT(dev), &error_fatal);
-  vga_init(&s->vga, OBJECT(dev), address_space, io, true);
-#ifdef QEMU_V9_2_0
-  vmstate_register_any(NULL, &vmstate_vga_common, &s->vga);
-#else
-  vmstate_register(NULL, 0, &vmstate_vga_common, &s->vga);
-#endif
   if (s->thread < 1) {
     s->thread++;
+    s->scratch_size = 32;
+    s->scratch = g_malloc(s->scratch_size * 4);
+    s->vga.con = graphic_console_init(dev, 0, &vmsvga_ops, s);
+    s->fifo_size = 2097152;
+    memory_region_init_ram(&s->fifo_ram, NULL, "vmsvga.fifo", s->fifo_size,
+                           &error_fatal);
+    s->fifo = (uint32_t *)memory_region_get_ram_ptr(&s->fifo_ram);
+    vga_common_init(&s->vga, OBJECT(dev), &error_fatal);
+    vga_init(&s->vga, OBJECT(dev), address_space, io, true);
+#ifdef QEMU_V9_2_0
+    vmstate_register_any(NULL, &vmstate_vga_common, &s->vga);
+#else
+    vmstate_register(NULL, 0, &vmstate_vga_common, &s->vga);
+#endif
     s->fifo[SVGA_FIFO_CURSOR_ON] = SVGA_CURSOR_ON_SHOW;
     s->new_width = 1024;
     s->new_height = 768;
